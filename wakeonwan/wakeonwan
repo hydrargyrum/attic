@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require 'socket'
+
+#MAC_RE = /(\d\d)[-:.]?(\d\d)[-:.]?(\d\d)[-:.]?(\d\d)[-:.]?(\d\d)[-:.]?(\d\d)/
+#if ARGV.size != 2 or !ARGV[1].match MAC_RE then
+if ARGV.size != 2 or ARGV[1].length != 17 then
+	puts 'usage: wakeonwan IP MAC_ADDRESS'
+	exit 1
+end
+
+ip = ARGV[0]
+mac_str = ARGV[1]
+
+mac_numbers = (mac_str.split mac_str[2,1]).collect { |s| s.hex }
+#mac_numbers = (mac_str.match MAC_RE).collect { |s| s.hex }
+packet_numbers = [255] * 6 + mac_numbers * 16
+packet_bytes = packet_numbers.pack('C' * packet_numbers.length)
+
+sock = UDPSocket.new
+sock.send packet_bytes, 0, ip, 7
+sock.send packet_bytes, 0, ip, 9
