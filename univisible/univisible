@@ -1,0 +1,111 @@
+#!/usr/bin/env python
+# univisible: make Unicode compositions visible
+# license: Do What the Fuck You Want to Public License v2 [http://wtfpl.net]
+# date: 2013/07/03
+
+import argparse
+import codecs
+import getopt
+import locale
+import os
+import sys
+import unicodedata
+
+
+def convert_compose(line):
+	return unicodedata.normalize('NFKC', line)
+
+def convert_decompose(line):
+	return unicodedata.normalize('NFKD', line)
+
+def convert_noop(line):
+	return line
+
+def rewrite(src, dst, convert):
+	while True:
+		srcline = src.readline()
+		if not srcline:
+			break
+		dst.write(convert(srcline))
+
+def visual_bytes(src, dst, convert):
+	def print_normal(c):
+		dst.write(c)
+
+	def print_combining(c):
+		dst.write('\033[7m ')
+		dst.write(c)
+		dst.write('\033[27m')
+
+	def handle_line(line):
+		for c in line:
+			if unicodedata.combining(c):
+				print_combining(c)
+			else:
+				print_normal(c)
+
+	while True:
+		srcline = src.readline()
+		if not srcline:
+			break
+		handle_line(convert(srcline))
+
+def tell_info(src, dst, convert):
+	def get_name(c):
+		try:
+			return unicodedata.name(c)
+		except ValueError:
+			return None
+
+	def handle_char(c):
+		name = get_name(c)
+		if name:
+			dst.write('%s (U+%04X): %s\n' % (c, ord(c), name))
+		else:
+			dst.write('%s (U+%04X)\n' % (c, ord(c)))
+
+	while True:
+		srcline = src.readline()
+		if not srcline:
+			break
+
+		for c in convert(srcline):
+			handle_char(c)
+
+
+def main():
+	locale.setlocale(locale.LC_ALL, '')
+
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-f', dest='src_encoding', metavar='ENCODING', help='From encoding')
+	parser.add_argument('-t', dest='dst_encoding', metavar='ENCODING', help='To encoding')
+	parser.add_argument('-d', dest='compose', action='store_const', const='d', help='Use NFKD form (decomposed)')
+	parser.add_argument('-c', dest='compose', action='store_const', const='c', help='Use NFKC form (composed)')
+	parser.add_argument('-v', dest='visual', action='store_true', help='Print visually composing glyphs')
+	parser.add_argument('-i', dest='info', action='store_true', help='Print info about each codepoint')
+	opts = parser.parse_args()
+
+	#basefd = sys.stdin
+	#if len(args) == 1:
+	#	basefd = open(args[0], 'rb')
+
+	sysenc = locale.getpreferredencoding()
+	infd = codecs.getreader(opts.src_encoding or sysenc)(sys.stdin)
+	outfd = codecs.getwriter(opts.dst_encoding or sysenc)(sys.stdout)
+
+	if opts.compose == 'd':
+		conv_func = convert_decompose
+	elif opts.compose == 'c':
+		conv_func = convert_compose
+	else:
+		conv_func = convert_noop
+
+	if opts.visual:
+		visual_bytes(infd, outfd, conv_func)
+	elif opts.info:
+		tell_info(infd, outfd, conv_func)
+	else:
+		rewrite(infd, outfd, conv_func)
+
+if __name__ == '__main__':
+	main()
