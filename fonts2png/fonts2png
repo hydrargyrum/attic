@@ -1,0 +1,54 @@
+#!/bin/sh
+# license: WTFPLv2/public domain
+# 2012-05-12
+
+text='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+0123456789
+A quick brown fox jumps over the lazy dog'
+fontsize=30
+bgcolor=white
+fgcolor=black
+outdir=.
+
+while getopts fht:s:b:c:o: name
+do
+	case $name in
+	f) overwrite=1 ;;
+	b) bgcolor="$OPTARG" ;;
+	c) fgcolor="$OPTARG" ;;
+	o) outdir="$OPTARG" ;;
+	s) fontsize="$OPTARG" ;;
+	t) text="$OPTARG" ;;
+	*) help=1 ;;
+	esac
+done
+shift $(($OPTIND - 1))
+
+if [ -n "$help" ] || [ $# -eq 0 ]; then
+	cat >&2 << EOF
+Usage: $0 [OPTIONS] [FONT FILES OR NAMES]
+Render fonts samples to images files (useful for previewing fonts)
+
+Options:
+-t TEXT    Set sample text (current: $text)
+-s SIZE    Set text size in points (current: $fontsize)
+-b COLOR   Set background color (current: $bgcolor)
+           supports X11 color names and #ABCDEF notation
+-c COLOR   Set text color, same format as -b (current: $fgcolor)
+-o DIR     Directory for output images (current: $outdir)
+-f         Overwrite existing image files (default: don't, skip them)
+-h         Display this help
+EOF
+	exit 1
+fi
+
+for font in "$@"; do
+	outfile="$outdir/`basename ${font%.*}`.png"
+	if [ ! -f "$outfile" ] || [ -n "$overwrite" ]; then
+		convert -background "$bgcolor" -fill "$fgcolor" -font "$font" \
+		        -pointsize "$fontsize" label:"$text" "$outfile"
+		echo "$outfile"
+	else
+		echo "$outfile" ignored
+	fi
+done
