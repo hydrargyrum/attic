@@ -1,0 +1,133 @@
+#!/usr/bin/env python
+# encoding: utf-8
+# 2009-09-19
+# 2012-01-27
+
+'''A QRCode to ANSI/Unicode representation module/program'''
+
+
+import sys
+import os
+import locale
+from optparse import OptionParser
+
+__all__ = ['UnicodeBoxConverter', 'AnsiColorConverter', 'UnicodeSmallBoxConverter']
+
+class QREncodeModule:
+	def is_present(self):
+		try:
+			import qrencode
+			return True
+		except ImportError:
+			return False
+
+	def encode(self, text):
+		import qrencode
+		version, size, img = qrencode.encode(text)
+		pixiter = (v // 255 for v in img.getdata())
+		return [[pixiter.next() for _ in xrange(size)] for _ in xrange(size)]
+
+
+class UnicodeSmallBoxConverter:
+	chars = {
+0b1100: u'▀',
+0b0011: u'▄',
+0b1010: u'▌',
+0b0101: u'▐',
+
+0b1000: u'▘',
+0b0100: u'▝',
+0b0010: u'▖',
+0b0001: u'▗',
+
+0b0000: u' ',
+0b1111: u'█',
+
+0b1110: u'▛',
+0b1101: u'▜',
+0b1011: u'▙',
+0b0111: u'▟',
+
+0b1001: u'▚',
+0b0110: u'▞',
+}
+
+	def convert_image(self, pixels):
+		pixels22 = self.combine_2x2(self.make_even_rect(pixels))
+		return [[self.chars[p22] for p22 in row] for row in pixels22]
+
+	def make_even_rect(self, pixels):
+		if len(pixels[0]) % 2:
+			pixels = [pixline + [0] for pixline in pixels]
+		if len(pixels) % 2:
+			pixels = pixels + [len(pixels[0]) * [0]]
+		return pixels
+
+	def combine_2x2(self, pixels):
+		'''Expects an even-size square'''
+		def value(y, x):
+			return pixels[y][x] << 3 | pixels[y][x+1] << 2 | pixels[y+1][x] << 1 | pixels[y+1][x+1]
+
+		return [[value(y, x) for x in xrange(0, len(pixels[0]), 2)] for y in xrange(0, len(pixels), 2)]
+
+
+class UnicodeBoxConverter:
+	chars = [u'\u2588', ' ']
+
+	def convert_image(self, pixels):
+		return [[self.chars[p] for p in row] for row in pixels]
+
+
+class AnsiColorConverter:
+	# TODO get termcap if possible
+	chars = ['\x1b[7m ', '\x1b[27m ']
+	# TODO what is Win32 equivalent?
+
+	def convert_image(self, pixels):
+		return [[self.chars[p] for p in row] for row in pixels]
+
+
+def nearest_zoom(pixels, y_zoom, x_zoom):
+	return [[p for p in row for _ in xrange(x_zoom)] for row in pixels for _ in xrange(y_zoom)]
+
+def invert(pixels):
+	return [[1 & ~p for p in row] for row in pixels]
+
+def border(pixels, size, color=1):
+	if border == 0:
+		return pixels
+	hborder = [color] * (len(pixels[0]) + size * 2)
+	return [hborder] * size + [[color] * size + row + [color] * size for row in pixels] + [hborder] * size
+
+
+def main():
+	parser = OptionParser(usage='%prog [options] TEXT')
+	parser.add_option('-i', '--invert', dest='invert', action='store_true', help='Invert colors [default=False]')
+	parser.add_option('-z', '--zoom', dest='zoom', action='store', help='Zoom by X and Y [default=2:1]', metavar='X:Y')
+	parser.add_option('--method', dest='method', choices=('ansi', 'unicode', 'unicode_small'), help='Use METHOD for display output [choices=ansi,unicode,unicode_small]', metavar='METHOD')
+	parser.add_option('-b', '--border', dest='border', type=int, help='Set size of border [default=0]')
+	parser.set_defaults(invert=False, zoom='2:1', method='unicode', border=0)
+	opts, args = parser.parse_args()
+
+	if not args:
+		parser.error('Missing text to encode')
+	try:
+		x_zoom, y_zoom = map(int, opts.zoom.split(':'))
+		assert x_zoom >= 0 and y_zoom >= 0
+	except (ValueError, IndexError, AssertionError):
+		parser.error('Zoom should be in format X:Y')
+
+	pixels = QREncodeModule().encode(args[0])
+	pixels = border(pixels, opts.border)
+	pixels = nearest_zoom(pixels, y_zoom, x_zoom)
+	if opts.invert:
+		pixels = invert(pixels)
+
+	methods = dict(unicode=UnicodeBoxConverter, unicode_small=UnicodeSmallBoxConverter, ansi=AnsiColorConverter)
+	chars = methods[opts.method]().convert_image(pixels)
+
+	locale.setlocale(locale.LC_ALL, '')
+	print('\n'.join(''.join(row) for row in chars))
+
+if __name__ == '__main__':
+	main()
