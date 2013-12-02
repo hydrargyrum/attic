@@ -1,0 +1,127 @@
+#!/usr/bin/env python
+# license: WTFPLv2 [http://wtfpl.net]
+
+import sys, os
+import sqlite3
+import json
+import argparse
+import re
+
+
+def escape_name(name):
+	return "'%s'" % name.replace("'", "''")
+
+RE_VALIDATE = re.compile(r'^[a-zA-Z_]\w*$')
+def validate_name(name):
+	return bool(RE_VALIDATE.match(name))
+
+ForbiddenKeyError = lambda: ValueError('Keys may only contain letters, digits and underscores')
+UnsupportedTypeError = lambda: TypeError('Only dictionaries and lists are supported')
+
+class Inserter(object):
+	def __init__(self, dbfile, table):
+		self.db = sqlite3.connect(dbfile)
+		self.table = table
+		self.cursor = self.db.cursor()
+
+	def insert_data(self, data):
+		if isinstance(data, dict):
+			self._insert_dict(data)
+		elif isinstance(data, list):
+			if not len(data):
+				return
+			elif isinstance(data[0], dict):
+				for line in data:
+					self._insert_dict(line)
+			elif isinstance(data[0], list):
+				for line in data:
+					self._insert_list(line)
+			else:
+				self._insert_list(data)
+		else:
+			raise UnsupportedTypeError()
+
+	def _insert_dict(self, d):
+		if not all(validate_name(n) for n in d.keys()):
+			raise ForbiddenKeyError()
+
+		marks = ','.join('?' * len(d))
+		keys = list(d.keys())
+		names = ','.join(keys)
+		ordered_values = [d[k] for k in keys]
+		self.cursor.execute('INSERT INTO %s(%s) VALUES(%s)' % (self.table, names, marks), ordered_values)
+
+	def _insert_list(self, li):
+		marks = ','.join('?' * len(li))
+		self.cursor.execute('INSERT INTO %s VALUES(%s)' % (self.table, marks), li)
+
+	def update_data(self, ids, data):
+		if isinstance(data, dict):
+			self._update_dict(ids, data)
+		elif isinstance(data, list):
+			if not js:
+				return
+			elif isinstance(data[0], dict):
+				for line in data:
+					self._update_dict(line)
+			else:
+				raise UnsupportedTypeError()
+		else:
+			raise UnsupportedTypeError()
+
+	def _update_dict(self, ids, d):
+		marks = ','.join('?' * len(d))
+
+		if not all(validate_name(n) for n in d.keys()):
+			raise ForbiddenKeyError()
+
+		keys_match = ids
+		keys_set = [k for k in d.keys() if k not in keys_match]
+		ordered_values = [d[k] for k in keys_set + keys_match]
+
+		req_match = ' and '.join('%s = ?' % name for name in keys_match)
+		req_set = ', '.join('%s = ?' % name for name in keys_set)
+
+		self.cursor.execute('UPDATE %s SET %s WHERE %s' % (self.table, req_set, req_match), ordered_values)
+
+	def commit(self):
+		self.db.commit()
+
+
+def main():
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-f', '--file', dest='file', metavar='INPUTFILE')
+	parser.add_argument('-j', '--json', dest='json', metavar='INPUTJSON')
+	parser.add_argument('-d', '--database', dest='database', metavar='DATABASE')
+	parser.add_argument('-t', '--table', dest='table', metavar='TABLE')
+	parser.add_argument('-u', '--update', dest='update_ids', action='append', metavar='COLUMN_MATCH_FOR_UPDATE')
+	#~ parser.add_argument('-c', '--create', dest='create', action='store_true')
+
+	args = parser.parse_args()
+	if not args.database:
+		parser.error('Missing -d DATABASE')
+	elif not args.file and not args.json:
+		parser.error('Missing -f FILE or -j JSON')
+	elif not args.table:
+		parser.error('Missing -t TABLE')
+
+	inserter = Inserter(args.database, args.table)
+
+	if args.json and args.file:
+		parser.error('-f and -j are mutually exclusive')
+	elif args.json:
+		js = json.loads(args.json)
+	elif args.file == '-':
+		js = json.load(sys.stdin)
+	else:
+		js = json.load(open(args.file, 'rb'))
+
+	if args.update_ids:
+		inserter.update_data(args.update_ids, js)
+	else:
+		inserter.insert_data(js)
+
+	inserter.commit()
+
+if __name__ == '__main__':
+	main()
