@@ -19,10 +19,13 @@ ForbiddenKeyError = lambda: ValueError('Keys may only contain letters, digits an
 UnsupportedTypeError = lambda: TypeError('Only dictionaries and lists are supported')
 
 class Inserter(object):
-	def __init__(self, dbfile, table):
+	def __init__(self, dbfile, table, create=False, alter=False):
 		self.db = sqlite3.connect(dbfile)
 		self.table = table
 		self.cursor = self.db.cursor()
+		self.create = create
+		self.alter = alter
+		self.columns = []
 
 	def insert_data(self, data):
 		if isinstance(data, dict):
@@ -44,6 +47,12 @@ class Inserter(object):
 	def _insert_dict(self, d):
 		if not all(validate_name(n) for n in d.keys()):
 			raise ForbiddenKeyError()
+
+		if self.create:
+			self._create_table(d)
+			self.create = False
+		if self.alter:
+			self._alter_table(d)
 
 		marks = ','.join('?' * len(d))
 		keys = list(d.keys())
@@ -87,6 +96,25 @@ class Inserter(object):
 	def commit(self):
 		self.db.commit()
 
+	def _create_table(self, d):
+		columns = ','.join('%s %s' % (k, self._column_type(d[k])) for k in d)
+		self.cursor.execute('CREATE TABLE IF NOT EXISTS %s (%s)' % (self.table, columns))
+
+	def _alter_table(self, d):
+		if not self.columns:
+			self._fetch_columns()
+
+		for k in d:
+			if k not in self.columns:
+				self.cursor.execute('ALTER TABLE %s ADD COLUMN %s %s' % (self.table, k, self._column_type(d[k])))
+				self.columns.append(k)
+
+	def _fetch_columns(self):
+		self.columns = [row[1] for row in self.cursor.execute('PRAGMA table_info(%s)' % self.table)]
+
+	def _column_type(self, obj):
+		return {str: 'TEXT', unicode: 'TEXT', int: 'INTEGER', long: 'INTEGER', float: 'REAL', bool: 'BOOLEAN'}.get(type(obj), 'NONE')
+
 
 def main():
 	parser = argparse.ArgumentParser()
@@ -95,7 +123,8 @@ def main():
 	parser.add_argument('-d', '--database', dest='database', metavar='DATABASE')
 	parser.add_argument('-t', '--table', dest='table', metavar='TABLE')
 	parser.add_argument('-u', '--update', dest='update_ids', action='append', metavar='COLUMN_MATCH_FOR_UPDATE')
-	#~ parser.add_argument('-c', '--create', dest='create', action='store_true')
+	parser.add_argument('--create', dest='create', action='store_true')
+	parser.add_argument('--alter', dest='alter', action='store_true')
 
 	args = parser.parse_args()
 	if not args.database:
@@ -105,7 +134,7 @@ def main():
 	elif not args.table:
 		parser.error('Missing -t TABLE')
 
-	inserter = Inserter(args.database, args.table)
+	inserter = Inserter(args.database, args.table, create=args.create, alter=args.alter)
 
 	if args.json and args.file:
 		parser.error('-f and -j are mutually exclusive')
