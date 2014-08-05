@@ -140,7 +140,10 @@ class DbReader:
 
 		self.entries = []
 		for i in xrange(n_entries):
-			self.entries.append(self.read_entry())
+			entry = self.read_entry()
+			if entry['title'] == 'Meta-Info' and entry.get('username') == 'SYSTEM':
+				continue
+			self.entries.append(entry)
 
 	def _build_cipher(self, cipher_key, iv):
 		cipher = AES.new(cipher_key, AES.MODE_CBC, iv)
@@ -220,15 +223,15 @@ def print_entries(db, pattern, show_password=False):
 		print_entry(entry, show_password)
 
 def print_nonempty(entry, name, label):
-	if name in entry and entry[name]:
-		print '%s: %s' % (label, entry[name])
+	if entry.get(name):
+		print '%s: %s' % (label, entry.get(name))
 
 def print_entry(entry, show_password=False):
 	print 'title: %s' % entry['title']
 	print_nonempty(entry, 'url', 'url')
 	print_nonempty(entry, 'username', 'username')
 	if show_password:
-		print 'password: %s' % entry['password']
+		print 'password: %s' % entry.get('password')
 	print
 
 def main():
