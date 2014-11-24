@@ -1,0 +1,209 @@
+#!/usr/bin/env python
+# this file is licensed under the do What The Fuck you want Public License v2
+# http://www.wtfpl.net/
+
+# convert redmine timesheets into an iCalendar file for easy visualization
+
+import sys
+import os
+import datetime
+import time
+import requests
+import urlparse
+import getpass
+import json
+import uuid
+import argparse
+
+def parse_date(s):
+    return datetime.datetime.strptime(s, '%Y-%m-%d')
+
+def format_date(d):
+    return d.strftime('%Y-%m-%d')
+
+def parse_datetime(s):
+    return datetime.datetime.strptime(s, '%Y-%m-%dT%H:%M:%SZ')
+
+
+class Redmine:
+    user = 'me'
+    login = None
+    password = None
+    waiting = 0
+    baseurl = None
+
+    def _auth_params(self):
+        if self.login and self.password:
+            return {'auth': (self.login, self.password)}
+        else:
+            return {}
+
+    def json_get(self, path):
+        url = urlparse.urljoin(self.baseurl, path)
+        print >> sys.stderr, '[Fetching %s]' % url
+        r = requests.get(url, **self._auth_params())
+        assert r.status_code == 200
+        return json.loads(r.text)
+
+    def post(self, path, data):
+        url = urlparse.urljoin(self.baseurl, path)
+        print >> sys.stderr, '[Posting to %s]' % url
+        r = requests.post(url, params=data, **self._auth_params())
+        assert 200 <= r.status_code < 210
+
+    def issues(self):
+        return self.json_get('/issues.json?assigned_to_id=%s' % self.user)['issues']
+
+    def time_entries(self, begin, end):
+        def filterer(obj):
+            return parse_date(obj['spent_on']) >= begin
+
+        offset = 0
+        while True:
+            obj = self.json_get('/time_entries.json?limit=100&offset=%d&user_id=%s' % (offset, self.user))
+            if not filter(filterer, obj['time_entries']):
+                break
+
+            some = False
+
+            for e in obj['time_entries']:
+                if parse_date(e['spent_on']) < begin:
+                    break
+                some = True
+                if end and parse_date(e['spent_on']) > end:
+                    continue
+                yield e
+
+            if not some:
+                break
+
+            offset += 100
+            if self.waiting > 0:
+                print >> sys.stderr, '[Cooling down...]'
+                time.sleep(self.waiting)
+
+    def submit(self, issue, date, hours, activity=9): # 9=Dev
+        self.post('/time_entries.xml', {'time_entry[issue_id]': str(issue), 'time_entry[spent_on]': date, 'time_entry[hours]': str(int(hours)), 'time_entry[activity_id]': str(activity)})
+
+
+def get_week(d):
+    return d.isocalendar()[1]
+
+def get_weekday(d):
+    return d.isocalendar()[2]
+
+
+
+class ICalFormatter:
+    dfmt = '%Y%m%dT%H%M%S'
+
+    def __init__(self, fd):
+        self.fd = fd
+
+    def start(self):
+        print >> self.fd, 'BEGIN:VCALENDAR'
+        print >> self.fd, 'VERSION:2.0'
+        print >> self.fd, 'METHOD:PUBLISH'
+        print >> self.fd, 'X-WR-CALNAME:redmine issues calendar'
+        print >> self.fd, 'PRODID:-//redmine//NONSGML v1.0//EN'
+
+    def end(self):
+        print >> self.fd, 'END:VCALENDAR'
+
+    def add_event(self, ev):
+        print >> self.fd, 'BEGIN:VEVENT'
+        print >> self.fd, 'UID:%s' % ev['id']
+        print >> self.fd, 'DTSTART:%s' % ev['start'].strftime(self.dfmt)
+        print >> self.fd, 'DTEND:%s' % ev['end'].strftime(self.dfmt)
+        print >> self.fd, 'SUMMARY:%s' % ev['summary']
+        print >> self.fd, 'END:VEVENT'
+
+
+def parse_options():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('baseurl', help='Base URL of the Redmine app')
+    parser.add_argument('--login', help='Redmine login, if auth is required (default: no auth)')
+    parser.add_argument('--user', metavar='ID', help='User to look for (default: me)', default='me')
+    parser.add_argument('--start-date', metavar='YYYY-MM-DD',
+                        help='Start looking from this date (default: all time)')
+    parser.add_argument('--end-date', metavar='YYYY-MM-DD',
+                        help='Stop looking after this date (default: all time)')
+    parser.add_argument('--wait', metavar='SECONDS', type=float, default=5,
+                        help='Wait SECONDS before each request to redmine to let the server cool down (default: 5)')
+    parser.add_argument('--count', action='store_true', help='Count total hours')
+    parser.add_argument('--base-time', metavar='H', type=float, default=10,
+                        help='A workday starts at hour H (default: 10)')
+    parser.add_argument('-o', '--output', metavar='FILE', default='-')
+    opts = parser.parse_args()
+
+    if not opts.baseurl.endswith('/'):
+        opts.baseurl = opts.baseurl + '/'
+    opts.hostid = urlparse.urlparse(opts.baseurl).hostname
+    if opts.start_date:
+        opts.start_date = parse_date(opts.start_date)
+    else:
+        opts.start_date = datetime.datetime.fromtimestamp(0)
+
+    return opts
+
+def main():
+    red = Redmine()
+
+    opts = parse_options()
+
+    red.baseurl = opts.baseurl
+    if opts.login:
+        red.login = opts.login
+        red.password = getpass.getpass('Password for %s: ' % opts.login)
+    if opts.user:
+        red.user = opts.user
+    if opts.wait:
+        red.waiting = opts.wait
+
+    entries = red.time_entries(opts.start_date, opts.end_date)
+
+    total_hours = 0.
+    if opts.output == '-':
+        f = sys.stdout
+    else:
+        f = open(opts.output, 'w')
+
+    cal = ICalFormatter(f)
+    cal.start()
+
+    used_dates = {}
+    for entry in entries:
+        event = {}
+
+        event['id'] = '%s-spent@%s' % (entry['id'], opts.hostid)
+
+        if 'issue' in entry:
+            event['summary'] = '%s - %s - #%s' % (entry['project']['name'],
+                                                  entry['activity']['name'], entry['issue']['id'])
+        else:
+            event['summary'] = '%s - %s' % (entry['project']['name'], entry['activity']['name'])
+
+        date = parse_date(entry['spent_on'])
+        prev = used_dates.get(date.date())
+        if prev:
+            event['start'] = prev
+        else:
+            event['start'] = date + datetime.timedelta(hours=opts.base_time)
+        event['end'] = event['start'] + datetime.timedelta(hours=float(entry['hours']))
+        used_dates[date.date()] = event['end']
+
+        cal.add_event(event)
+
+        total_hours += float(entry['hours'])
+
+    cal.end()
+
+    if opts.count:
+        print >> sys.stderr, '[total hours: %f]' % total_hours
+
+    if f != sys.stdout:
+        f.close()
+
+
+if __name__ == '__main__':
+    main()
