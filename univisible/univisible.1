@@ -1,0 +1,41 @@
+.TH univisible 1
+.SH NAME
+univisible \- visualize Unicode compositions and codepoints
+.SH SYNOPSIS
+univisible [\fIcommon options\fP] -i
+.br
+univisible [\fIcommon options\fP] [-d | -c]
+.br
+univisible [\fIcommon options\fP] -v
+.SH DESCRIPTION
+univisible can display info about codepoints, can compose and decompose
+Unicode compositions, and also display visually the decompositions. It reads
+stdin and processes the codepoints.
+.TP
+.B -i
+print info about each individual codepoint: give its number and name
+.TP
+.B -c
+compose codepoints where possible with NFKC and display on stdout
+.TP
+.B -d
+decompose codepoints with NFKD and display on stdout
+.TP
+.B -v
+display decomposed codepoints by separating visually the combining characters
+and show them in a reverse-video background
+.TP
+.B -f
+Use specified encoding for decoding stdin
+.TP
+.B -t
+Use specified encoding for encoding stdout
+.TP
+.B -h
+print help and exit
+.SH EXAMPLES
+.TP
+univisible -d < composed.txt > decomposed.txt
+Decompose codepoints from composed.txt and write in decomposed.txt
+.SH SEE ALSO
+.BR iconv (1)

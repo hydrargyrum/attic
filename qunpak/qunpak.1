@@ -1,0 +1,44 @@
+.TH qunpak 1
+.SH NAME
+qunpak \- extract Quake PAK archives
+.SH SYNOPSIS
+\fBqunpak\fR [-x] [-O \fIDIR\fP] \fIFILE.PAK\fP [\fIPATTERN\fP]
+.br
+\fBqunpak\fR -l \fIFILE.PAK\fP [\fIPATTERN\fP]
+.SH DESCRIPTION
+.PP
+.B qunpak
+extracts and lists archives in the Quake PAK format.
+By just giving an archive file name, it will extract all files contained in
+the archive (in the current directory).
+.TP
+.B -x
+Extract the archive (default)
+.TP
+.B -l
+List the archive
+.TP
+.B -O
+Extract the archive in DIR instead of current directory.
+.PP
+If a PATTERN is specified, it will only extract (or list) files matching 
+the pattern. The PATTERN can contain wildcard characters, and "*" will 
+match any "/" or ".".
+.SH EXAMPLES
+.TP
+qunpak pak0.pak
+Extract all files from
+.I pak0.pak
+.TP
+qunpak -O my_sounds pak1.pak "*.wav"
+Extract all
+.I .wav
+files from
+.I pak1.pak
+into the
+.I my_sounds
+directory
+.SH AUTHOR
+Report bugs to <dev@indigo.re>
+.SH SEE ALSO
+.BR tar (1)

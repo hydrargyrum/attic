@@ -1,0 +1,17 @@
+.TH wakeonwan 1
+.SH NAME
+wakeonwan \- Wake up a machine remotely with Wake-On-WAN
+.SH SYNOPSIS
+wakeonwan \fBIP\fP \fBMAC_ADDRESS\fP
+.SH DESCRIPTION
+.BR wakeonwan
+can boot powered-off machines remotely. The BIOS needs to be properly set up
+for it to work. The UDP packets used must also be forwarded despite the target
+being off.
+.PP
+The IP address is the remote IP, and the MAC address is the address of the
+remote network device. 
+.SH EXAMPLES
+wakeonwan 1.2.3.4 11:22:33:44:55:66
+.SH SEE ALSO
+.BR wakeonlan(1)

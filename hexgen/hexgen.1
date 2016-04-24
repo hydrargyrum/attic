@@ -1,0 +1,23 @@
+.TH hexgen 1
+.SH NAME
+hexgen \- generate bytes from ASCII hexadecimal dump
+.SH SYNOPSIS
+hexgen
+.SH DESCRIPTION
+.BR hexgen
+reads hexadecimal numbers on stdin and writes bytes with values corresponding
+to the numbers.
+.PP
+Whitespace (spaces, tabs, newlines) are simply ignored when read. Any other
+character that is not a hex digit will quit
+.B hexgen
+with an error.
+.SH EXAMPLES
+.TP
+echo "4865 6c6c 6f20 776f 726c 64 21 0a" | hexgen
+Will output
+.br
+.PP
+Hello world!
+.SH SEE ALSO
+.BR hd (1), xxd (1)

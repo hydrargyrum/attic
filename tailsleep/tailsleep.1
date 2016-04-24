@@ -1,0 +1,16 @@
+.TH tailsleep 1
+.SH NAME
+tailsleep \- continuously read a file as long as it's modified
+.SH SYNOPSIS
+.B tailsleep
+.I FILE
+.SH DESCRIPTION
+.B tailsleep
+reads a file continuously, as the file is being appended data to by another
+process.
+.SH EXAMPLES
+.TP
+tailsleep archive_being_downloaded.tar.gz | tar xzf -
+Extracts a file that is being downloaded and quits when download is finished
+.SH SEE ALSO
+.BR tail (1)
