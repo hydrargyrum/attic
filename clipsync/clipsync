@@ -1,0 +1,35 @@
+#!/usr/bin/env python
+# this file is licensed under WTFPLv2 [http://www.wtfpl.net/]
+
+import signal
+import sys
+from PyQt5.QtGui import QGuiApplication, QClipboard
+from PyQt5.QtCore import pyqtSlot as Slot
+
+
+class ClipSync(QGuiApplication):
+	def __init__(self, *args):
+		super(ClipSync, self).__init__(*args)
+		self.clipboard().changed.connect(self.changed)
+
+	@Slot(object)
+	def changed(self, mode):
+		clip = self.clipboard()
+		text = clip.text(mode)
+		if not text:
+			return
+
+		new = {
+			QClipboard.Clipboard: QClipboard.Selection,
+			QClipboard.Selection: QClipboard.Clipboard
+		}[mode]
+
+		blocked = clip.blockSignals(True)
+		clip.setText(text, new)
+		clip.blockSignals(blocked)
+
+
+if __name__ == '__main__':
+	signal.signal(signal.SIGINT, signal.SIG_DFL)
+	app = ClipSync(sys.argv)
+	app.exec_()
