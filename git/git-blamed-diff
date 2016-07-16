@@ -1,0 +1,44 @@
+#!/bin/sh -e
+
+tmpa=
+tmpb=
+
+cleanup () {
+    rm -f "$tmpa" "$tmpb"
+}
+
+blame () {
+    # sed to remove git-blame's obnoxious line numbers
+    git blame -s "$@" | sed 's/[[:digit:]]*)//'
+}
+
+case $# in
+    1)
+        arev=HEAD
+        brev=
+        ;;
+    2)
+        arev="$2^"
+        brev="$2"
+        ;;
+    *)
+        cat >&2 << EOF
+usage: git blamed-diff FILE [REV]
+Prints diff of FILE between REV and REV~, annotating lines with commit info.
+If REV isn't specified, the diff between working directory and HEAD is used.
+EOF
+        exit 1
+	;;
+esac
+
+trap cleanup EXIT
+
+tmpa=$(mktemp blame.XXXXXX)
+tmpb=$(mktemp blame.XXXXXX)
+
+blame "$1" $arev > "$tmpa"
+blame "$1" $brev > "$tmpb"
+
+# -w to ignore git-blame's pesky alignment
+diff -w -u "$tmpa" "$tmpb"  \
+     --label "$arev" --label "${brev:-working directory}" || exit 0
