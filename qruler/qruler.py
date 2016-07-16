@@ -3,27 +3,22 @@
 # license: WTFPL [http://www.wtfpl.net/]
 # A Qt app that just displays a ruler to measure pixel lengths
 
-try:
-	from PyQt4.QtCore import *
-	from PyQt4.QtGui import *
-	Signal = pyqtSignal
-	Slot = pyqtSlot
-except ImportError:
-	from PySide.QtCore import *
-	from PySide.QtGui import *
+from PyQt5.QtCore import Qt, QSize, QRect
+from PyQt5.QtGui import QPainter
+from PyQt5.QtWidgets import QApplication, QWidget
 
-import sys, os
+import sys
 
 
 class RulerWidget(QWidget):
 	def __init__(self, *args):
-		QWidget.__init__(self, *args)
+		super(RulerWidget, self).__init__(*args)
 		self.orientation = Qt.Horizontal
-	
+
 	def setOrientation(self, orientation):
 		self.orientation = orientation
 		self.update()
-	
+
 	def paintEvent(self, event):
 		painter = QPainter(self)
 		
@@ -42,13 +37,13 @@ class RulerWidget(QWidget):
 				self._drawTick(painter, tick, ticksLineEnd - 10, ticksLineEnd)
 			else:
 				self._drawTick(painter, tick, ticksLineEnd - 5, ticksLineEnd)
-			
+
 	def _drawTick(self, painter, tick, tickStart, tickEnd):
 		if self.orientation == Qt.Horizontal:
 			painter.drawLine(tick, tickStart, tick, tickEnd)
 		else:
 			painter.drawLine(tickStart, tick, tickEnd, tick)
-	
+
 	def _drawTickLabel(self, painter, tick, tickStart):
 		if self.orientation == Qt.Horizontal:
 			textFlags = Qt.TextDontClip | Qt.AlignBottom | Qt.AlignHCenter
@@ -58,8 +53,7 @@ class RulerWidget(QWidget):
 			textFlags = Qt.TextDontClip | Qt.AlignRight | Qt.AlignVCenter
 			rect = QRect(tickStart - 20, tick - 5, 20, 10)
 			painter.drawText(rect, textFlags, str(tick))
-		
-	
+
 	def sizeHint(self):
 		if self.orientation == Qt.Horizontal:
 			return QSize(300, 50)
@@ -69,7 +63,7 @@ class RulerWidget(QWidget):
 
 class RulerWindow(RulerWidget):
 	def __init__(self, *args):
-		RulerWidget.__init__(self, *args)
+		super(RulerWindow, self).__init__(*args)
 		self.setToolTip('Double-click to toggle horizontal/vertical.\n'
 		                'Press arrows to move window by 1 pixel.')
 
@@ -83,8 +77,8 @@ class RulerWindow(RulerWidget):
 		elif event.key() == Qt.Key_Down:
 			self.move(self.x(), self.y() + 1)
 		else:
-			RulerWidget.keyPressEvent(self, event)
-	
+			super(RulerWindow, self).keyPressEvent(event)
+
 	def mouseDoubleClickEvent(self, event):
 		if self.orientation == Qt.Horizontal:
 			self.setOrientation(Qt.Vertical)
@@ -98,6 +92,7 @@ def main():
 	win = RulerWindow()
 	win.show()
 	sys.exit(app.exec_())
+
 
 if __name__ == "__main__":
 	main()

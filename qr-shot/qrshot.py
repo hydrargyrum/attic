@@ -10,15 +10,11 @@
 # license: WTFPL (basically public domain, http://sam.zoy.org/wtfpl/)
 # decoding is possible if 'zbar' module is installed, and 'qrencode' for encoding
 
-try:
-	from PyQt4.QtCore import *
-	from PyQt4.QtGui import *
-	Signal = pyqtSignal
-	Slot = pyqtSlot
-except ImportError:
-	from PySide.QtCore import *
-	from PySide.QtGui import *
-import sys, os
+from PyQt5.QtCore import pyqtSignal as Signal, pyqtSlot as Slot, Qt, QRect, QSize, QUrl
+from PyQt5.QtGui import QPixmap, QCursor
+from PyQt5.QtWidgets import QLabel, QDialog, QMainWindow, QApplication, QMessageBox, QTextEdit, QVBoxLayout, QFileDialog, QScrollArea, QDialogButtonBox, QLineEdit, QRubberBand, QFormLayout, qApp
+
+import sys
 import time
 import tempfile
 
@@ -56,6 +52,7 @@ def decodeImage(qpix):
 	if not results:
 		return None
 	return results[0].data
+
 
 def encodeText(text, zoom=5):
 	'''Encodes text into a QPixmap with 5 pixels wide squares'''
@@ -235,7 +232,8 @@ class Window(QMainWindow):
 		#~ g = QRect(self.geometry())
 		self.hide()
 		time.sleep(1)
-		pix = QPixmap.grabWindow(QApplication.desktop().winId())
+		pix = qApp.primaryScreen().grabWindow(QApplication.desktop().winId())
+		#~ pix = QPixmap.grabWindow(QApplication.desktop().winId())
 		self.show()
 		#~ self.setGeometry(g)
 		self.setPixmap(pix)
@@ -246,16 +244,16 @@ class Window(QMainWindow):
 		img = self.cropper.pixmap()
 		if not img:
 			return
-		fileout = QFileDialog.getSaveFileName(self, 'Save image', QString(), 'Images (*.png *.jpg *.gif *.bmp)')
-		if fileout.isEmpty():
+		fileout, _ = QFileDialog.getSaveFileName(self, 'Save image', '', 'Images (*.png *.jpg *.gif *.bmp)')
+		if not fileout:
 			return
 		if not img.save(fileout):
 			QMessageBox.critical(self, 'Error', 'An error occured while saving image')
 
 	@Slot()
 	def loadImage(self):
-		filein = QFileDialog.getOpenFileName(self, 'Open image', QString(), 'Images (*.png *.jpg *.gif *.bmp)')
-		if filein.isEmpty():
+		filein, _ = QFileDialog.getOpenFileName(self, 'Open image', '', 'Images (*.png *.jpg *.gif *.bmp)')
+		if not filein:
 			return False
 		pix = QPixmap(filein)
 		if pix.isNull():
