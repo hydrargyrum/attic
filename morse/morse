@@ -6,7 +6,13 @@ from __future__ import print_function
 import argparse
 import os
 import subprocess
+import sys
 import time
+
+
+if sys.version_info.major == 2:
+	input = raw_input
+	bytes, str = str, unicode
 
 
 # (tick length, play or silence)
@@ -197,7 +203,7 @@ def main():
     if sum(map(int, [options.parse, options.show, options.play])) > 1:
         parser.error('--show, --play and --parse are exclusive')
 
-    text = raw_input()
+    text = input()
 
     if options.play:
         if options.morse:
