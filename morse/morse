@@ -1,0 +1,215 @@
+#!/usr/bin/env python
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+
+from __future__ import print_function
+
+import argparse
+import os
+import subprocess
+import time
+
+
+# (tick length, play or silence)
+SHORT = (1, True)
+LONG = (3, True)
+GAP = (1, False)
+CHAR_GAP = (3, False)
+WORD_GAP = (7, False)
+
+# time unit of the shortest entity
+TICK_MS = 50
+
+
+def instructions_to_morse(m):
+    d = {
+        SHORT: '.',
+        LONG: '-',
+        GAP: '',
+        CHAR_GAP: ' ',
+        WORD_GAP: ' / '
+    }
+
+    return ''.join(d[x] for x in m)
+
+
+def play_instructions(items):
+    def play(length, do_play):
+        if not do_play:
+            time.sleep(length * TICK_MS / 1000.)
+        else:
+            subprocess.call(['beep', '-f', '700', '-l', str(length * TICK_MS)])
+
+    for length, do_play in items:
+        play(length, do_play)
+
+
+def morse_to_instructions(s):
+    s = s.replace(' / ', '/')
+
+    last_play = False
+    for c in s:
+        if c == '.':
+            if last_play:
+                yield GAP
+            last_play = True
+            yield SHORT
+
+        elif c == '-':
+            if last_play:
+                yield GAP
+            last_play = True
+            yield LONG
+
+        elif c == ' ':
+            last_play = False
+            yield CHAR_GAP
+        elif c == '/':
+            last_play = False
+            yield WORD_GAP
+
+        else:
+            raise ValueError('Invalid Morse character: %r' % c)
+
+
+CHARS = {
+    '0': '-----',
+    '1': '.----',
+    '2': '..---',
+    '3': '...--',
+    '4': '....-',
+    '5': '.....',
+    '6': '-....',
+    '7': '--...',
+    '8': '---..',
+    '9': '----.',
+
+    'A': '.-',
+    'B': '-...',
+    'C': '-.-.',
+    'D': '-..',
+    'E': '.',
+    'F': '..-.',
+    'G': '--.',
+    'H': '....',
+    'I': '..',
+    'J': '.---',
+    'K': '-.-',
+    'L': '.-..',
+    'M': '--',
+    'N': '-.',
+    'O': '---',
+    'P': '.--.',
+    'Q': '--.-',
+    'R': '.-.',
+    'S': '...',
+    'T': '-',
+    'U': '..-',
+    'V': '...-',
+    'W': '.--',
+    'X': '-..-',
+    'Y': '-.--',
+    'Z': '--..',
+
+    '+': '.-.-.',
+    '-': '-....-',
+    '_': '..--.-',
+    '"': '.-..-.',
+}
+
+PROSIGNS = [
+    'AA',
+    'AC',
+    'AR',
+    'AS',
+    'BT',
+    'CT',
+    'GW',
+    'HH',
+    'KK',
+    'KN',
+    'KR',
+    'KW',
+    'NJ',
+    'NU',
+    'OS',
+    'RK',
+    'SK',
+    'SN',
+    'SX',
+    'UD',
+    'XE',
+    'WG',
+    'SOS',
+]
+
+
+def concat_morse(chars):
+    return ''.join(CHARS[c] for c in chars)
+
+
+CHARS['\n'] = concat_morse('AA')
+CHARS['@'] = concat_morse('AC')
+CHARS['&'] = concat_morse('AS')
+CHARS[','] = concat_morse('GW')
+CHARS['('] = concat_morse('KN')
+CHARS[')'] = concat_morse('KK')
+CHARS[';'] = concat_morse('KR')
+CHARS['!'] = concat_morse('KW')
+CHARS['='] = concat_morse('NU')
+CHARS[':'] = concat_morse('OS')
+CHARS['.'] = concat_morse('RK')
+CHARS['$'] = concat_morse('SX')
+CHARS['?'] = concat_morse('UD')
+CHARS["'"] = concat_morse('WG')
+CHARS['/'] = concat_morse('XE')
+
+MORSE = dict(CHARS)
+
+INVERSE = {}
+INVERSE.update({concat_morse(k): '<%s>' % k for k in PROSIGNS})
+INVERSE.update({MORSE[k]: k for k in MORSE})
+
+
+def text_to_morse(s):
+    def do_word(word):
+        return ' '.join(MORSE[c] for c in word)
+
+    s = s.upper()
+    return ' / '.join(do_word(word) for word in s.split())
+
+
+def morse_to_text(s):
+    def do_word(word):
+        return ''.join(INVERSE[seq] for seq in word.split(' '))
+
+    s = s.replace(' / ', '/')
+    return ' '.join(do_word(word) for word in s.split('/'))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--show', action='store_true', help='Convert text to Morse')
+    parser.add_argument('--parse', action='store_true', help='Convert Morse to text')
+    parser.add_argument('--play', action='store_true', help='Convert to Morse and play with computer beep')
+    parser.add_argument('--morse', action='store_true', help='Input is Morse, for use with --play')
+    options = parser.parse_args()
+
+    if sum(map(int, [options.parse, options.show, options.play])) > 1:
+        parser.error('--show, --play and --parse are exclusive')
+
+    text = raw_input()
+
+    if options.play:
+        if options.morse:
+            morse = text
+        else:
+            morse = text_to_morse(text)
+        play_instructions(morse_to_instructions(morse))
+    elif options.parse:
+        print(morse_to_text(text))
+    else:
+        print(text_to_morse(text))
+
+
+if __name__ == '__main__':
+    main()
