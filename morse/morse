@@ -2,17 +2,22 @@
 # license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
 
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import argparse
-import os
+from contextlib import closing
+import math
+import struct
 import subprocess
 import sys
 import time
+import wave
 
 
 if sys.version_info.major == 2:
-	input = raw_input
-	bytes, str = str, unicode
+    input = raw_input
+    bytes, str = str, unicode
+    range = xrange
 
 
 # (tick length, play or silence)
@@ -38,15 +43,34 @@ def instructions_to_morse(m):
     return ''.join(d[x] for x in m)
 
 
-def play_instructions(items):
+def play_instructions(items, freq=700):
     def play(length, do_play):
         if not do_play:
             time.sleep(length * TICK_MS / 1000.)
         else:
-            subprocess.call(['beep', '-f', '700', '-l', str(length * TICK_MS)])
+            subprocess.call(['beep', '-f', str(freq), '-l', str(length * TICK_MS)])
 
     for length, do_play in items:
         play(length, do_play)
+
+
+def wave_instructions(items, res_file, freq=700):
+    rate = 44100.
+    amp = 8000.
+
+    # hold your breath...
+    sample = b''.join(struct.pack('h', int(math.sin(2 * math.pi * freq * (x / rate)) * amp / 2)) for x in range(int(rate * TICK_MS / 1000)))
+    null_sample = b'\x00' * len(sample)
+
+    out_fd = wave.open(res_file, 'w')
+    with closing(out_fd):
+        out_fd.setparams((1, 2, int(rate), 0, 'NONE', 'NONE'))
+
+        for length, do_play in items:
+            if do_play:
+                out_fd.writeframes(sample * length)
+            else:
+                out_fd.writeframes(null_sample * length)
 
 
 def morse_to_instructions(s):
@@ -196,21 +220,29 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--show', action='store_true', help='Convert text to Morse')
     parser.add_argument('--parse', action='store_true', help='Convert Morse to text')
-    parser.add_argument('--play', action='store_true', help='Convert to Morse and play with computer beep')
-    parser.add_argument('--morse', action='store_true', help='Input is Morse, for use with --play')
+    parser.add_argument('--beep', action='store_true', help='Convert to Morse and play with computer beep')
+    parser.add_argument('--wave', help='Output to WAVE file')
+    parser.add_argument('--morse', action='store_true', help='Input is Morse, for use with --beep or --wave')
+    parser.add_argument('--freq', help='Frequency in Hz, for use --beep or --wave', type=int, default=700)
     options = parser.parse_args()
 
-    if sum(map(int, [options.parse, options.show, options.play])) > 1:
-        parser.error('--show, --play and --parse are exclusive')
+    if sum(int(x) for x in [options.parse, options.show, options.beep, bool(options.wave)]) > 1:
+        parser.error('--show, --beep and --parse are exclusive')
 
     text = input()
 
-    if options.play:
+    if options.beep:
         if options.morse:
             morse = text
         else:
             morse = text_to_morse(text)
-        play_instructions(morse_to_instructions(morse))
+        play_instructions(morse_to_instructions(morse), freq=options.freq)
+    elif options.wave:
+        if options.morse:
+            morse = text
+        else:
+            morse = text_to_morse(text)
+        wave_instructions(morse_to_instructions(morse), options.wave, freq=options.freq)
     elif options.parse:
         print(morse_to_text(text))
     else:
