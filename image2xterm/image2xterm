@@ -4,7 +4,8 @@
 
 import PIL.Image as Image
 import PIL.ImageColor as PILColor
-import sys, os
+import sys
+import os
 
 """
 XTerm can decode sequences and display 256 colors:
@@ -16,6 +17,11 @@ Other terminals do support these 256 colors escape codes, e.g. roxterm, xfce-ter
 """
 
 __all__ = ('make256xterm', 'imageRGB_to_256', 'img2xterm', 'print_image256_ansi')
+
+
+if sys.version_info.major == 2:
+	range = xrange
+
 
 def make256xterm():
 	"""Return a [r, g, b, r, g, b, ...] table with the colors of the 256 xterm colors.
@@ -35,7 +41,7 @@ def make256xterm():
 				color256 += [r, g, b]
 
 	# grays
-	for v in xrange(8, 248, 10):
+	for v in range(8, 248, 10):
 		color256 += [v, v, v]
 
 	assert len(color256) == 256 * 3
@@ -65,8 +71,8 @@ def print_image256_ansi(im, fd=sys.stdout):
 	"""
 	pix = im.load()
 	w, h = im.size
-	for y in xrange(h):
-		for x in xrange(w):
+	for y in range(h):
+		for x in range(w):
 			fd.write('\x1b[48;5;%dm \x1b[0m' % pix[x, y])
 		fd.write(os.linesep)
 
