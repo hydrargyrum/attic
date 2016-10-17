@@ -4,63 +4,72 @@
 
 import PIL.Image as Image
 import PIL.ImageColor as PILColor
-import PIL.ImagePalette as PILPalette
 import sys, os
 
-'''
+"""
 XTerm can decode sequences and display 256 colors:
 - 16 system colors, supported by many terms [0-15]
 - 216 colors (not the web-safe palette) [16-231]
 - 24 grey colors (excluding black and white) [231-255]
 
 Other terminals do support these 256 colors escape codes, e.g. roxterm, xfce-terminal.
-'''
+"""
 
 __all__ = ('make256xterm', 'imageRGB_to_256', 'img2xterm', 'print_image256_ansi')
 
 def make256xterm():
-	'''Return a [r, g, b, r, g, b, ...] table with the colors of the 256 xterm colors.
-	The table is indexed: [0:3] corresponds to color 0.'''
+	"""Return a [r, g, b, r, g, b, ...] table with the colors of the 256 xterm colors.
+
+	The table is indexed: [0:3] corresponds to color 0.
+	"""
 	color256 = []
 	# standard 16 colors
-	color256 += list(sum((PILColor.getrgb(c) for c in 
+	color256 += list(sum((PILColor.getrgb(c) for c in
 		'''black maroon green olive navy purple teal silver
 		gray red lime yellow blue fuchsia aqua white'''.split()), ()))
-	
+
 	steps = (0, 95, 135, 175, 215, 255)
 	for r in steps:
 		for g in steps:
 			for b in steps:
 				color256 += [r, g, b]
-	
+
 	# grays
 	for v in xrange(8, 248, 10):
 		color256 += [v, v, v]
-	
+
 	assert len(color256) == 256 * 3
-	
+
 	return color256
+
 
 TABLE_XTERM_256 = make256xterm()
 
+
 def imageRGB_to_256(im):
-	'''Returns `im` converted to the XTerm 256 colors palette.
-	The image should be resized *before* applying this function.'''
+	"""Returns `im` converted to the XTerm 256 colors palette.
+
+	The image should be resized *before* applying this function.
+	"""
 	paletter = Image.new('P', (1, 1))
 	paletter.putpalette(TABLE_XTERM_256)
 	return im.quantize(palette=paletter)
 
+
 def print_image256_ansi(im, fd=sys.stdout):
-	'''Print PIL image `im` to `fd` using XTerm escape codes.
+	"""Print PIL image `im` to `fd` using XTerm escape codes.
+
 	1 pixel corresponds to exactly 1 character on the terminal. 1 row of pixels is terminated by a newline.
 	`im` has to be a 256 colors image (ideally in the XTerm palette if you want it to make sense).
-	`im` should be resized appropriately to fit terminal size and character aspect (characters are never square).'''
+	`im` should be resized appropriately to fit terminal size and character aspect (characters are never square).
+	"""
 	pix = im.load()
 	w, h = im.size
 	for y in xrange(h):
 		for x in xrange(w):
 			fd.write('\x1b[48;5;%dm \x1b[0m' % pix[x, y])
 		fd.write(os.linesep)
+
 
 def img2xterm(imagepath, newsize=(80, 40), stretch=1):
 	image = Image.open(imagepath)
@@ -71,8 +80,9 @@ def img2xterm(imagepath, newsize=(80, 40), stretch=1):
 	image2 = imageRGB_to_256(image)
 	print_image256_ansi(image2)
 
+
 def _getoutsize(infoname, default):
-	'''Get suitable dimension for tty or default'''
+	"""Get suitable dimension for tty or default"""
 	if sys.stdout.isatty():
 		import curses
 		curses.setupterm()
@@ -80,22 +90,24 @@ def _getoutsize(infoname, default):
 	else:
 		return default
 
+
 def main():
-	import optparse
-	parser = optparse.OptionParser()
-	parser.add_option('-r', '--rows', dest='rows', metavar='SIZE')
-	parser.add_option('-c', '--columns', dest='cols', metavar='SIZE')
-	parser.add_option('-s', '--stretch', dest='stretch', metavar='NUMBER')
-	opts, args = parser.parse_args()
-	
+	import argparse
+
+	parser = argparse.ArgumentParser(description='Print an image on terminal with 256 colors palette')
+	parser.add_argument('-r', '--rows', dest='rows', metavar='SIZE', type=int)
+	parser.add_argument('-c', '--columns', dest='cols', metavar='SIZE', type=int)
+	parser.add_argument('-s', '--stretch', dest='stretch', metavar='NUMBER', type=float, default=1.)
+	parser.add_argument('file')
+	opts = parser.parse_args()
+
 	if opts.rows is None:
 		opts.rows = _getoutsize('lines', 24)
 	if opts.cols is None:
 		opts.cols = _getoutsize('cols', 80)
-	if opts.stretch is None:
-		opts.stretch = 1
-	
-	img2xterm(args[0], (opts.cols, opts.rows), stretch=float(opts.stretch))
+
+	img2xterm(opts.file, (opts.cols, opts.rows), stretch=opts.stretch)
+
 
 if __name__ == '__main__':
 	main()
