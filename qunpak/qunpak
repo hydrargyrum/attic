@@ -6,12 +6,11 @@
 import sys
 import os
 import struct
-import re
 import errno
 import fnmatch
 
 
-class PakReader:
+class PakReader(object):
     def __init__(self, fd):
         self.fd = fd
 
@@ -22,9 +21,9 @@ class PakReader:
         return self._read('<L')[0]
 
     def _read_str(self, size):
-        buf = ''.join(self._read('%dc' % size))
-        if '\0' in buf:
-            return buf[:buf.index('\0')]
+        buf = b''.join(self._read('%dc' % size))
+        if b'\0' in buf:
+            return buf[:buf.index(b'\0')]
         else:
             return buf
 
@@ -33,7 +32,7 @@ class PakReader:
         archive_size = self.fd.tell()
 
         self.fd.seek(0, os.SEEK_SET)
-        assert self._read_str(4) == 'PACK', 'Header is not recognized'
+        assert self._read_str(4) == b'PACK', 'Header is not recognized'
 
         toc_offset = self._read_uint32()
         toc_size = self._read_uint32()
@@ -42,7 +41,7 @@ class PakReader:
         self.fd.seek(toc_offset, os.SEEK_SET)
         left = toc_size
         while left:
-            filename = self._read_str(64 - 8)
+            filename = self._read_str(64 - 8).decode('latin-1')
             offset = self._read_uint32()
             size = self._read_uint32()
             left -= 64
@@ -55,9 +54,9 @@ class PakReader:
                 yield (filename, offset, size)
 
 
-class PakExtractor:
+class PakExtractor(object):
     def __init__(self, filename):
-        self.fd = open(filename)
+        self.fd = open(filename, 'rb')
         self.toc = None
         self.output_dir = '.'
         self.progress = True
@@ -95,7 +94,7 @@ class PakExtractor:
         success = True
         for (filename, offset, size) in self.toc:
             if fnmatch.fnmatch(self._clean_path(filename), self.pattern):
-                success &= self.extract((filename, offset, size))
+                success &= self.extract(filename, offset, size)
         return success
 
     def list_all(self, verbose=False):
@@ -106,7 +105,7 @@ class PakExtractor:
     def _write_ok(self, fd, blk):
         try:
             fd.write(blk)
-        except IOError, exc:
+        except IOError as exc:
             if exc.errno == errno.EPIPE:
                 return
             raise
@@ -129,39 +128,39 @@ class PakExtractor:
     def _unlink_temp(self, out_filename):
         try:
             os.unlink(out_filename)
-        except OSError, exc:
+        except OSError as exc:
             self.print_error('Cannot remove %r: %s' % (out_filename, exc))
 
-    def extract(self, (filename, offset, size)):
+    def extract(self, filename, offset, size):
         filename = filename.lstrip('/')
 
         try:
             outdir = self._output_path(os.path.dirname(filename))
             self._makedirs(outdir)
-        except OSError, exc:
+        except OSError as exc:
             self.print_error('Cannot create %r: %s' % (outdir, exc))
 
         out_filename = self._output_path(filename)
         try:
-            self._extract_into((filename, offset, size), out_filename)
+            self._extract_into(filename, offset, size, out_filename)
         except KeyboardInterrupt:
             self._unlink_temp(out_filename)
             raise
-        except (IOError, OSError), exc:
+        except (IOError, OSError) as exc:
             self.print_error('Cannot extract %r: %s' % (filename, exc))
             return False
         return True
 
-    def _extract_into(self, (filename, offset, size), out_filename):
+    def _extract_into(self, filename, offset, size, out_filename):
         try:
-            out = open(out_filename, 'w')
-        except OSError, exc:
+            out = open(out_filename, 'wb')
+        except OSError as exc:
             raise IOError(exc.errno, 'Cannot write %r: %s' % (out_filename, exc.message))
 
         try:
             try:
                 self.fd.seek(offset, os.SEEK_SET)
-            except IOError, exc:
+            except IOError as exc:
                 raise IOError(exc.errno, 'Cannot read %r: %s' % (filename, exc.message))
 
             done = 0
@@ -172,7 +171,7 @@ class PakExtractor:
                 try:
                     buf = self.fd.read(readsize)
                     assert len(buf) == readsize, 'End of file was reached'
-                except IOError, exc:
+                except IOError as exc:
                     raise IOError(exc.errno, 'Cannot read %r: %s' % (filename, exc.message))
 
                 if len(buf) != readsize:
@@ -180,7 +179,7 @@ class PakExtractor:
 
                 try:
                     out.write(buf)
-                except IOError, exc:
+                except IOError as exc:
                     raise IOError(exc.errno, 'Cannot write %r: %s' % (out_filename, exc.message))
 
                 self.print_status(filename, done, size)
@@ -190,12 +189,6 @@ class PakExtractor:
 
         finally:
             out.close()
-
-    def next(self):
-        try:
-            return self.files.next()
-        except StopIteration:
-            return None
 
 
 def main():
@@ -214,7 +207,7 @@ def main():
     extractor.set_pattern(args.pattern)
     try:
         extractor.parse()
-    except AssertionError, exc:
+    except AssertionError as exc:
         extractor.print_error('File %r is corrupted or is not a PAK file: %s' % (args.archive, exc))
         return 1
 
@@ -226,7 +219,7 @@ def main():
     # in case of a broken pipe, python would flush at end and finally barf
     try:
         sys.stdout.close()
-    except IOError, e:
+    except IOError as e:
         pass
 
     if not success:
