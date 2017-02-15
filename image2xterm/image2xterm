@@ -16,7 +16,7 @@ XTerm can decode sequences and display 256 colors:
 Other terminals do support these 256 colors escape codes, e.g. roxterm, xfce-terminal.
 """
 
-__all__ = ('make256xterm', 'imageRGB_to_256', 'img2xterm', 'print_image256_ansi')
+__all__ = ('make256xterm', 'imageRGB_to_256', 'image2xterm', 'image256_to_ansi')
 
 
 if sys.version_info.major == 2:
@@ -62,29 +62,36 @@ def imageRGB_to_256(im):
 	return im.quantize(palette=paletter)
 
 
-def print_image256_ansi(im, fd=sys.stdout):
+def image256_to_ansi(im):
 	"""Print PIL image `im` to `fd` using XTerm escape codes.
 
 	1 pixel corresponds to exactly 1 character on the terminal. 1 row of pixels is terminated by a newline.
 	`im` has to be a 256 colors image (ideally in the XTerm palette if you want it to make sense).
 	`im` should be resized appropriately to fit terminal size and character aspect (characters are never square).
 	"""
+	buf = []
 	pix = im.load()
 	w, h = im.size
 	for y in range(h):
 		for x in range(w):
-			fd.write('\x1b[48;5;%dm \x1b[0m' % pix[x, y])
-		fd.write(os.linesep)
+			buf.append('\x1b[48;5;%dm \x1b[0m' % pix[x, y])
+		buf.append(os.linesep)
+	return ''.join(buf)
 
 
-def img2xterm(imagepath, newsize=(80, 40), stretch=1):
+def image2xterm(imagepath, newsize=(80, 40), stretch=2):
 	image = Image.open(imagepath)
 	image.load()
-	if stretch != 1:
-		image = image.resize((int(image.size[0] * stretch), image.size[1]))
-	image.thumbnail(newsize, Image.ANTIALIAS)
+
+	curratio = image.size[1] / (float(image.size[0]) * stretch)
+	targetsize = newsize[0], int(newsize[0] * curratio)
+	if targetsize[1] > newsize[1]:
+		targetsize = int(newsize[1] / curratio), newsize[1]
+
+	image = image.convert('RGB')
+	image = image.resize(targetsize, Image.ANTIALIAS)
 	image2 = imageRGB_to_256(image)
-	print_image256_ansi(image2)
+	return image256_to_ansi(image2)
 
 
 def _getoutsize(infoname, default):
@@ -97,13 +104,17 @@ def _getoutsize(infoname, default):
 		return default
 
 
+def get_term_size():
+	return (_getoutsize('cols', 80), _getoutsize('lines', 24))
+
+
 def main():
 	import argparse
 
 	parser = argparse.ArgumentParser(description='Print an image on terminal with 256 colors palette')
 	parser.add_argument('-r', '--rows', dest='rows', metavar='SIZE', type=int)
 	parser.add_argument('-c', '--columns', dest='cols', metavar='SIZE', type=int)
-	parser.add_argument('-s', '--stretch', dest='stretch', metavar='NUMBER', type=float, default=1.)
+	parser.add_argument('-s', '--stretch', dest='stretch', metavar='NUMBER', type=float, default=2.)
 	parser.add_argument('file')
 	opts = parser.parse_args()
 
@@ -112,7 +123,8 @@ def main():
 	if opts.cols is None:
 		opts.cols = _getoutsize('cols', 80)
 
-	img2xterm(opts.file, (opts.cols, opts.rows), stretch=opts.stretch)
+	data = image2xterm(opts.file, (opts.cols, opts.rows), stretch=opts.stretch)
+	sys.stdout.write(data)
 
 
 if __name__ == '__main__':
