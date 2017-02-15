@@ -62,7 +62,7 @@ def imageRGB_to_256(im):
 	return im.quantize(palette=paletter)
 
 
-def image256_to_ansi(im):
+def image256_to_ansi(im, halfblocks):
 	"""Print PIL image `im` to `fd` using XTerm escape codes.
 
 	1 pixel corresponds to exactly 1 character on the terminal. 1 row of pixels is terminated by a newline.
@@ -72,26 +72,41 @@ def image256_to_ansi(im):
 	buf = []
 	pix = im.load()
 	w, h = im.size
-	for y in range(h):
+
+	if halfblocks:
+		yrange = range(0, h, 2)
+	else:
+		yrange = range(h)
+
+	for y in yrange:
 		for x in range(w):
-			buf.append('\x1b[48;5;%dm \x1b[0m' % pix[x, y])
-		buf.append(os.linesep)
+			if halfblocks:
+				if y + 1 >= h:
+					buf.append(u'\x1b[38;5;%dm\u2580' % pix[x, y])
+				else:
+					buf.append(u'\x1b[38;5;%dm\x1b[48;5;%dm\u2580' % (pix[x, y], pix[x, y + 1]))
+			else:
+				buf.append(u'\x1b[48;5;%dm ' % pix[x, y])
+		buf.append(u'\x1b[0m%s' % os.linesep)
 	return ''.join(buf)
 
 
-def image2xterm(imagepath, newsize=(80, 40), stretch=2):
+def image2xterm(imagepath, newsize=(80, 24), halfblocks=True):
 	image = Image.open(imagepath)
 	image.load()
 
+	stretch = 2
 	curratio = image.size[1] / (float(image.size[0]) * stretch)
 	targetsize = newsize[0], int(newsize[0] * curratio)
 	if targetsize[1] > newsize[1]:
 		targetsize = int(newsize[1] / curratio), newsize[1]
+	if halfblocks:
+		targetsize = targetsize[0], targetsize[1] * 2
 
 	image = image.convert('RGB')
 	image = image.resize(targetsize, Image.ANTIALIAS)
 	image2 = imageRGB_to_256(image)
-	return image256_to_ansi(image2)
+	return image256_to_ansi(image2, halfblocks=halfblocks)
 
 
 def _getoutsize(infoname, default):
@@ -114,7 +129,7 @@ def main():
 	parser = argparse.ArgumentParser(description='Print an image on terminal with 256 colors palette')
 	parser.add_argument('-r', '--rows', dest='rows', metavar='SIZE', type=int)
 	parser.add_argument('-c', '--columns', dest='cols', metavar='SIZE', type=int)
-	parser.add_argument('-s', '--stretch', dest='stretch', metavar='NUMBER', type=float, default=2.)
+	parser.add_argument('--spaces', action='store_true')
 	parser.add_argument('file')
 	opts = parser.parse_args()
 
@@ -123,7 +138,7 @@ def main():
 	if opts.cols is None:
 		opts.cols = _getoutsize('cols', 80)
 
-	data = image2xterm(opts.file, (opts.cols, opts.rows), stretch=opts.stretch)
+	data = image2xterm(opts.file, (opts.cols, opts.rows), halfblocks=not opts.spaces)
 	sys.stdout.write(data)
 
 
