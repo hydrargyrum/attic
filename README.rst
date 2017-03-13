@@ -10,7 +10,9 @@ This repository hosts various small personal tools.
 * git: misc git utilities
 * hexgen: generate data from an hex dump
 * image2xterm: display an image on console using terminal RGB24 mode or 256 colors
+* json2csv: transform a JSON list of objects into a CSV file
 * json2sqlite: insert JSON data in SQLite
+* json2table: pretty-print a JSON list of objects in an ASCII-art table
 * keepassxprint: dump info and passwords from a KeePassX database
 * morse: text from/to Morse code converter, and optional beep player
 * qr2unicode: display QR-codes on console using Unicode box-drawing characters
