@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+
+"""
+Usage:
+
+Print a CSV of file.json:
+    json2csv < file.json
+
+Same, but put 'id' and 'name' as first columns:
+    json2csv id name < file.json
+"""
+
+import argparse
+from csv import DictWriter
+from collections import OrderedDict
+import json
+import sys
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-s', '--separator', default=',')
+parser.add_argument('-f', '--file', default='-', help='JSON file to read (standard input by default)')
+parser.add_argument('field', nargs='*', help='display field in the leftmost columns')
+args = parser.parse_args()
+
+if args.file == '-':
+    fd = sys.stdin
+else:
+    fd = open(args.file, 'r')
+
+with fd:
+    data = json.load(fd, object_hook=OrderedDict)
+assert isinstance(data, list) and all(isinstance(obj, dict) for obj in data), 'input must be a JSON list of dictionaries'
+
+order = args.field or []
+keys = OrderedDict((k, None) for k in order)
+keys.update((k, None) for d in data for k in d.keys())
+keys = list(keys)
+
+try:
+    writer = DictWriter(sys.stdout, keys, delimiter=args.separator)
+    writer.writeheader()
+    for d in data:
+        writer.writerow(d)
+except KeyboardInterrupt:
+    pass
+except BrokenPipeError:
+    pass
