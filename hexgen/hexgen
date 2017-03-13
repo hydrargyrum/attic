@@ -1,22 +1,41 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
 
-import sys, os
-import itertools
+import binascii
+import os
+import re
+import sys
 
-blocks = iter(lambda: sys.stdin.read(4096), '')
-chars = itertools.chain.from_iterable(blocks)
-digits = itertools.ifilterfalse(str.isspace, chars)
-pairs = itertools.izip_longest(digits, digits) # longest to catch EOF
 
-try:
-	for pair in pairs:
-		sys.stdout.write(chr(int(pair[0] + pair[1], 16)))
-except (IOError, KeyboardInterrupt):
-	sys.exit(os.EX_IOERR)
-except ValueError:
-	sys.stderr.write('Unexpected data: %s\n' % ''.join(pair))
-	sys.exit(os.EX_DATAERR)
-except TypeError:
-	sys.stderr.write('Unexpected EOF after: %s\n' % pair[0])
-	sys.exit(os.EX_DATAERR)
+def main():
+	buffer = b''
+	while True:
+		block = sys.stdin.buffer.read(4096)
+		if not block:
+			break
+
+		buffer += block
+		buffer = re.sub(b'\\s', b'', buffer)
+
+		if len(buffer) % 2:
+			block, buffer = buffer[:-1], buffer[-1]
+		else:
+			block, buffer = buffer, b''
+
+		if block:
+			try:
+				sys.stdout.buffer.write(binascii.unhexlify(block))
+			except binascii.Error:
+				print('Unexpected non-hex data', file=sys.stderr)
+				sys.exit(os.EX_DATAERR)
+
+	if buffer:
+		print('Too short data', file=sys.stderr)
+		sys.exit(os.EX_DATAERR)
+
+
+if __name__ == '__main__':
+	try:
+		main()
+	except (KeyboardInterrupt, BrokenPipeError):
+		sys.exit(os.EX_IOERR)
