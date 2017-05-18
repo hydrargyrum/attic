@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # License: WTFPL
 
 from PyQt5.QtCore import pyqtSignal as Signal, pyqtSlot as Slot, QPoint, QBasicTimer, Qt
