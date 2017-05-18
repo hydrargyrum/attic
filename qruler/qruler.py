@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # 2013-01-26
 # license: WTFPL [http://www.wtfpl.net/]
 # A Qt app that just displays a ruler to measure pixel lengths
@@ -29,7 +29,7 @@ class RulerWidget(QWidget):
 			ticksLineEnd = self.size().width()
 			ticksLast = self.size().height()
 			
-		for tick in xrange(0, ticksLast, 5):
+		for tick in range(0, ticksLast, 5):
 			if tick % 50 == 0:
 				self._drawTick(painter, tick, ticksLineEnd - 20, ticksLineEnd)
 				self._drawTickLabel(painter, tick, ticksLineEnd - 20)
