@@ -29,7 +29,20 @@ else:
 
 with fd:
     data = json.load(fd, object_pairs_hook=OrderedDict)
-assert isinstance(data, list) and all(isinstance(obj, dict) for obj in data), 'input must be a JSON list of dictionaries'
+
+if isinstance(data, list) and all(isinstance(obj, dict) for obj in data):
+    pass
+elif isinstance(data, dict) and all(isinstance(obj, list) for obj in data.values()):
+    def get(l, n):
+        try:
+            return l[n]
+        except IndexError:
+            return None
+
+    nrows = max(len(v) for v in data.values())
+    data = [OrderedDict((k, get(data[k], n)) for k in data) for n in range(nrows)]
+else:
+    assert False, 'input must be a JSON list of dictionaries or a dictionary with lists'
 
 order = args.field or []
 keys = OrderedDict((k, None) for k in order)
