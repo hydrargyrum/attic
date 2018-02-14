@@ -19,6 +19,7 @@ import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--file', default='-', help='JSON file to read (standard input by default)')
+parser.add_argument('-k', '--keep-only', action='store_const', const=True, help='Keep only specified keys')
 parser.add_argument('field', nargs='*', help='display field in the leftmost columns')
 args = parser.parse_args()
 
@@ -46,7 +47,14 @@ else:
 
 order = args.field or []
 keys = OrderedDict((k, None) for k in order)
-keys.update((k, None) for d in data for k in d.keys())
+
+if args.keep_only:
+    def keep(d):
+        return OrderedDict((k, v) for k, v in d.items() if k in keys)
+    data = [keep(r) for r in data]
+else:
+    keys.update((k, None) for d in data for k in d.keys())
+
 keys = list(keys)
 
 table = prettytable.PrettyTable(field_names=keys)
