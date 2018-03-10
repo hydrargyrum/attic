@@ -5,6 +5,7 @@
 
 import sys
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QApplication, QLabel
 
@@ -21,7 +22,14 @@ if not movie.isValid():
     print('invalid GIF file: %s' % args[1], file=sys.stderr)
     sys.exit(2)
 
-label = QLabel()
+
+class MyLabel(QLabel):
+    def keyPressEvent(self, ev):
+        if ev.key() == Qt.Key_Escape:
+            self.close()
+
+
+label = MyLabel()
 label.setMovie(movie)
 
 movie.start() # start first so label gets right default size
