@@ -7,6 +7,7 @@ This repository hosts various small personal tools.
 * coordapp: always-on-top window that shows the mouse cursor coordinates
 * cppasciitree: an example of how to hardcode a tree with source code looking like the actual tree
 * fonts2png: render TTF fonts samples to image files
+* gen-indexhtml: create an index.html listing all files in dir
 * git: misc git utilities
 * hexgen: generate data from an hex dump
 * image2xterm: display an image on console using terminal RGB24 mode or 256 colors

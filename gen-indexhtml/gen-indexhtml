@@ -1,0 +1,11 @@
+#!/bin/sh -e
+# this file is licensed under WTFPLv2 [http://wtfpl.net]
+
+cd ${1-.}
+
+rm -f index.html
+
+trap 'kill $!' EXIT INT
+python3 -m http.server --bind localhost 8000 &
+sleep 1
+curl http://localhost:8000 -o index.html
