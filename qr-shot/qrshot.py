@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # A GUI for encoding/decoding QR codes.
 # It can load a picture from a file and decode data from it.
