@@ -24,6 +24,7 @@ This repository hosts various small personal tools.
 * r2w_plugins: 2 rest2web plugins
 * random-line: take a random line from stdin
 * redmine2ical: convert Redmine’s timesheet to iCalendar format
+* stickimage: display an image always-on-top like a sticky note
 * supybot-shell: Supybot plugin: execute shell commands and see their output
 * tailsleep: like tail -f but quits when I/O activity stops
 * univisible: tweak Unicode combinations and visualize them

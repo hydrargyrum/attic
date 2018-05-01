@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+# license: WTFPL [http://www.wtfpl.net/]
+# a Qt app that displays an image always-on-top like a sticky note
+
+from argparse import ArgumentParser
+import sys
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QLabel, QApplication
+
+
+class Display(QLabel):
+	def __init__(self, pix):
+		super(Display, self).__init__()
+
+		self.setPixmap(pix)
+		self.setFocusPolicy(Qt.NoFocus)
+		self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus)
+
+		self.leaveEvent(None)
+
+	def enterEvent(self, ev):
+		self.setWindowOpacity(0.5)
+
+	def leaveEvent(self, ev):
+		self.setWindowOpacity(0.75)
+
+	def focusInEvent(self, ev):
+		self.clearFocus()
+
+	def mousePressEvent(self, ev):
+		self.clicked = ev.pos()
+
+	def mouseMoveEvent(self, ev):
+		self.move(ev.globalPos() - self.clicked)
+
+
+if __name__ == '__main__':
+	app = QApplication(sys.argv)
+
+	parser = ArgumentParser()
+	parser.add_argument('--borderless', action='store_const', const=True)
+	parser.add_argument('file')
+	args = parser.parse_args(app.arguments()[1:])
+
+	pix = QPixmap(args.file)
+	if pix.isNull():
+		parser.error('invalid image file %r' % args.file)
+
+	d = Display(pix)
+	d.setWindowTitle('Sticky image: %r' % args.file)
+	if args.borderless:
+		d.setWindowFlags(d.windowFlags() | Qt.FramelessWindowHint)
+	d.show()
+	app.exec_()
