@@ -11,6 +11,9 @@ from PyQt5.QtWidgets import QLabel, QApplication
 
 
 class Display(QLabel):
+	hover_opacity = 1
+	opacity = 1
+
 	def __init__(self, pix):
 		super(Display, self).__init__()
 
@@ -18,13 +21,11 @@ class Display(QLabel):
 		self.setFocusPolicy(Qt.NoFocus)
 		self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus)
 
-		self.leaveEvent(None)
-
 	def enterEvent(self, ev):
-		self.setWindowOpacity(0.5)
+		self.setWindowOpacity(self.hover_opacity)
 
 	def leaveEvent(self, ev):
-		self.setWindowOpacity(0.75)
+		self.setWindowOpacity(self.opacity)
 
 	def focusInEvent(self, ev):
 		self.clearFocus()
@@ -41,6 +42,8 @@ if __name__ == '__main__':
 
 	parser = ArgumentParser()
 	parser.add_argument('--borderless', action='store_const', const=True)
+	parser.add_argument('--hover-opacity', type=float)
+	parser.add_argument('--opacity', type=float, default=1)
 	parser.add_argument('file')
 	args = parser.parse_args(app.arguments()[1:])
 
@@ -50,7 +53,14 @@ if __name__ == '__main__':
 
 	d = Display(pix)
 	d.setWindowTitle('Sticky image: %r' % args.file)
+	if args.hover_opacity is None:
+		args.hover_opacity = args.opacity
 	if args.borderless:
 		d.setWindowFlags(d.windowFlags() | Qt.FramelessWindowHint)
+
+	d.hover_opacity = args.hover_opacity
+	d.opacity = args.opacity
+	d.setWindowOpacity(d.opacity)
+
 	d.show()
 	app.exec_()
