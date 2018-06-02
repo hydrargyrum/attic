@@ -1,0 +1,62 @@
+#!/bin/sh -e
+# license: WTFPLv2 (http://www.wtfpl.net/)
+
+# if you have
+# master --- A --- featureA
+# and
+# master --- A' --- B' --- develop
+# and would like to obtain
+# master --- A' --- featureA
+# checkout featureA, run "git-recpbranch develop"
+# it will match A and A' (if they have the same commit titles)
+# and so replace A with A' (from the source branch "develop")
+# warning: does not reorder commits
+
+### args processing
+usage () {
+	echo "Usage: $0 BRANCH"
+	echo "Replace commits from current branch with those from BRANCH"
+	echo "if they have the same commit message title."
+}
+
+if [ $# -ne 1 ]
+then
+	usage
+	exit 2
+fi
+sourcebranch=$1
+
+### prepare temp files and cleanup
+sedfile=
+dir=
+
+cleanup () {
+	[ -f "$sedfile" ] && rm "$sedfile"
+	[ -d "$dir" ] && rm -rf "$dir"
+}
+
+trap cleanup EXIT
+sedfile=$(mktemp commit_sed.XXXXXX)
+dir=$(mktemp -d commits_match.XXXXXX)
+
+### commits matching
+basecommit=$(git merge-base HEAD "$sourcebranch")
+
+git log $basecommit.."$sourcebranch" --format="tformat:%f %h" | \
+	while read msg hash
+	do
+		# use it like a hash table
+		echo "$hash" > "$dir/$msg"
+	done
+
+git log $basecommit..HEAD --format="tformat:%f %h" | \
+	while read msg old
+	do
+		[ -f "$dir/msg" ] || continue
+		new=$(cat "$dir/$msg")
+		echo "/^pick $old/i drop $old" >> $sedfile
+		echo "s/^pick $old/pick $new/" >> $sedfile
+	done
+
+### rebase operation
+git -c "sequence.editor=sed -i -f $sedfile" rebase -i

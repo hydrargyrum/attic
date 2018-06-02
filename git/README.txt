@@ -8,3 +8,13 @@ to know which lines should be squashed in which commit.
 
 It simply works by performing git-blame on a commit (or current working dir),
 its parent commit, and diffing the 2 blames.
+
+----
+
+git-recpbranch will cherry-pick commits from a source branch to current branch.
+It will not take all commits though. It will only take those which have
+the same commit message title line as the commits in current branch.
+Those from current branch matching the source branch are removed before.
+
+This is useful to replace old commits of one branch by newer, amended commits
+(revised history) from another branch.
