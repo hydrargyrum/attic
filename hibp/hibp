@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+# license: WTFPLv2 [http://www.wtfpl.net/]
+# no warranty
+
+from __future__ import print_function # probably works in Python 2
+
+import argparse
+import hashlib
+from getpass import getpass
+import sys
+
+import requests
+
+
+def verify(pass_cb=getpass, prompt='Password to check on HIBP: '):
+    expected = hashlib.sha1(pass_cb(prompt).encode('utf-8')).hexdigest().upper()
+    url = 'https://api.pwnedpasswords.com/range/%s' % expected[:5]
+    hashes = requests.get(url).text.split()
+    for h in hashes:
+        h = expected[:5] + h.upper()
+        if h.startswith(expected):
+            return int(h.split(':')[1])
+    else:
+        return 0
+
+
+if __name__ == '__main__':
+    argparse.ArgumentParser(
+        description='''Check if a password has been leaked on https://haveibeenpwned.com/
+        Does NOT leak your password, see https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange
+        '''
+    ).parse_args()
+
+    n = verify()
+    if n:
+        print('Password has been found', n, ('times' if n > 1 else 'time'),
+              'on HIBP :(')
+        sys.exit(32)
+    else:
+        print('Password has not been found on HIBP')
+        sys.exit(0)
