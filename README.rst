@@ -10,6 +10,7 @@ This repository hosts various small personal tools.
 * gen-indexhtml: create an index.html listing all files in dir
 * git: misc git utilities
 * hexgen: generate data from an hex dump
+* hibp: check if a password has been leaked on "Have I Been Pwned?" site (by checking hash prefix)
 * image2xterm: display an image on console using terminal RGB24 mode or 256 colors
 * json2csv: transform a JSON list of objects into a CSV file
 * json2sqlite: insert JSON data in SQLite
