@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- This file is licensed under the WTFPLv2, see http://www.wtfpl.net/ -->
+<head>
+<meta name="viewport" content="initial-scale=1"/>
+<title>Morse flashing</title>
+</head>
+<style>
+body {
+	color: white;
+	background: black;
+	min-height: 100em; /* extra space to have more background space */
+}
+
+a:visited {
+	color: darkgray;
+}
+
+a {
+	color: gray;
+}
+</style>
+<body>
+<script>
+// format: [length, on_or_off]
+var SHORT = [1, true];
+var LONG = [3, true];
+var GAP = [1, false];
+var CHAR_GAP = [3, false];
+var WORD_GAP = [7, false];
+
+var INSTRS = {
+	'.': SHORT,
+	'-': LONG,
+	' ': CHAR_GAP,
+	'/': WORD_GAP,
+};
+
+var TICK_MS = 150;
+
+var CHARS = {
+	'0': '-----',
+	'1': '.----',
+	'2': '..---',
+	'3': '...--',
+	'4': '....-',
+	'5': '.....',
+	'6': '-....',
+	'7': '--...',
+	'8': '---..',
+	'9': '----.',
+
+	'A': '.-',
+	'B': '-...',
+	'C': '-.-.',
+	'D': '-..',
+	'E': '.',
+	'F': '..-.',
+	'G': '--.',
+	'H': '....',
+	'I': '..',
+	'J': '.---',
+	'K': '-.-',
+	'L': '.-..',
+	'M': '--',
+	'N': '-.',
+	'O': '---',
+	'P': '.--.',
+	'Q': '--.-',
+	'R': '.-.',
+	'S': '...',
+	'T': '-',
+	'U': '..-',
+	'V': '...-',
+	'W': '.--',
+	'X': '-..-',
+	'Y': '-.--',
+	'Z': '--..',
+
+	'+': '.-.-.',
+	'-': '-....-',
+	'_': '..--.-',
+	'"': '.-..-.',
+	' ': '/',
+};
+
+function str2morse(s) {
+	var r = [];
+
+	s = s.toUpperCase();
+	for (var i = 0; i < s.length; i++) {
+		r.push(CHARS[s[i]]);
+	}
+	return r.join(' ');
+}
+
+function morse2instructions(m) {
+	var r = [];
+	var p = false;
+
+	m = m.replace(' / ','/');
+	for (var i = 0; i < m.length; i++) {
+		if (m[i] == '-' || m[i] == '.') {
+			if (p) {
+				r.push(GAP);
+			}
+			p = true;
+		} else {
+			p = false;
+		}
+		r.push(INSTRS[m[i]]);
+	}
+	return r;
+}
+
+var TIMER = 0;
+
+function play_instructions(ins, div) {
+	ins = ins.slice();
+
+	var f = function() {
+		if (!ins.length) {
+			div.style.backgroundColor = 'black';
+			TIMER = 0;
+			return;
+		}
+
+		var c = ins.shift();
+		var bg = 0;
+		if (c[1]) {
+			bg = 'white';
+		} else {
+			bg = 'black';
+		}
+		div.style.backgroundColor = bg;
+		TIMER = window.setTimeout(f, c[0] * TICK_MS);
+	};
+
+	f();
+}
+
+function stop() {
+	if (TIMER) {
+		window.clearTimeout(TIMER);
+	}
+	TIMER = 0;
+	document.body.style.backgroundColor = 'black';
+}
+
+function go() {
+	stop();
+
+	var txt = document.getElementById('txt').value;
+	TICK_MS = parseInt(document.getElementById('ms').value) || 150;
+	play_instructions(morse2instructions(str2morse(txt)), document.body);
+}
+
+</script>
+
+<noscript>
+This page requires Javascript to work. But we don't use cookies, XHR or anything, we only blink!
+</noscript>
+
+<form onsubmit="return false;">
+<p>Enter a text message and submit, the page background will flash in black and white to send the given message in <a href="https://en.wikipedia.org/wiki/Morse_code">Morse code</a>.</p>
+
+<p>Can be useful to send a message from a distance using a phone screen or just for fun.</p>
+
+<p>Warning: flashing lights may cause seizure for photosensitive people.</p>
+
+<p>
+<label for="txt">Text message to blink (try "SOS" for testing)</label>
+<input id="txt" placeholder="Text message to convert to Morse" required="required" autofocus="autofocus" pattern="[a-zA-Z0-9 ]+" size="40"/>
+</p>
+
+<p>
+<label for="ms">Dit length (in milliseconds)</label>
+<input type="number" value="150" id="ms" placeholder="Dit (in milliseconds)" size="6" min="50" max="10000"/>
+</p>
+
+<p>
+<input type="submit" onclick="go()" value="Blink as morse"/>
+<input type="button" onclick="stop()" value="Interrupt blink"/>
+</p>
+</form>
+
+</body>
+</html>

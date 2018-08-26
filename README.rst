@@ -17,6 +17,7 @@ This repository hosts various small personal tools.
 * json2table: pretty-print a JSON list of objects in an ASCII-art table
 * keepassxprint: dump info and passwords from a KeePassX database
 * morse: text from/to Morse code converter, and optional beep player
+* morsehtml: HTML page with its background flashing a Morse code message
 * qgifview: very basic GIF image viewer
 * qr2unicode: display QR-codes on console using Unicode box-drawing characters
 * qr-shot: decode a QR code image from part of the screen
