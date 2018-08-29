@@ -1,0 +1,234 @@
+#!/usr/bin/env python3
+
+from argparse import ArgumentParser
+import fileinput
+
+
+class Tags:
+    BoldMod = 2
+    DoubleMod = 4
+
+    Left = 1
+    BoldLeft = Left * BoldMod
+    DoubleLeft = Left * DoubleMod
+
+    Right = 1 << 3
+    BoldRight = Right * BoldMod
+    DoubleRight = Right * DoubleMod
+
+    Top = 1 << 6
+    BoldTop = Top * BoldMod
+    DoubleTop = Top * DoubleMod
+
+    Down = 1 << 9
+    BoldDown = Down * BoldMod
+    DoubleDown = Down * DoubleMod
+
+    Horizontal = Left | Right
+    BoldHorizontal = BoldLeft | BoldRight
+    Vertical = Top | Down
+    BoldVertical = BoldTop | BoldDown
+
+    Dashed2 = 1 << 12
+    Dashed3 = 1 << 13
+    Dashed4 = 1 << 14
+    Rounded = 1 << 15
+
+
+chars = {
+    '─': Tags.Left | Tags.Right,
+    '━': Tags.BoldLeft | Tags.BoldRight,
+    '│': Tags.Top | Tags.Down,
+    '┃': Tags.BoldTop | Tags.BoldDown,
+    '┄': Tags.Horizontal | Tags.Dashed3,
+    '┅': Tags.BoldHorizontal | Tags.Dashed3,
+    '┆': Tags.Vertical | Tags.Dashed3,
+    '┇': Tags.BoldVertical | Tags.Dashed3,
+    '┈': Tags.Horizontal | Tags.Dashed4,
+    '┉': Tags.BoldHorizontal | Tags.Dashed4,
+    '┊': Tags.Vertical | Tags.Dashed4,
+    '┋': Tags.BoldVertical | Tags.Dashed4,
+    '┌': Tags.Down | Tags.Right,
+    '┍': Tags.Down | Tags.BoldRight,
+    '┎': Tags.BoldDown | Tags.Right,
+    '┏': Tags.BoldDown | Tags.BoldRight,
+    '+': Tags.Top | Tags.Down | Tags.Right | Tags.Left,
+    '┐': Tags.Left | Tags.Down,
+    '┑': Tags.BoldLeft | Tags.Down,
+    '┒': Tags.Left | Tags.BoldDown,
+    '┓': Tags.BoldDown | Tags.BoldLeft,
+    '└': Tags.Top | Tags.Right,
+    '┕': Tags.Top | Tags.BoldRight,
+    '┖': Tags.BoldTop | Tags.Right,
+    '┗': Tags.BoldTop | Tags.BoldRight,
+    '┘': Tags.Left | Tags.Top,
+    '┙': Tags.BoldLeft | Tags.Top,
+    '┚': Tags.Left | Tags.BoldTop,
+    '┛': Tags.BoldLeft | Tags.BoldTop,
+    '├': Tags.Right | Tags.Top | Tags.Down,
+    '┝': Tags.BoldRight | Tags.Top | Tags.Down,
+    '┞': Tags.Right | Tags.BoldTop | Tags.Down,
+    '┟': Tags.Right | Tags.Top | Tags.BoldDown,
+    '┠': Tags.Right | Tags.BoldTop | Tags.BoldDown,
+    '┡': Tags.BoldRight | Tags.BoldTop | Tags.Down,
+    '┢': Tags.BoldRight | Tags.Top | Tags.BoldDown,
+    '┣': Tags.BoldRight | Tags.BoldTop | Tags.BoldDown,
+    '┤': Tags.Left | Tags.Top | Tags.Down,
+    '┥': Tags.BoldLeft | Tags.Top | Tags.Down,
+    '┦': Tags.Left | Tags.BoldTop | Tags.Down,
+    '┧': Tags.Left | Tags.Top | Tags.BoldDown,
+    '┨': Tags.Left | Tags.BoldTop | Tags.BoldDown,
+    '┩': Tags.BoldLeft | Tags.BoldTop | Tags.Down,
+    '┪': Tags.BoldLeft | Tags.Top | Tags.BoldDown,
+    '┫': Tags.BoldLeft | Tags.BoldTop | Tags.BoldDown,
+    '┬': Tags.Left | Tags.Right | Tags.Down,
+    '┭': Tags.BoldLeft | Tags.Right | Tags.Down,
+    '┮': Tags.Left | Tags.BoldRight | Tags.Down,
+    '┯': Tags.BoldLeft | Tags.BoldRight | Tags.Down,
+    '┰': Tags.Left | Tags.Right | Tags.BoldDown,
+    '┱': Tags.BoldLeft | Tags.Right | Tags.BoldDown,
+    '┲': Tags.Left | Tags.BoldRight | Tags.BoldDown,
+    '┳': Tags.BoldLeft | Tags.BoldRight | Tags.BoldDown,
+    '┴': Tags.Left | Tags.Right | Tags.Top,
+    '┵': Tags.BoldLeft | Tags.Right | Tags.Top,
+    '┶': Tags.Left | Tags.BoldRight | Tags.Top,
+    '┷': Tags.BoldLeft | Tags.BoldRight | Tags.Top,
+    '┸': Tags.Left | Tags.Right | Tags.BoldTop,
+    '┹': Tags.BoldLeft | Tags.Right | Tags.BoldTop,
+    '┺': Tags.Left | Tags.BoldRight | Tags.BoldTop,
+    '┻': Tags.BoldLeft | Tags.BoldRight | Tags.BoldTop,
+    '┼': Tags.Right | Tags.Left | Tags.Top | Tags.Down,
+    '┽': Tags.Right | Tags.BoldLeft | Tags.Top | Tags.Down,
+    '┾': Tags.BoldRight | Tags.Left | Tags.Top | Tags.Down,
+    '┿': Tags.BoldRight | Tags.BoldLeft | Tags.Top | Tags.Down,
+    '╀': Tags.Right | Tags.Left | Tags.BoldTop | Tags.Down,
+    '╁': Tags.Right | Tags.Left | Tags.Top | Tags.BoldDown,
+    '╂': Tags.Right | Tags.Left | Tags.BoldTop | Tags.BoldDown,
+    '╃': Tags.Right | Tags.BoldLeft | Tags.BoldTop | Tags.Down,
+    '╄': Tags.BoldRight | Tags.Left | Tags.BoldTop | Tags.Down,
+    '╅': Tags.Right | Tags.BoldLeft | Tags.Top | Tags.BoldDown,
+    '╆': Tags.BoldRight | Tags.Left | Tags.Top | Tags.BoldDown,
+    '╇': Tags.BoldRight | Tags.BoldLeft | Tags.BoldTop | Tags.Down,
+    '╈': Tags.BoldRight | Tags.BoldLeft | Tags.Top | Tags.BoldDown,
+    '╉': Tags.Right | Tags.BoldLeft | Tags.BoldTop | Tags.BoldDown,
+    '╊': Tags.BoldRight | Tags.Left | Tags.BoldTop | Tags.BoldDown,
+    '╋': Tags.BoldRight | Tags.BoldLeft | Tags.BoldTop | Tags.BoldDown,
+    '╌': Tags.Horizontal | Tags.Dashed2,
+    '╍': Tags.BoldHorizontal | Tags.Dashed2,
+    '╎': Tags.Vertical | Tags.Dashed2,
+    '╏': Tags.BoldVertical | Tags.Dashed2,
+    '═': Tags.DoubleLeft | Tags.DoubleRight,
+    '║': Tags.DoubleTop | Tags.DoubleDown,
+    '╒': Tags.Down | Tags.DoubleRight,
+    '╓': Tags.DoubleDown | Tags.Right,
+    '╔': Tags.DoubleRight | Tags.DoubleDown,
+    '╕': Tags.DoubleLeft | Tags.Down,
+    '╖': Tags.Left | Tags.DoubleDown,
+    '╗': Tags.DoubleLeft | Tags.DoubleDown,
+    '╘': Tags.Top | Tags.DoubleRight,
+    '╙': Tags.DoubleTop | Tags.Right,
+    '╚': Tags.DoubleTop | Tags.DoubleRight,
+    '╛': Tags.DoubleLeft | Tags.Top,
+    '╜': Tags.Left | Tags.DoubleTop,
+    '╝': Tags.DoubleLeft | Tags.DoubleTop,
+    '╞': Tags.DoubleRight | Tags.Top | Tags.Down,
+    '╟': Tags.Right | Tags.DoubleTop | Tags.DoubleDown,
+    '╠': Tags.DoubleRight | Tags.DoubleTop | Tags.DoubleDown,
+    '╡': Tags.DoubleLeft | Tags.Top | Tags.Down,
+    '╢': Tags.Left | Tags.DoubleTop | Tags.DoubleDown,
+    '╣': Tags.DoubleLeft | Tags.DoubleTop | Tags.DoubleDown,
+    '╤': Tags.DoubleLeft | Tags.DoubleRight | Tags.Down,
+    '╥': Tags.Left | Tags.Right | Tags.DoubleDown,
+    '╦': Tags.DoubleLeft | Tags.DoubleRight | Tags.DoubleDown,
+    '╧': Tags.DoubleLeft | Tags.DoubleRight | Tags.Top,
+    '╨': Tags.Left | Tags.Right | Tags.DoubleTop,
+    '╩': Tags.DoubleLeft | Tags.DoubleRight | Tags.DoubleTop,
+    '╪': Tags.DoubleRight | Tags.DoubleLeft | Tags.Top | Tags.Down,
+    '╫': Tags.Right | Tags.Left | Tags.DoubleTop | Tags.DoubleDown,
+    '╬': Tags.DoubleRight | Tags.DoubleLeft | Tags.DoubleTop | Tags.DoubleDown,
+    '╭': Tags.Right | Tags.Down | Tags.Rounded,
+    '╮': Tags.Left | Tags.Down | Tags.Rounded,
+    '╯': Tags.Left | Tags.Top | Tags.Rounded,
+    '╰': Tags.Right | Tags.Top | Tags.Rounded,
+    '╱': 0,
+    '╲': 0,
+    '╳': 0,
+    '╴': Tags.Left,
+    '╵': Tags.Top,
+    '╶': Tags.Right,
+    '╷': Tags.Down,
+    '╸': Tags.BoldLeft,
+    '╹': Tags.BoldTop,
+    '╺': Tags.BoldRight,
+    '╻': Tags.BoldDown,
+    '╼': Tags.BoldRight | Tags.Left,
+    '╽': Tags.Top | Tags.BoldDown,
+    '╾': Tags.Right | Tags.BoldLeft,
+    '╿': Tags.BoldTop | Tags.Down,
+}
+
+by_tag = {v: k for k, v in chars.items()}
+
+chars.update({
+    '-': Tags.Left | Tags.Right,
+    '|': Tags.Top | Tags.Down,
+    '+': Tags.Top | Tags.Down | Tags.Left | Tags.Right,
+})
+
+
+class Buffer:
+    def __init__(self, lines):
+        self.lines = [list(line) for line in lines]
+
+    def __getitem__(self, yx):
+        y, x = yx
+        if y < 0 or x < 0:
+            return ''
+        try:
+            return self.lines[y][x]
+        except IndexError:
+            return ''
+
+    def __iter__(self):
+        return iter(self.lines)
+
+    def __setitem__(self, yx, value):
+        y, x = yx
+        self.lines[y][x] = value
+
+    def __str__(self):
+        return ''.join(''.join(line) for line in self.lines)
+
+
+def has_tags(c, tags):
+    return chars.get(c, 0) & tags
+
+
+# TODO support bold, double, rounded, etc.
+# TODO support disallowing half-length bars
+def process_buffer(buf):
+    for y, line in enumerate(buf):
+        for x, c in enumerate(line):
+            l = has_tags(buf[y, x-1], Tags.Right)
+            r = has_tags(buf[y, x+1], Tags.Left)
+            u = has_tags(buf[y-1, x], Tags.Down)
+            d = has_tags(buf[y+1, x], Tags.Top)
+
+            if c in '-|+' and (l or r or u or d):
+                desired = (u and Tags.Top) | (d and Tags.Down) | (l and Tags.Left) | (r and Tags.Right)
+                buf[y, x] = by_tag[desired]
+
+
+def main():
+    parser = ArgumentParser(description='Convert ASCII-art boxes to Unicode-art boxes')
+    parser.add_argument('files', nargs='*')
+    args = parser.parse_args()
+
+    buf = Buffer(fileinput.input(args.files))
+    process_buffer(buf)
+    print(buf, end='')
+
+
+if __name__ == '__main__':
+    main()
+
