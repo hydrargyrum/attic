@@ -65,7 +65,9 @@ class RulerWindow(RulerWidget):
 	def __init__(self, *args):
 		super(RulerWindow, self).__init__(*args)
 		self.setToolTip('Double-click to toggle horizontal/vertical.\n'
-		                'Press arrows to move window by 1 pixel.')
+		                'Press arrows to move window by 1 pixel.\n'
+		                'Press B to toggle borderless.'
+		)
 		self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
 
 	def keyPressEvent(self, event):
@@ -77,6 +79,10 @@ class RulerWindow(RulerWidget):
 			self.move(self.x(), self.y() - 1)
 		elif event.key() == Qt.Key_Down:
 			self.move(self.x(), self.y() + 1)
+		elif event.key() == Qt.Key_B:
+			self.hide()  # seems the flag can't be set when window is visible
+			self.setWindowFlags(self.windowFlags() ^ Qt.FramelessWindowHint)
+			self.show()
 		else:
 			super(RulerWindow, self).keyPressEvent(event)
 
