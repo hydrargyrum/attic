@@ -66,6 +66,7 @@ class RulerWindow(RulerWidget):
 		super(RulerWindow, self).__init__(*args)
 		self.setToolTip('Double-click to toggle horizontal/vertical.\n'
 		                'Press arrows to move window by 1 pixel.')
+		self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
 
 	def keyPressEvent(self, event):
 		if event.key() == Qt.Key_Left:
