@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+# license: Do What the Fuck You Want to Public License v2 [http://wtfpl.net]
+
+# typical usage: curl https://example.com/some/web/radio | radiodump
+
+from datetime import datetime
+from enum import Enum
+from io import BytesIO
+import os
+import sys
+import tty
+
+try:
+	from termcolor import colored
+except ImportError:
+	def colored(s):
+		return s
+
+
+class Mode(Enum):
+	BUFFER = 0
+	DUMP = 1
+
+
+pattern = 'stream-%Y%m%dT%H%M%S.dmp'
+
+MAX_WINDOW_SIZE = 20 * 1024 * 1024
+BUFFER_SIZE = 4096
+
+
+def size_to_string(sz):
+	units = ['B', 'KiB', 'MiB', 'GiB', 'TiB']
+	for unit in units:
+		if sz < 1024:
+			return '%.1f %s' % (sz, unit)
+		sz /= 1024
+	return '%.1f %s' % (sz, 'PiB')
+
+
+class App:
+	def __init__(self):
+		self.buffer = BytesIO()
+
+		self.current_start = datetime.now()
+		self.mode = Mode.BUFFER
+		self.current_file = None
+
+	def write_in_buffer(self, data):
+		assert len(data) < MAX_WINDOW_SIZE
+
+		to_write = min(len(data), MAX_WINDOW_SIZE - self.buffer.tell())
+		self.buffer.write(data[:to_write])
+		if len(data) > to_write:
+			self.buffer.seek(0)
+			self.buffer.write(data[to_write:])
+
+	def dump_buffer(self):
+		pos = self.buffer.tell()
+		self.current_file.write(self.buffer.getbuffer()[pos:])
+		self.current_file.write(self.buffer.getbuffer()[:pos])
+
+	def reset_buffer(self):
+		self.buffer.seek(0)
+		self.buffer.truncate(0)
+
+	def one(self):
+		if self.mode == Mode.BUFFER:
+			print('\rBuffering', size_to_string(len(self.buffer.getbuffer())), end='')
+			self.write_in_buffer(sys.stdin.buffer.read(BUFFER_SIZE))
+		else:
+			filename = self.current_file.name
+			print('\r%s' % colored('[Rec]', 'red'), 'Writing file', filename, size_to_string(os.path.getsize(filename)), end='')
+			self.current_file.write(sys.stdin.buffer.read(BUFFER_SIZE))
+
+	def switch(self):
+		print('\r                            ', end='')
+		if self.mode == Mode.BUFFER:
+			self.mode = Mode.DUMP
+			self.current_file = open(self.current_start.strftime(pattern), 'wb')
+			self.dump_buffer()
+			self.reset_buffer()
+		else:
+			self.mode = Mode.BUFFER
+			self.current_start = datetime.now()
+			self.current_file.close()
+			self.current_file = None
+
+
+def main():
+	app = App()
+
+	tty_fd = os.open('/dev/tty', os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
+	tty.setcbreak(tty_fd)
+
+	print('Press space to toggle buffering/recording')
+	while True:
+		userinput = b''
+		try:
+			userinput = os.read(tty_fd, 100)
+		except BlockingIOError:
+			pass
+
+		if userinput == b' ':
+			app.switch()
+		else:
+			app.one()
+
+
+if __name__ == '__main__':
+	try:
+		main()
+	except KeyboardInterrupt:
+		pass
+
