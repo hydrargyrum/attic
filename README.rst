@@ -4,6 +4,7 @@ The Attic
 This repository hosts various small personal tools.
 
 * boxuni: convert ASCII-art boxes into Unicode-art boxes
+* cheapthrottle: throttling a process by sending it SIGSTOP/SIGCONT repeatedly
 * clipsync:
 * coordapp: always-on-top window that shows the mouse cursor coordinates
 * cppasciitree: an example of how to hardcode a tree with source code looking like the actual tree

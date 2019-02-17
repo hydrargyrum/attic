@@ -1,0 +1,48 @@
+#!/bin/sh -e
+# license: Do What the Fuck You Want to Public License v2 [http://wtfpl.net]
+
+# typical usage: cheapthrottle PID
+
+# Sends SIGSTOP to PID, waits SLEEPING_SECS, sends SIGCONT, wait ALIVE_SECS.
+# Repeat forever.
+
+sleeping=10
+alive=5
+
+usage () {
+	printf "Usage: %s: [-s SLEEPING_SECS] [-a ALIVE_SECS] PID\n" $0
+	printf "Cheap throttling by repeatedly sending SIGSTOP and SIGCONT to PID.\n"
+	printf "Waits SLEEPING_SECS after SIGSTOP (default: 10)\n"
+	printf "and ALIVE_SECS after SIGCONT (default: 5).\n"
+}
+
+while getopts hs:a: name
+do
+	case $name in
+	s)
+		sleeping="$OPTARG";;
+	a)
+		alive="$OPTARG";;
+	h)
+		usage
+		exit 0;;
+	?)
+		usage >&2
+		exit 2;;
+	esac
+done
+
+target="$1"
+
+[ -n "$target" ] || {
+	usage >&2
+	exit 2
+}
+
+while true
+do
+	kill -STOP $target
+	sleep $sleeping
+	kill -CONT $target
+	sleep $alive
+done
