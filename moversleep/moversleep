@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+
+from argparse import ArgumentParser
+import logging
+from pathlib import Path
+import shutil
+from time import sleep
+
+
+class App:
+    def parse(self):
+        self.parser = ArgumentParser(description='''
+        Automatically move incoming files dropped in SRC to DST.
+
+        This is useful when files should be moved from SRC to DST but they might take
+        a while to be written to SRC due to slow writing speed (typically, files are
+        downloaded with slow network to SRC).
+
+        Any file in SRC that hasn't been touched in the last DELAY seconds will be
+        moved. A file is considered untouched if its size and last modification time
+        did not change.
+
+        Files are searched only in SRC, not recursively. Hidden files (starting
+        with ".") are ignored. Symlinks are ignored. Dirs are ignored. Empty files
+        are ignored.
+        ''')
+        self.parser.add_argument(
+            'src', type=Path, help='Source dir from where to look files')
+        self.parser.add_argument(
+            'dst', type=Path, help='Destination dir where to move files')
+        self.parser.add_argument(
+            '--delay', type=int, default=30, help='Delay (in seconds) between lookups')
+        self.parser.add_argument(
+            '-f', '--force', action='store_true', help='Overwrite files in DST')
+
+        self.args = self.parser.parse_args()
+        if not self.args.src.is_dir():
+            self.parser.error('Source folder must exist: %r' % self.args.src)
+        if not self.args.dst.is_dir():
+            self.parser.error('Destination folder must exist: %r' % self.args.dst)
+        if self.args.delay <= 0:
+            self.parser.error('Delay must be positive')
+
+    def current_state(self):
+        def pathinfo(st):
+            return (st.st_size, st.st_mtime)
+
+        state = {
+            p: pathinfo(p.lstat())
+            for p in self.args.src.iterdir()
+        }
+        
+        return {
+            p: info
+            for p, info in state.items()
+            if p.is_file() and not p.name.startswith(".") and info[0]
+        }
+
+    def move(self, srcp):
+        dstp = self.args.dst.joinpath(srcp.name)
+        if dstp.exists():
+            if self.args.force:
+                dstp.unlink()
+                logging.info('Moving %r to %r', str(srcp), str(dstp))
+                try:
+                    shutil.move(str(srcp), str(self.args.dst))
+                except OSError as err:
+                    logging.error('Cannot move %r: %s', str(srcp), err)
+            else:
+                logging.debug('Will not overwrite %r', str(dstp))
+        else:
+            logging.info('Moving %r to %r', str(srcp), str(dstp))
+            try:
+                shutil.move(str(srcp), str(self.args.dst))
+            except OSError as err:
+                logging.error('Cannot move %r: %s', str(srcp), err)
+
+    def run(self):
+        last = self.current_state()
+        while True:
+            cur = self.current_state()
+
+            tomove = [p for p in cur if last.get(p) == cur[p]]
+            for srcp in tomove:
+                self.move(srcp)
+
+            last = cur
+            sleep(self.args.delay)
+
+
+if __name__ == '__main__':
+    try:
+        logging.basicConfig(level=logging.INFO)
+
+        app = App()
+        app.parse()
+        app.run()
+    except KeyboardInterrupt:
+        pass
