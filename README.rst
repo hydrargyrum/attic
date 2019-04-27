@@ -11,6 +11,7 @@ This repository hosts various small personal tools.
 * fonts2png: render TTF fonts samples to image files
 * gen-indexhtml: create an index.html listing all files in dir
 * git: misc git utilities
+* group-files-by-mtime: take files in a dir and move them to folders for each last modification time
 * hexgen: generate data from an hex dump
 * hibp: check if a password has been leaked on "Have I Been Pwned?" site (by checking hash prefix)
 * image2xterm: display an image on console using terminal RGB24 mode or 256 colors

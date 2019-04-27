@@ -1,0 +1,23 @@
+#!/bin/sh -e
+# license: WTFPLv2
+# requires GNU find(1) for "-printf"
+
+usage () {
+	echo "usage: $0 DIR"
+	echo
+	echo "Moves every file from DIR to a directory named after the file's"
+	echo "last modification time."
+}
+
+if [ -z "$1" ]
+then
+	usage >&2
+	exit 1
+elif [ "$1" = -h ]
+then
+	usage
+	exit 0
+fi
+
+find "$1" -maxdepth 1 -type f -printf '%h/%TY-%Tm-%Td\0' | sort -zu | xargs -0 mkdir -p
+find "$1" -maxdepth 1 -type f -printf '%p\0%h/%TY-%Tm-%Td\0' | xargs -0 -n2 mv
