@@ -42,20 +42,20 @@ dir=$(mktemp -d commits_match.XXXXXX)
 ### commits matching
 basecommit=$(git merge-base HEAD "$sourcebranch")
 
-git log $basecommit.."$sourcebranch" --format="tformat:%f %h" | \
-	while read msg hash
+git log "$basecommit..$sourcebranch" --format="tformat:%f %h" | \
+	while read -r msg hash
 	do
 		# use it like a hash table
 		echo "$hash" > "$dir/$msg"
 	done
 
-git log $basecommit..HEAD --format="tformat:%f %h" | \
-	while read msg old
+git log "$basecommit..HEAD" --format="tformat:%f %h" | \
+	while read -r msg old
 	do
 		[ -f "$dir/msg" ] || continue
 		new=$(cat "$dir/$msg")
-		echo "/^pick $old/i drop $old" >> $sedfile
-		echo "s/^pick $old/pick $new/" >> $sedfile
+		echo "/^pick $old/i drop $old" >> "$sedfile"
+		echo "s/^pick $old/pick $new/" >> "$sedfile"
 	done
 
 ### rebase operation

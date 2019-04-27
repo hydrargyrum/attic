@@ -22,7 +22,7 @@ do
 	*) help=1 ;;
 	esac
 done
-shift $(($OPTIND - 1))
+shift $((OPTIND - 1))
 
 if [ -n "$help" ] || [ $# -eq 0 ]; then
 	cat >&2 << EOF
@@ -43,7 +43,7 @@ EOF
 fi
 
 for font in "$@"; do
-	outfile="$outdir/`basename ${font%.*}`.png"
+	outfile="$outdir/$(basename "${font%.*}").png"
 	if [ ! -f "$outfile" ] || [ -n "$overwrite" ]; then
 		convert -background "$bgcolor" -fill "$fgcolor" -font "$font" \
 		        -pointsize "$fontsize" label:"$text" "$outfile"

@@ -10,10 +10,10 @@ sleeping=10
 alive=5
 
 usage () {
-	printf "Usage: %s: [-s SLEEPING_SECS] [-a ALIVE_SECS] PID\n" $0
-	printf "Cheap throttling by repeatedly sending SIGSTOP and SIGCONT to PID.\n"
-	printf "Waits SLEEPING_SECS after SIGSTOP (default: 10)\n"
-	printf "and ALIVE_SECS after SIGCONT (default: 5).\n"
+	printf 'Usage: %s: [-s SLEEPING_SECS] [-a ALIVE_SECS] PID\n' "$0"
+	printf 'Cheap throttling by repeatedly sending SIGSTOP and SIGCONT to PID.\n'
+	printf 'Waits SLEEPING_SECS after SIGSTOP (default: 10)\n'
+	printf 'and ALIVE_SECS after SIGCONT (default: 5).\n'
 }
 
 while getopts hs:a: name
@@ -31,7 +31,7 @@ do
 		exit 2;;
 	esac
 done
-shift $(($OPTIND - 1))
+shift $((OPTIND - 1))
 
 target="$1"
 
@@ -42,8 +42,8 @@ target="$1"
 
 while true
 do
-	kill -STOP $target
-	sleep $sleeping
-	kill -CONT $target
-	sleep $alive
+	kill -STOP "$target"
+	sleep "$sleeping"
+	kill -CONT "$target"
+	sleep "$alive"
 done
