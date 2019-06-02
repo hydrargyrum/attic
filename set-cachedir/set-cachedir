@@ -1,0 +1,33 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]
+then
+	cat >&2 << EOF
+usage: $0 DIR [DIR...]
+
+Create a "CACHEDIR.TAG" file in the given DIRs.
+CACHEDIR.TAG is a file recognized by many archiving tools (including
+GNU tar, borg-backup, etc.) indicating the parent directory should NOT
+be archived or backed up. See http://www.brynosaurus.com/cachedir/
+EOF
+	exit 64
+	# EX_USAGE
+fi
+
+error=0
+for i
+do
+	if cat > "$i/CACHEDIR.TAG" << EOF
+Signature: 8a477f597d28d172789f06886806bc55
+# This file is a cache directory tag.
+# For information about cache directory tags, see:
+#	http://www.brynosaurus.com/cachedir/
+EOF
+	then
+		echo "Created '$i/CACHEDIR.TAG'"
+	else
+		error=1
+	fi
+done
+
+exit $error
