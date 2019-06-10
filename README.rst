@@ -14,6 +14,7 @@ This repository hosts various small personal tools.
 * group-files-by-mtime: take files in a dir and move them to folders for each last modification time
 * hexgen: generate data from an hex dump
 * hibp: check if a password has been leaked on "Have I Been Pwned?" site (by checking hash prefix)
+* httpshare: share a directory via HTTP, like Python "http.server" but supports "Range" headers
 * image2xterm: display an image on console using terminal RGB24 mode or 256 colors
 * json2csv: transform a JSON list of objects into a CSV file
 * json2sqlite: insert JSON data in SQLite
@@ -29,6 +30,7 @@ This repository hosts various small personal tools.
 * r2w_plugins: 2 rest2web plugins
 * random-line: take a random line from stdin
 * redmine2ical: convert Redmine’s timesheet to iCalendar format
+* set-cachedir: basic tool to create CACHEDIR.TAG files
 * stickimage: display an image always-on-top like a sticky note
 * supybot-shell: Supybot plugin: execute shell commands and see their output
 * tailsleep: like tail -f but quits when I/O activity stops
