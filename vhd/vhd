@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+# license: WTFPLv2
+# original: 2007
+# rewritten for modernization in 2019
+
+from argparse import ArgumentParser, FileType
+import sys
+
+
+REPLACES = {
+    '\n': r'\n',
+    '\t': r'\t',
+    '\r': r'\r',
+    '\f': r'\f',
+    '\b': r'\b',
+    '\a': r'\a',
+    '\v': r'\v',
+    '\x00': r'\0',
+    ' ': 'sp',
+}
+
+
+def transform(b):
+    char = chr(b)
+
+    if char in REPLACES:
+        return f' {REPLACES[char]}'
+    elif 0x20 < b < 0x7f:
+        return f' {char} '
+    else:
+        return f' {b:02x}'
+
+
+def print_line(line):
+    print(' '.join(transform(b) for b in line))
+
+
+def main():
+    parser = ArgumentParser(description='Visual Hex Dump')
+    parser.add_argument('--line-addresses', action='store_true')
+    parser.add_argument('--hex', action='store_true')
+    parser.add_argument('file', nargs='?', type=FileType('rb'), default=sys.stdin.buffer)
+    args = parser.parse_args()
+
+    total = 0
+    while True:
+        line = args.file.readline()
+        if not line:
+            break
+
+        if args.line_addresses:
+            print(f'{total:08x} ', end='')
+
+        if args.hex:
+            print(' '.join(f'{b:02x}' for b in line))
+        else:
+            print_line(line)
+
+        total += len(line)
+
+
+if __name__ == '__main__':
+    main()

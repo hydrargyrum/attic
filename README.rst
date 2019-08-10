@@ -35,6 +35,7 @@ This repository hosts various small personal tools.
 * supybot-shell: Supybot plugin: execute shell commands and see their output
 * tailsleep: like tail -f but quits when I/O activity stops
 * univisible: tweak Unicode combinations and visualize them
+* vhd: visual hex dump, splitting at newlines, not fixed-width lines
 * wakeonwan: wake remote machines with Wake-on-WAN
 
 For more info, see also: http://indigo.re
