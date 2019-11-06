@@ -9,6 +9,7 @@ This repository hosts various small personal tools.
 * coordapp: always-on-top window that shows the mouse cursor coordinates
 * cppasciitree: an example of how to hardcode a tree with source code looking like the actual tree
 * fonts2png: render TTF fonts samples to image files
+* ffmcut: ffmcut: ffmpeg wrapper to cut a video between 2 timestamps
 * gen-indexhtml: create an index.html listing all files in dir
 * git: misc git utilities
 * group-files-by-mtime: take files in a dir and move them to folders for each last modification time
