@@ -38,8 +38,8 @@ def decodeImage(qpix):
 	temp = tempfile.NamedTemporaryFile(suffix='.png')
 	qpix.save(temp.name)
 
-	import Image
-	pilimage = Image.open(temp.name)
+	import PIL.Image
+	pilimage = PIL.Image.open(temp.name)
 	pilimage = pilimage.convert('L')
 	rawbytes = ''.join(map(chr, pilimage.getdata()))
 
@@ -194,11 +194,11 @@ class Window(QMainWindow):
 		self.loadAction = menu.addAction('Load image...')
 		self.saveAction = menu.addAction('Save image...')
 		menu.addAction('Quit').triggered.connect(QApplication.instance().quit)
-		
+
 		menu = self.menuBar().addMenu('Data')
 		self.decodeAction = menu.addAction('Decode image')
 		self.encodeAction = menu.addAction('Encode text...')
-		
+
 		menu = self.menuBar().addMenu('Screenshot')
 		self.shootAction = menu.addAction('Take screenshot')
 		self.cropAction = menu.addAction('Crop')
