@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+# cut a video INPUT using ffmpeg between 2 timestamps and output in OUTPUT
+# supports HOUR:MINUTE:SECOND notation
+
+from os import execlp
+from re import fullmatch
+from sys import argv, exit
+
+
+def usage():
+    exit(f'usage: {argv[0]} INPUT STARTM:STARTS ENDM:ENDS OUTPUT')
+
+
+if len(argv) < 5:
+    usage()
+
+times = []
+for i in range(2, 4):
+    mtc = fullmatch(r'(?:(?:(\d+):)?(\d+):)?(\d+)', argv[i])
+    if not mtc:
+        usage()
+    times.append(
+        int(mtc[1] or 0) * 3600 + int(mtc[2] or 0) * 60 + int(mtc[3])
+    )
+
+execlp(
+    'ffmpeg', '-i', argv[1], '-ss', str(times[0]), '-t',
+    str(times[1] - times[0]), '-codec', 'copy', argv[4],
+)
