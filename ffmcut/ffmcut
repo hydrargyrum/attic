@@ -25,6 +25,6 @@ for i in range(2, 4):
     )
 
 execlp(
-    'ffmpeg', '-i', argv[1], '-ss', str(times[0]), '-t',
+    'ffmpeg', 'ffmpeg', '-i', argv[1], '-ss', str(times[0]), '-t',
     str(times[1] - times[0]), '-codec', 'copy', argv[4],
 )
