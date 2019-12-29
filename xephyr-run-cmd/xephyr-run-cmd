@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+
+# Similar to xfvb-run but for Xephyr
+# Start a Xephyr server and run a command in it
+# sample usage: xephyr-run-cmd -screen 1024x768 -- xterm
+
+import os
+from subprocess import Popen
+import sys
+import time
+
+
+def usage():
+    print(
+        f'usage: {sys.argv[0]} [XEPHYR ARGS...] -- CMD [ARGS...]\n\n'
+        'Run Xephyr with optional arguments XEPHYR ARGS and run CMD '
+        'in the Xephyr display\n\n'
+	f'sample usage: {sys.argv[0]} -screen 1024x768 -- xterm\n\n'
+	'Similar to xfvb-run but for Xephyr',
+        file=sys.stderr,
+    )
+    sys.exit(os.EX_USAGE)
+
+
+# parse arguments
+args = sys.argv[1:]
+try:
+    pos = args.index('--')
+except ValueError:
+    usage()
+xargs = args[:pos]
+cmd = args[pos + 1:]
+
+if not cmd:
+    usage()
+
+if xargs and xargs[0].startswith(':'):
+    newdisp = xargs[0]
+else:
+    newdisp = ':1'
+
+#
+sproc = None
+cproc = None
+
+try:
+    sproc = Popen(['Xephyr', newdisp, *xargs])
+
+    time.sleep(3)  # give Xephyr some time to start
+    if sproc.poll() is not None:
+        sys.exit(f'Xephyr exited with code {sproc.poll()}')
+
+    os.environ['DISPLAY'] = newdisp
+    cproc = Popen(cmd)
+    sys.exit(cproc.wait())
+except KeyboardInterrupt:
+    pass
+finally:
+    if cproc:
+        cproc.kill()
+    if sproc:
+        sproc.kill()

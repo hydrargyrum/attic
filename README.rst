@@ -38,6 +38,7 @@ This repository hosts various small personal tools.
 * univisible: tweak Unicode combinations and visualize them
 * vhd: visual hex dump, splitting at newlines, not fixed-width lines
 * wakeonwan: wake remote machines with Wake-on-WAN
+* xephyr-run-cmd: run a Xephyr server and run a command in it (like xvfb-run)
 
 For more info, see also: http://indigo.re
 
