@@ -1,0 +1,23 @@
+#!/bin/sh -e
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+
+usage () {
+	cat << EOF
+usage: $0 <tree-ish> <pathspec>...
+
+Cherry-pick commit <tree-ish> that affects many files, but only apply to files matched by <pathspec>.
+There can be multiple <pathspec> arguments.
+EOF
+}
+
+if [ $# -lt 2 ]
+then
+	usage >&2
+	exit 64  # EX_USAGE
+fi
+
+commit="$1"
+shift
+
+git checkout "$commit" -- "$@"
+git commit --reuse-message "$commit"
