@@ -3,9 +3,10 @@
 
 usage () {
 	cat << EOF
-usage: $0 <tree-ish> <pathspec>...
+usage: $0 <commit> <pathspec>...
 
-Cherry-pick commit <tree-ish> that affects many files, but only apply to files matched by <pathspec>.
+Apply diff from <commit> like git-cherry-pick, but operate only on changes
+from <pathspec> (recursively).
 There can be multiple <pathspec> arguments.
 EOF
 }
@@ -19,5 +20,6 @@ fi
 commit="$1"
 shift
 
-git checkout "$commit" -- "$@"
-git commit --reuse-message "$commit"
+git diff "$commit^" "$commit" -- "$@" | \
+	git apply --reject --index -
+git commit --reuse-message="$commit"
