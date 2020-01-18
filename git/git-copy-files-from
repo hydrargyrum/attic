@@ -1,0 +1,30 @@
+#!/bin/sh -e
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+
+usage () {
+	cat << EOF
+usage: $0 <tree-ish> [<pathspec>...]
+
+Set the tree in the same state as <tree-ish>.
+If <pathspec> are given, operate only on those paths (recursively).
+Else, operate on the whole git repository root.
+EOF
+}
+
+if [ $# -lt 1 ]
+then
+	usage >&2
+	exit 64  # EX_USAGE
+fi
+
+commit="$1"
+shift
+
+if [ $# -eq 0 ]
+then
+	set -- .
+	cd "$(git rev-parse --show-toplevel)"
+fi
+
+git checkout "$commit" -- "$@"
+git commit --reuse-message "$commit"
