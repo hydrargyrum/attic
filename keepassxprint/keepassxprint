@@ -1,24 +1,25 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # license: do What The Fuck you want Public License v2 [http://wtfpl.net]
 # Tool to parse a KeepassX password database and print its content
+# Warning: doesn't parse KeepassX2/KeepassXC format (.kdbx)
 
 import struct
 from struct import unpack
-import sys
-import os
 from getpass import getpass
-from Crypto.Cipher import AES
 import hashlib
 import io
 from argparse import ArgumentParser
 from fnmatch import fnmatch
 
+from Crypto.Cipher import AES
+
 # parser lib
 
 def from_cstring(cstr):
-	if '\x00' in cstr:
-		return cstr[:cstr.find('\x00')]
-	return cstr
+	if b'\x00' in cstr:
+		cstr = cstr[:cstr.find(b'\x00')]
+	return cstr.decode('latin-1')
+
 
 def sha256(data):
 	hasher = hashlib.new('sha256')
@@ -39,7 +40,7 @@ class BaseCipher(io.RawIOBase):
 		if not block:
 			return block
 		# padding PKCS-7, but we don't check we're at end of buffer
-		pad_n = ord(block[-1])
+		pad_n = block[-1]
 		if 0 < pad_n <= self.blocksize and block[-pad_n:] == (chr(pad_n) * pad_n):
 			block = block[:-pad_n]
 		return block
@@ -69,7 +70,7 @@ class CompositeKey:
 		return self._transform(self._key(), self.transform_seed, self.rounds)
 
 	def _key(self):
-		return sha256(''.join(self.keys))
+		return sha256(b''.join(self.keys))
 
 	def _transform(self, key, seed, rounds):
 		return sha256(
@@ -79,7 +80,7 @@ class CompositeKey:
 
 	def _transform_raw(self, chunk, seed, rounds=1):
 		cipher = AES.new(seed, AES.MODE_ECB)
-		for i in xrange(rounds):
+		for i in range(rounds):
 			chunk = cipher.encrypt(chunk)
 		return chunk
 
@@ -104,7 +105,7 @@ class DbReader:
 		return self.read_struct('<H')[0]
 
 	def read(self, db_password):
-		self.f = open(self.filename)
+		self.f = open(self.filename, 'rb')
 
 		# TODO handle different versions, print an error message
 		assert self.read_uint32() == 0x9aa2d903
@@ -135,11 +136,11 @@ class DbReader:
 		self.f = self._build_cipher(cipher_key, iv)
 
 		self.groups = []
-		for i in xrange(n_groups):
+		for i in range(n_groups):
 			self.groups.append(self.read_group())
 
 		self.entries = []
-		for i in xrange(n_entries):
+		for i in range(n_entries):
 			entry = self.read_entry()
 			if entry['title'] == 'Meta-Info' and entry.get('username') == 'SYSTEM':
 				continue
@@ -165,7 +166,6 @@ class DbReader:
 		return sha256(password)
 
 	def read_group(self):
-		fields = {}
 		while True:
 			type, data = self.read_item()
 			if type == 0:
@@ -214,25 +214,30 @@ def entries_matching(db, pattern):
 		if fnmatch(entry['title'], pattern):
 			yield entry
 
+
 def list_entries(db, pattern='*'):
 	for entry in entries_matching(db, pattern):
-		print 'title: %s' % entry['title']
+		print('title: %s' % entry['title'])
+
 
 def print_entries(db, pattern, show_password=False):
 	for entry in entries_matching(db, pattern):
 		print_entry(entry, show_password)
 
+
 def print_nonempty(entry, name, label):
 	if entry.get(name):
-		print '%s: %s' % (label, entry.get(name))
+		print('%s: %s' % (label, entry.get(name)))
+
 
 def print_entry(entry, show_password=False):
-	print 'title: %s' % entry['title']
+	print('title: %s' % entry['title'])
 	print_nonempty(entry, 'url', 'url')
 	print_nonempty(entry, 'username', 'username')
 	if show_password:
-		print 'password: %s' % entry.get('password')
-	print
+		print('password: %s' % entry.get('password'))
+	print()
+
 
 def main():
 	parser = ArgumentParser()
@@ -242,7 +247,7 @@ def main():
 	options = parser.parse_args()
 
 	db = DbReader(options.file)
-	db_password = getpass()
+	db_password = getpass().encode('utf-8')
 	db.read(db_password)
 
 	if options.title_pattern:
