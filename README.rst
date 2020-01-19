@@ -8,8 +8,9 @@ This repository hosts various small personal tools.
 * clipsync:
 * coordapp: always-on-top window that shows the mouse cursor coordinates
 * cppasciitree: an example of how to hardcode a tree with source code looking like the actual tree
-* fonts2png: render TTF fonts samples to image files
+* crc: basic CRC computation tool
 * ffmcut: ffmcut: ffmpeg wrapper to cut a video between 2 timestamps
+* fonts2png: render TTF fonts samples to image files
 * gen-indexhtml: create an index.html listing all files in dir
 * git: misc git utilities
 * group-files-by-mtime: take files in a dir and move them to folders for each last modification time
@@ -23,15 +24,17 @@ This repository hosts various small personal tools.
 * keepassxprint: dump info and passwords from a KeePassX database
 * morse: text from/to Morse code converter, and optional beep player
 * morsehtml: HTML page with its background flashing a Morse code message
+* moversleep: move incoming files from a dir into another
 * qgifview: very basic GIF image viewer
 * qr2unicode: display QR-codes on console using Unicode box-drawing characters
 * qr-shot: decode a QR code image from part of the screen
 * qruler: tool window that measures width and height in pixels
 * qunpak: extract Quake I and II .pak files
 * r2w_plugins: 2 rest2web plugins
+* radiodump: circular buffer and dump to file
 * random-line: take a random line from stdin
 * redmine2ical: convert Redmine’s timesheet to iCalendar format
-* set-cachedir: basic tool to create CACHEDIR.TAG files
+* set-cachedir: basic tool to create CACHEDIR.TAG files (prevent a folder from being backed up)
 * stickimage: display an image always-on-top like a sticky note
 * supybot-shell: Supybot plugin: execute shell commands and see their output
 * tailsleep: like tail -f but quits when I/O activity stops
