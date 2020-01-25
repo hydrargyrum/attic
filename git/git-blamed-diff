@@ -37,7 +37,9 @@ tmpa=$(mktemp blame.XXXXXX)
 tmpb=$(mktemp blame.XXXXXX)
 
 blame "$1" "$arev" > "$tmpa"
-blame "$1" "$brev" > "$tmpb"
+# $brev should not be quoted
+# if it's empty, it should not take one argument
+blame "$1" $brev > "$tmpb"
 
 # -w to ignore git-blame's pesky alignment
 diff -w -u "$tmpa" "$tmpb"  \
