@@ -1,0 +1,26 @@
+#!/bin/sh -e
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+
+usage () {
+	cat << EOF
+usage: $0 FILE [GIT-COMMIT ARGS...]
+
+git add FILE and create a commit that will have author date set to the last modification time (mtime) of FILE.
+Arguments passed after file are optional and will be passed to git-commit.
+Example: $0 foo.txt -m 'introduce foo.txt'
+EOF
+}
+
+if [ $# -lt 1 ]
+then
+	usage >&2
+	exit 64  # EX_USAGE
+fi
+
+file="$1"
+shift
+
+fdate=$(date -r "$file")
+
+git add "$file"
+git commit --date "$fdate" "$@"
