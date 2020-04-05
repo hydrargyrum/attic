@@ -41,7 +41,7 @@ def decodeImage(qpix):
 	import PIL.Image
 	pilimage = PIL.Image.open(temp.name)
 	pilimage = pilimage.convert('L')
-	rawbytes = ''.join(map(chr, pilimage.getdata()))
+	rawbytes = pilimage.tobytes()
 
 	import zbar
 	zimage = zbar.Image(qpix.width(), qpix.height(), 'Y800', rawbytes)
