@@ -33,6 +33,7 @@ This repository hosts various small personal tools.
 * r2w_plugins: 2 rest2web plugins
 * radiodump: circular buffer and dump to file
 * random-line: take a random line from stdin
+* realign-text-table: takes a malformed ASCII-drawn table and redraw borders properly
 * redmine2ical: convert Redmine’s timesheet to iCalendar format
 * set-cachedir: basic tool to create CACHEDIR.TAG files (prevent a folder from being backed up)
 * stickimage: display an image always-on-top like a sticky note

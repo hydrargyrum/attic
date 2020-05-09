@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+# license: Do What the Fuck You Want to Public License v2 [http://www.wtfpl.net/]
+
+# - takes a malformed ASCII-drawn table as stdin or file, for example:
+#    +-----+-----+
+#    | foo | bar |
+#    +-----+-----+
+#    | a long cell | short |
+#    | x | longer cell ? |
+#    +--+--+
+#
+# - outputs a well-formed table:
+#    +-------------+---------------+
+#    |     foo     |      bar      |
+#    +-------------+---------------+
+#    | a long cell |     short     |
+#    |      x      | longer cell ? |
+#    +-------------+---------------+
+
+from fileinput import input
+import re
+
+from prettytable import PrettyTable
+
+
+replacements = {
+    '─=': '-',
+    '│': '|',
+    '┘┐└┌├┬┼┴┤': '+',
+}
+box_chars = ''.join(replacements.keys()) + ''.join(replacements.values())
+box_chars_regex = re.compile(r'[%s\s]+' % re.escape(box_chars))
+
+
+table_regex = re.compile(
+    r"""
+    ^
+    \s*(
+        [-─=]+
+        | [+|│┌└├] [+-┬┼┴─\s]* [+|│┤┘┐]
+        | [|│] .* [|│]
+    )\s*
+    $
+    """,
+    re.X
+)
+
+
+def dump_table(rows):
+    if not rows:
+        return
+
+    table = PrettyTable()
+
+    header, rows = rows[0], rows[1:]
+
+    assert not header[0]
+    assert not header[-1]
+    table.field_names = header[1:-1]
+    for row in rows:
+        assert not row[0]
+        assert not row[-1]
+        table.add_row(row[1:-1])
+    print(table)
+
+
+rows = []
+for line in input():
+    if not table_regex.fullmatch(line):
+        dump_table(rows)
+        rows = []
+        print(line, end='')
+        continue
+
+    if box_chars_regex.fullmatch(line):
+        continue
+
+    line = line.rstrip()
+
+    row = [el.strip() for el in re.split('[│|]', line)]
+    rows.append(row)
+dump_table(rows)
