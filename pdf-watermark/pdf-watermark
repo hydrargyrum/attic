@@ -1,0 +1,71 @@
+#!/bin/sh -e
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+
+usage () {
+	cat <<- EOF
+		usage: $0 [-a ANGLE] [-d DPI] [-p POINTSIZE] INFILE MESSAGE OUTFILE
+
+		Watermark a chosen message on a PDF and rasterize the output.
+		Why rasterizing? If not, removing the watermark would be trivial.
+	EOF
+}
+
+
+dpi=300
+points=20
+angle=-20
+while getopts a:d:p: name
+do
+	case $name in
+	d)
+		dpi=$OPTARG
+		;;
+	p)
+		points=$OPTARG
+		;;
+	a)
+		angle=$OPTARG
+		;;
+	?)
+		usage >&2
+		exit 64
+		;;
+	esac
+done
+shift $(($OPTIND - 1))
+
+[ $# -ne 3 ] && {
+	usage >&2
+	exit 64
+}
+infile=$1
+message=$2
+outfile=$3
+
+if ! convert --version >/dev/null 2>&1
+then
+	printf 'convert (imagemagick) must be installed!\n' >&2
+	exit 1
+fi
+
+convert \
+	-density "$dpi" \
+	-background None \
+	-fill 'graya(50%, 0.50)' \
+	-pointsize "$points" \
+	label:"$message" \
+	-rotate "$angle" \
+	+repage \
+	-gravity center \
+	-extent 100%x140% \
+	+write mpr:TILE \
+	+delete \
+	"$infile" \
+	-alpha set \
+	'(' \
+		+clone \
+		-fill mpr:TILE \
+		-draw 'color 0,0 reset' \
+	')' \
+	-composite \
+	"$outfile"

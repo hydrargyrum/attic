@@ -26,6 +26,7 @@ This repository hosts various small personal tools.
 * morse: text from/to Morse code converter, and optional beep player
 * morsehtml: HTML page with its background flashing a Morse code message
 * moversleep: move incoming files from a dir into another
+* pdf-watermark: watermark a chosen message on a PDF
 * qgifview: very basic GIF image viewer
 * qr2unicode: display QR-codes on console using Unicode box-drawing characters
 * qr-shot: decode a QR code image from part of the screen
