@@ -6,29 +6,39 @@
 from argparse import ArgumentParser, FileType
 import sys
 
+try:
+    import termcolor
+except ImportError:
+    def styled(s, *args, **kwargs):
+        return s
+else:
+    def styled(s, *args, **kwargs):
+        if sys.stdout.isatty():
+            s = termcolor.colored(s, *args, **kwargs)
+        return s
+
 
 REPLACES = {
-    '\n': r'\n',
-    '\t': r'\t',
-    '\r': r'\r',
-    '\f': r'\f',
-    '\b': r'\b',
-    '\a': r'\a',
-    '\v': r'\v',
-    '\x00': r'\0',
-    ' ': 'sp',
+    '\n': styled(r'\n', 'green'),
+    '\t': styled(r'\t', 'green'),
+    '\r': styled(r'\r', 'green'),
+    '\f': styled(r'\f', 'green'),
+    '\b': styled(r'\b', 'green'),
+    '\a': styled(r'\a', 'green'),
+    '\v': styled(r'\v', 'green'),
+    '\x00': styled(r'\0', attrs=['reverse']),
+    ' ': styled('sp', 'green'),
 }
-
 
 def transform(b):
     char = chr(b)
 
     if char in REPLACES:
-        return f' {REPLACES[char]}'
+        return f'{REPLACES[char]}'
     elif 0x20 < b < 0x7f:
-        return f' {char} '
+        return f'{char} '
     else:
-        return f' {b:02x}'
+        return f"{styled(f'{b:02X}', attrs=['reverse'])}"
 
 
 def print_line(line):
