@@ -10,10 +10,12 @@ This repository hosts various small personal tools.
 * cppasciitree: an example of how to hardcode a tree with source code looking like the actual tree
 * crc: basic CRC computation tool
 * ffmcut: ffmcut: ffmpeg wrapper to cut a video between 2 timestamps
+* flatten-json: flatten a deep json tree in a single json or reverse operation
 * fonts2png: render TTF fonts samples to image files
 * gen-indexhtml: create an index.html listing all files in dir
 * git: misc git utilities
 * group-files-by-mtime: take files in a dir and move them to folders for each last modification time
+* headset-bluez: enable a bluetooth headset and out or in/out mode
 * hexgen: generate data from an hex dump
 * hibp: check if a password has been leaked on "Have I Been Pwned?" site (by checking hash prefix)
 * httpshare: share a directory via HTTP, like Python "http.server" but supports "Range" headers
