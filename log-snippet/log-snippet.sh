@@ -18,6 +18,20 @@ usage () {
 	EOF
 }
 
+max () {
+	val=$1
+	shift
+	for arg
+	do
+		if [ "$arg" -gt "$val" ]
+		then
+			val=$arg
+		fi
+	done
+	echo "$val"
+}
+
+
 # sysexits
 EX_USAGE=64
 
@@ -52,14 +66,15 @@ do
 		printf "%s\n" "--"
 	fi
 
-	currentcontext=-$context
+	startline=$(max 1 $((lineno - context)) )
+	currentcontext=$((startline - lineno))
 
 	# change IFS to avoid field splitting on read lines
 	# for example: don't let shell trim trailing whitespace from $line
 	old="$IFS"
 	IFS=
 
-	sed -n "$((lineno - context)),$((lineno + context))p" "$file" | while read -r line
+	sed -n "$startline,$((lineno + context))p" "$file" | while read -r line
 	do
 		sep=-
 		if [ "$currentcontext" -eq 0 ]
