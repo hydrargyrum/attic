@@ -298,6 +298,8 @@ class Window(QMainWindow):
 			if QMessageBox.question(self, 'Warning', 'The text entered is quite large, this could make the app crash. Continue anyway?', QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
 				return
 		pix = encodeText(text)
+
+		self.cropper.setStyleSheet('*{background: white;}')
 		self.setPixmap(pix)
 
 	def setPixmap(self, pix):
