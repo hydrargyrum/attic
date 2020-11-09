@@ -25,6 +25,7 @@ This repository hosts various small personal tools.
 * json2table: pretty-print a JSON list of objects in an ASCII-art table
 * keepassxprint: dump info and passwords from a KeePassX database
 * log-snippet: parse compilation-log and show snippets of files with context
+* log-ts-diff: parse log and replace timestamps with diff to previous timestamp
 * morse: text from/to Morse code converter, and optional beep player
 * morsehtml: HTML page with its background flashing a Morse code message
 * moversleep: move incoming files from a dir into another
