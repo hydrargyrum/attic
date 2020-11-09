@@ -38,13 +38,13 @@ def duration_to_str(duration):
     for attr in attrs:
         factor = getattr(duration, attr)
         if factor:
-            parts.append(f'{factor:+2d} {attr}')
+            parts.append(f'{factor:=+2d}{attrs[attr]}')
 
     if duration.microseconds:
         secs = duration.seconds + duration.microseconds / 1_000_000
-        parts.append(f'{secs:+6.3f}s')
+        parts.append(f'{secs:=+7.3f}s')
     elif duration.seconds:
-        parts.append(f'{duration.seconds:+3d}')
+        parts.append(f'{duration.seconds:=+3d}s')
 
     if not parts:
         parts.append('+0')
