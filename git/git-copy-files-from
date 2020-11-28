@@ -22,8 +22,7 @@ shift
 
 if [ $# -eq 0 ]
 then
-	set -- .
-	cd "$(git rev-parse --show-toplevel)"
+	set -- :/
 fi
 
 git checkout "$commit" -- "$@"
