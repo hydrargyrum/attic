@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+from pathlib import Path
+import shutil
+
+import vignette
+
+
+old_rename = os.rename
+
+
+def rename_with_thumb(src, dst):
+    if args.verbose:
+        print(f"{src!r} -> {dst!r}")
+
+    if src.startswith(vignette._thumb_path_prefix()):
+        return old_rename(src, dst)
+
+    tsrc = vignette.try_get_thumbnail(src, 'large')
+    if not tsrc:
+        return old_rename(src, dst)
+
+    ret = old_rename(src, dst)
+
+    vignette.put_thumbnail(dst, 'large', tsrc)
+
+    return ret
+
+
+os.rename = rename_with_thumb
+
+
+def copy_with_thumb(src, dst, **kwargs):
+    if args.verbose:
+        print(f"{src!r} -> {dst!r}")
+
+    if src.startswith(vignette._thumb_path_prefix()):
+        return shutil.copy2(src, dst)
+
+    tsrc = vignette.try_get_thumbnail(src, 'large')
+    if not tsrc:
+        return shutil.copy2(src, dst)
+
+    ret = shutil.copy2(src, dst, **kwargs)
+
+    vignette.put_thumbnail(dst, 'large', tsrc)
+
+    return ret
+
+
+def scan_thumbs(path):
+    ret = {}
+    for sub in path.rglob('*'):
+        if not sub.is_file():
+            continue
+
+        thumb = vignette.try_get_thumbnail(str(sub), 'large')
+        if thumb:
+            ret[sub.lstat().st_ino] = thumb
+
+    return ret
+
+
+def restore_thumbs(path, inodes):
+    for sub in path.rglob('*'):
+        thumb = inodes.get(sub.lstat().st_ino)
+        if thumb:
+            vignette.put_thumbnail(str(sub), 'large', thumb)
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-v', '--verbose', action='store_true')
+parser.add_argument('files', nargs='+')
+args = parser.parse_args()
+
+assert len(args.files) >= 2
+dst = args.files[-1]
+pdst = Path(dst)
+try:
+    dst_dev = pdst.stat().st_dev
+    dst_is_dir = pdst.is_dir()
+except FileNotFoundError:
+    assert len(args.files) == 2
+    dst_is_dir = True
+    dst_dev = pdst.parent.stat().st_dev
+
+for src in args.files[:-1]:
+    psrc = Path(src)
+
+    inodes = None
+    if psrc.is_dir() and dst_is_dir and psrc.lstat().st_dev == dst_dev:
+        inodes = scan_thumbs(psrc)
+
+    shutil.move(src, dst, copy_with_thumb)
+
+    if inodes:
+        restore_thumbs(pdst, inodes)
