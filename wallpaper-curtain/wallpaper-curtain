@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+# license: WTFPL [http://www.wtfpl.net/]
+# a Qt app that displays an image always-on-top like a sticky note
+
+import signal
+import sys
+from argparse import ArgumentParser
+
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QIcon, QKeySequence, QPixmap
+from PyQt5.QtWidgets import (
+    QAction, QApplication, QLabel, QMenu, QMessageBox, QStyle, QSystemTrayIcon,
+)
+
+
+class Display(QLabel):
+    def __init__(self, pix):
+        super().__init__()
+
+        self.setPixmap(pix)
+        self.setFocusPolicy(Qt.NoFocus)
+        self.setWindowFlags(
+            self.windowFlags()
+            | Qt.WindowStaysOnTopHint
+            | Qt.WindowDoesNotAcceptFocus
+            | Qt.WindowTransparentForInput
+            | Qt.FramelessWindowHint
+            | Qt.X11BypassWindowManagerHint
+        )
+        self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        self.setAttribute(Qt.WA_X11DoNotAcceptFocus, True)
+        self.setAttribute(Qt.WA_QuitOnClose, True)
+
+    def focusInEvent(self, ev):
+        self.clearFocus()
+
+
+class TrayIcon(QSystemTrayIcon):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.setToolTip("Wallpaper-curtain")
+
+        self.activated.connect(QApplication.instance().quit)
+
+        # mostly useless
+        quitAction = QAction("&Quit", self)
+        quitAction.setShortcut(QKeySequence("Alt+Q"))
+        quitAction.setShortcutContext(Qt.ApplicationShortcut)
+        quitAction.triggered.connect(QApplication.instance().quit)
+
+        self.menu = QMenu()
+        self.menu.addAction(quitAction)
+        self.setContextMenu(self.menu)
+
+
+parser = ArgumentParser(
+    description="Wallpaper-curtain shows an image with low-opacity on top of "
+    + "other windows and the desktop",
+)
+parser.add_argument(
+    "-o", "--opacity", type=float, default=.5,
+    help="Opacity of the image. Value between 0 (fully transparent) and 1 "
+    + "(fully opaque). Default: 0.5."
+)
+parser.add_argument(
+    "--no-tray-is-fine", action="store_true",
+    help="No warning dialog if there's no system tray",
+)
+parser.add_argument("file", help="Image file to show")
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+
+    args = parser.parse_args(app.arguments()[1:])
+
+    pix = QPixmap(args.file)
+    if pix.isNull():
+        parser.error("invalid image file %r" % args.file)
+
+    has_tray = TrayIcon.isSystemTrayAvailable()
+    if not (has_tray or args.no_tray_is_fine):
+        button = QMessageBox.question(
+            None,
+            "Warning",
+            "No system tray is available. This app can only be quit by killing the process. Continue?",
+        )
+        if button == QMessageBox.No:
+            sys.exit("No system tray, quitting")
+
+    if has_tray:
+        tray = TrayIcon()
+        tray.setIcon(QIcon(pix))
+        tray.setIcon(app.style().standardIcon(QStyle.SP_DialogCancelButton))
+        tray.show()
+
+        def show_message():
+            tray.showMessage(
+                "Wallpaper-curtain",
+                "Click here to quit curtain",
+                QIcon(),
+            )
+
+        QTimer.singleShot(200, show_message)
+
+    disp = Display(pix)
+    disp.setWindowTitle("Wallpaper-curtain: %r" % args.file)
+    disp.setWindowOpacity(args.opacity)
+    disp.resize(pix.size())
+    disp.showFullScreen()
+
+    # Qt catches SIGINT but we want to quit easily
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+    app.exec_()
