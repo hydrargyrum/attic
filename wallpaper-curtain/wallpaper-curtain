@@ -64,6 +64,10 @@ parser.add_argument(
     + "(fully opaque). Default: 0.5."
 )
 parser.add_argument(
+    "-m", "--mode", choices=("none", "fit", "cover"), default="none",
+    help="Mode to resize images that do not fit desktop dimensions",
+)
+parser.add_argument(
     "--no-tray-is-fine", action="store_true",
     help="No warning dialog if there's no system tray",
 )
@@ -78,6 +82,17 @@ if __name__ == '__main__':
     pix = QPixmap(args.file)
     if pix.isNull():
         parser.error("invalid image file %r" % args.file)
+
+    screen = app.screens()[0]
+    screen_geom = screen.virtualGeometry()
+    if args.mode == "fit":
+        pix = pix.scaled(screen_geom.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        screen_geom.moveCenter(pix.rect().center())
+        pix = pix.copy(screen_geom.intersected(pix.rect()))
+    elif args.mode == "cover":
+        pix = pix.scaled(screen_geom.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        screen_geom.moveCenter(pix.rect().center())
+        pix = pix.copy(screen_geom.intersected(pix.rect()))
 
     has_tray = TrayIcon.isSystemTrayAvailable()
     if not (has_tray or args.no_tray_is_fine):
