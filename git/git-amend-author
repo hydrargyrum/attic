@@ -1,0 +1,15 @@
+#!/bin/sh -e
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+
+if [ $# -ne 2 ]
+then
+	cat >&2 <<- EOF
+		usage: $0 <NAME> <EMAIL>
+
+		Amends the last commit and change both author and committer names to
+		NAME and emails to EMAIL. Do not touch the author timestamp.
+	EOF
+	exit 64  # EX_USAGE
+fi
+
+git -c "user.name=$1" -c "user.email=$2" commit --amend --author="$1 <$2>"
