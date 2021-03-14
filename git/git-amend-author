@@ -12,4 +12,5 @@ then
 	exit 64  # EX_USAGE
 fi
 
-git -c "user.name=$1" -c "user.email=$2" commit --amend --author="$1 <$2>"
+# don't use --reset-author or it will modify the author timestamp
+git -c "user.name=$1" -c "user.email=$2" commit --amend --author="$1 <$2>" --no-edit
