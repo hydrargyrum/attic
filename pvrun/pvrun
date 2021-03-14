@@ -1,0 +1,38 @@
+#!/bin/sh -e
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+
+if [ $# -eq 0 ]
+then
+	cat >&2 <<- EOF
+		usage: $0 COMMAND [ARGUMENTS...]
+
+		Run COMMAND ARGUMENTS and show its I/O progress with pv(1).
+		pv can follow file descriptors of a command and display
+		progress bars.
+
+		Example:
+
+		    $0 cp bigfile.tar /destination
+
+		runs "cp bigfile.tar another.tar /destination" and shows
+		progress bars of the copy operations.
+	EOF
+	exit 64  # EX_USAGE
+fi
+
+if which pv >/dev/null 2>&1
+then
+	# pv requires a PID to follow.
+	# We could run user-command in background then pass its PID to pv(1)
+	# but the user-command might finish before pv even attaches to it.
+	# Also, forwarding signals (like Ctrl-C) to the user-command is not
+	# easy if it's run in background. wait(1) and fg(1) both have issues.
+
+	# Instead, let pv follow this shell, exec will replace it with the
+	# user-command.
+	pv -d "$$" &
+else
+	echo "pv command is not installed, no progress info can be shown" >&2
+fi
+
+exec "$@"

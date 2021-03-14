@@ -30,6 +30,7 @@ This repository hosts various small personal tools.
 * morsehtml: HTML page with its background flashing a Morse code message
 * moversleep: move incoming files from a dir into another
 * pdf-watermark: watermark a chosen message on a PDF
+* pvrun: run a command and show its I/O progress with pv(1)
 * qgifview: very basic GIF image viewer
 * qr2unicode: display QR-codes on console using Unicode box-drawing characters
 * qr-shot: decode a QR code image from part of the screen
