@@ -165,6 +165,7 @@ def main():
 	parser.add_argument('--expand', action='store_const', const=expand_lists, dest='op')
 	parser.add_argument('--no-lists', action='store_true')
 	parser.add_argument('--separator', default='/')
+	parser.add_argument('--indent', action='store_true')
 	args = parser.parse_args()
 
 	if args.no_lists:
@@ -175,7 +176,11 @@ def main():
 	obj = json.load(sys.stdin)
 	op_cb = (args.op or flatten)
 	obj = op_cb(obj, separator=args.separator)
-	json.dump(obj, sys.stdout)
+
+	indent = None
+	if args.indent:
+		indent = 2
+	json.dump(obj, sys.stdout, indent=indent)
 	print()
 
 
