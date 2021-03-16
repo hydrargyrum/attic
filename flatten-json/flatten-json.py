@@ -166,6 +166,7 @@ def main():
 	parser.add_argument('--no-lists', action='store_true')
 	parser.add_argument('--separator', default='/')
 	parser.add_argument('--indent', action='store_true')
+	parser.add_argument('file', nargs='?')
 	args = parser.parse_args()
 
 	if args.no_lists:
@@ -173,7 +174,12 @@ def main():
 			parser.error('--no-lists can only be used with --expand')
 		args.op = expand_nolists
 
-	obj = json.load(sys.stdin)
+	if args.file:
+		with open(args.file) as fp:
+			obj = json.load(fp)
+	else:
+		obj = json.load(sys.stdin)
+
 	op_cb = (args.op or flatten)
 	obj = op_cb(obj, separator=args.separator)
 
