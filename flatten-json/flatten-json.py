@@ -176,6 +176,7 @@ def main():
 	op_cb = (args.op or flatten)
 	obj = op_cb(obj, separator=args.separator)
 	json.dump(obj, sys.stdout)
+	print()
 
 
 if __name__ == '__main__':
