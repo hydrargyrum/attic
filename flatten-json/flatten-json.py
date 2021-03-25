@@ -125,7 +125,7 @@ def main():
 
 			{
 				"foo": {
-					"bar": 42
+					"bar": 42,
 					"elements": [1, 2]
 				},
 				"baz": true
