@@ -100,8 +100,9 @@ def expand_lists(obj, separator):
 			try:
 				sub = generic_setdefault(sub, path_el, to_set)
 			except ImpossibleList:
-				sub = parent[parent_key] = list_to_dict(sub)
+				new_parent = sub = parent[parent_key] = list_to_dict(sub)
 				sub = generic_setdefault(sub, path_el, to_set)
+
 			parent = new_parent
 			parent_key = path_el
 
