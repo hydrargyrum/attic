@@ -51,6 +51,7 @@ This repository hosts various small personal tools.
 * wakeonwan: wake remote machines with Wake-on-WAN
 * wallpaper-curtain: show an image with low-opacity on top of other windows
 * xephyr-run-cmd: run a Xephyr server and run a command in it (like xvfb-run)
+* yml2json: basic convert YAML to JSON
 
 For more info, see also: http://indigo.re
 
