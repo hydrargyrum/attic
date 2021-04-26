@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 usage() {
-	cat << EOF
+	cat <<-EOF
 		usage: $0 <commit> <command [args...]>
 
 		Generate a detached commit that reproduces <commit> except that
@@ -39,7 +39,7 @@ trap "git worktree remove '$WORKDIR'" EXIT
 
 cd "$WORKDIR"
 "$@" >&2
-git commit -qam "XXX: prepare $COMMIT for $@"
+git commit -qam "XXX: prepare $COMMIT for $*"
 git checkout -q "$COMMIT" -- :/
 "$@" >&2
 git commit -qaC "$COMMIT"
