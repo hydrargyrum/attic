@@ -1,0 +1,48 @@
+#!/bin/sh -e
+
+usage() {
+	cat << EOF
+		usage: $0 <commit> <command [args...]>
+
+		Generate a detached commit that reproduces <commit> except that
+		<command> has been run to modify the tree at that point.
+		Print its id.
+
+		Example use case: cherry-picking a commit X on branch B can
+		fail because of tree differences. If <command> can fix the tree
+		of X to adapt it for branch B, then
+
+		    $0 X COMMAND
+
+		will generate a commit id whose diff is suitable for branch B.
+
+		Warning: <command> will be run in another directory, in a
+		separate worktree.
+	EOF
+}
+
+if [ $# -lt 2 ]
+then
+	usage >&2
+	exit 64  # EX_USAGE
+fi
+
+COMMIT=$1
+shift
+
+WORKDIR=$(mktemp -t -d gitadapt.XXXXXX)
+trap "rmdir '$WORKDIR'" EXIT
+
+git worktree add -q "$WORKDIR" "${COMMIT}~"
+# cleanup (git-worktree remove also destroys the dir)
+trap "git worktree remove '$WORKDIR'" EXIT
+
+cd "$WORKDIR"
+"$@" >&2
+git commit -qam "XXX: prepare $COMMIT for $@"
+git checkout -q "$COMMIT" -- :/
+"$@" >&2
+git commit -qaC "$COMMIT"
+
+# finally print the commit id
+git rev-parse HEAD
