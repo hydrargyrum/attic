@@ -3,6 +3,7 @@ The Attic
 
 This repository hosts various small personal tools.
 
+* all-clipboard: list clipboard data on stdout
 * boxuni: convert ASCII-art boxes into Unicode-art boxes
 * cheapthrottle: throttling a process by sending it SIGSTOP/SIGCONT repeatedly
 * clipsync:
