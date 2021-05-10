@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
 
 import pathlib
 import subprocess

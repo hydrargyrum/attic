@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# license: WTFPLv2 [http://www.wtfpl.net/]
 
 from argparse import ArgumentParser
 from collections import OrderedDict

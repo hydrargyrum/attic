@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# License: WTFPL
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
 
 from PyQt5.QtCore import pyqtSignal as Signal, pyqtSlot as Slot, QPoint, QBasicTimer, Qt
 from PyQt5.QtGui import QCursor, QKeySequence
