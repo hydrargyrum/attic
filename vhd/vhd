@@ -47,12 +47,20 @@ def print_line(line):
 
 def main():
     parser = ArgumentParser(description='Visual Hex Dump')
-    parser.add_argument('--line-addresses', action='store_true')
+    parser.add_argument(
+        "-L", "--line-numbers", action="store_true",
+        help="Display line numbers (in decimal base, starting at 1)",
+    )
+    parser.add_argument(
+        "--line-addresses", action="store_true",
+        help="Display byte offsets at start of lines (in hexadecimal base)",
+    )
     parser.add_argument('--hex', action='store_true')
     parser.add_argument('file', nargs='?', type=FileType('rb'), default=sys.stdin.buffer)
     args = parser.parse_args()
 
     total = 0
+    lineno = 1
     while True:
         line = args.file.readline()
         if not line:
@@ -60,6 +68,8 @@ def main():
 
         if args.line_addresses:
             print(f'{total:08x} ', end='')
+        elif args.line_numbers:
+            print(f"{lineno:08} ", end="")
 
         if args.hex:
             print(' '.join(f'{b:02x}' for b in line))
@@ -67,6 +77,7 @@ def main():
             print_line(line)
 
         total += len(line)
+        lineno += 1
 
 
 if __name__ == '__main__':
