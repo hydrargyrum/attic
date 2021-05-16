@@ -11,9 +11,16 @@ from dateutil.relativedelta import relativedelta
 
 
 def parse(line):
+    # permissive various formats:
+    # 2021-05-16T19:50:42
+    # 2021-05-16 19:50:42,123
+    # 2021-05-16 19:50:42+0200
     m = re.match(r'[\dT\s:,.Z+-]+', line)
     if not m:
-        return {}
+        # format: May 16 19:50:42
+        m = re.match(r'[A-Za-z]+\s+\d{1,2}\s+\d\d:\d\d(:\d\d)?\s', line)
+        if not m:
+            return {}
 
     try:
         ts, toks = parse_base(m[0], fuzzy_with_tokens=True)
