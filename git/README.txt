@@ -18,3 +18,18 @@ Those from current branch matching the source branch are removed before.
 
 This is useful to replace old commits of one branch by newer, amended commits
 (revised history) from another branch.
+
+----
+
+git-amend-author modifies the author name and email of the last commit.
+It also modifies the committer name/email. It doesn't reset the author
+timestamp though.
+
+----
+
+git-commit-with-mtime calls git-commit but sets the date to a file's mtime.
+
+----
+
+git-cherry-pick-on-path is like git-cherry-pick but it can restrict to only some
+path.
