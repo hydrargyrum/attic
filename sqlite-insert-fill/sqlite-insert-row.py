@@ -5,6 +5,7 @@
 # but identifiers aren't parametrizable, plus they are quoted in a strict way
 
 from argparse import ArgumentParser
+import re
 from sqlite3 import connect, Row
 
 from prompt_toolkit.completion import WordCompleter
@@ -36,13 +37,25 @@ def get_completions(col: str) -> set:
     }
 
 
-def coerce_to_sql(val: str, sql_type: str):
-    if sql_type == "text":
-        return val
-    elif sql_type == "integer":
+def parse_numeric(val):
+    try:
         return int(val)
-    elif sql_type == "real":
+    except ValueError:
         return float(val)
+
+
+coerce_table = {
+    "text": (re.compile("text|varchar|char|clob"), str),
+    "integer": (re.compile(".*int|integer"), int),
+    "real": (re.compile("real|double|float"), float),
+    "numeric": (re.compile("numeric|decimal.*"), parse_numeric),
+}
+
+
+def coerce_to_sql(val: str, sql_type: str):
+    for regex, func in coerce_table.values():
+        if regex.fullmatch(sql_type):
+            return func(val)
     else:
         raise AssertionError(f"unhandled {sql_type} type")
 
@@ -77,7 +90,7 @@ def prompt_obj():
             obj[col] = default_set[col]
             continue
 
-        elif col_type == "text":
+        elif coerce_table["text"][0].fullmatch(col_type):
             val = session.prompt(
                 f"{col}? ",
                 completer=WordCompleter(get_completions(col)),
@@ -87,7 +100,7 @@ def prompt_obj():
                 val = None
             obj[col] = val
 
-        elif col_type in ("integer", "real"):
+        else:
             val = session.prompt(f"{col}? ")
             if val:
                 val = coerce_to_sql(val, col_type)
