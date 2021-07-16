@@ -19,8 +19,9 @@
 
 from fileinput import input
 import re
+import sys
 
-from prettytable import PrettyTable
+from prettytable import PrettyTable, HEADER
 
 
 replacements = {
@@ -46,11 +47,13 @@ table_regex = re.compile(
 )
 
 
-def dump_table(rows):
+def dump_table(rows, table_conf=None):
     if not rows:
         return
 
     table = PrettyTable()
+    if table_conf:
+        table_conf(table)
 
     header, rows = rows[0], rows[1:]
 
@@ -64,10 +67,19 @@ def dump_table(rows):
     print(table)
 
 
+conf = None
+if len(sys.argv) > 1 and sys.argv[1] == "--markdown":
+    del sys.argv[1]
+
+    def conf(table):
+        table.hrules = HEADER
+        table.junction_char = "|"
+
+
 rows = []
 for line in input():
     if not table_regex.fullmatch(line):
-        dump_table(rows)
+        dump_table(rows, conf)
         rows = []
         print(line, end='')
         continue
@@ -79,4 +91,4 @@ for line in input():
 
     row = [el.strip() for el in re.split('[│|]', line)]
     rows.append(row)
-dump_table(rows)
+dump_table(rows, conf)
