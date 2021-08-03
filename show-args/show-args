@@ -1,0 +1,6 @@
+#!/bin/sh -e
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+# usage: show-args ARGUMENTS...
+# just show args, one per line
+
+printf "%s\\n" "$@"
