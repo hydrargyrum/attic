@@ -8,11 +8,15 @@ handling "Range" header, making it suitable for seeking randomly in medias.
 
 import argparse
 from pathlib import Path
+import os
 from socketserver import ThreadingMixIn
 from urllib.parse import quote
 from wsgiref.simple_server import WSGIServer
 
-from bottle import route, run, abort, static_file, WSGIRefServer, redirect
+from bottle import (
+	route, run, abort, static_file, WSGIRefServer, redirect,
+	request, HTTPError,
+)
 
 
 DIR = """<!DOCTYPE html>
@@ -29,6 +33,12 @@ DIR = """<!DOCTYPE html>
 @route('/')
 @route('/<path:path>')
 def anything(path='/'):
+	if AUTH and request.auth != AUTH:
+		return HTTPError(
+			401, 'Authentication required',
+			**{'WWW-Authenticate': 'Basic realm="Private"'}
+		)
+
 	try:
 		target = ROOT.joinpath(path.lstrip('/')).resolve(True)
 		relative = target.relative_to(ROOT)
@@ -55,13 +65,34 @@ class ThreadedServer(ThreadingMixIn, WSGIServer):
 	pass
 
 
+def parse_auth(s):
+	if s == "env":
+		try:
+			return (
+				os.environ["HTTPSHARE_USER"],
+				os.environ["HTTPSHARE_PASSWORD"]
+			)
+		except KeyError:
+			raise ValueError(
+				"Missing HTTPSHARE_USER or HTTPSHARE_PASSWORD"
+			)
+	user, sep, password = s.partition(":")
+	if not sep:
+		raise ValueError("Format is USER:PASSWORD")
+	return (user, password)
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--bind', '-b', default='', metavar='ADDRESS',
 	help='Specify alternate bind address '
 	'[default: all interfaces]')
 parser.add_argument('--directory', '-d', default=Path.cwd(), type=Path,
-	help='Specify alternative directory '
-	'[default:current directory]')
+	help='Specify alternative directory [default:current directory]'
+)
+parser.add_argument(
+	'--auth', metavar='USER:PASSWORD', type=parse_auth,
+	help='Require HTTP authentication',
+)
 parser.add_argument('port', action='store',
 	default=8000, type=int,
 	nargs='?',
@@ -69,4 +100,5 @@ parser.add_argument('port', action='store',
 args = parser.parse_args()
 
 ROOT = args.directory
+AUTH = args.auth
 run(server=WSGIRefServer(host=args.bind, port=args.port, server_class=ThreadedServer))
