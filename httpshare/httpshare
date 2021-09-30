@@ -15,7 +15,7 @@ from wsgiref.simple_server import WSGIServer
 
 from bottle import (
 	route, run, abort, static_file, WSGIRefServer, redirect,
-	request, HTTPError,
+	request, HTTPError, install,
 )
 
 
@@ -30,15 +30,34 @@ DIR = """<!DOCTYPE html>
 """
 
 
+class BasicAuthPlugin:
+	api = 2
+	name = "require-basic-auth"
+
+	def __init__(self, required_auth):
+		if not required_auth is None:
+			# just check type
+			_, _ = required_auth
+		self.required_auth = required_auth
+
+	def setup(self, app):
+		pass
+
+	def apply(self, callback, route):
+		def wrapper(*args, **kwargs):
+			if self.required_auth and request.auth != self.required_auth:
+				return HTTPError(
+					401, 'Authentication required',
+					**{'WWW-Authenticate': 'Basic realm="Private"'}
+				)
+			return callback(*args, **kwargs)
+
+		return wrapper
+
+
 @route('/')
 @route('/<path:path>')
 def anything(path='/'):
-	if AUTH and request.auth != AUTH:
-		return HTTPError(
-			401, 'Authentication required',
-			**{'WWW-Authenticate': 'Basic realm="Private"'}
-		)
-
 	try:
 		target = ROOT.joinpath(path.lstrip('/')).resolve(True)
 		relative = target.relative_to(ROOT)
@@ -100,5 +119,6 @@ parser.add_argument('port', action='store',
 args = parser.parse_args()
 
 ROOT = args.directory
-AUTH = args.auth
+
+install(BasicAuthPlugin(args.auth))
 run(server=WSGIRefServer(host=args.bind, port=args.port, server_class=ThreadedServer))
