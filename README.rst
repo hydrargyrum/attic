@@ -10,6 +10,8 @@ This repository hosts various small personal tools.
 * coordapp: always-on-top window that shows the mouse cursor coordinates
 * cppasciitree: an example of how to hardcode a tree with source code looking like the actual tree
 * crc: basic CRC computation tool
+* csv2json: transform CSV into JSON
+* csv2table: pretty-print a CSV file with ASCII-art table
 * ffmcut: ffmcut: ffmpeg wrapper to cut a video between 2 timestamps
 * flatten-json: flatten a deep json tree in a single json or reverse operation
 * fonts2png: render TTF fonts samples to image files
@@ -30,6 +32,7 @@ This repository hosts various small personal tools.
 * morse: text from/to Morse code converter, and optional beep player
 * morsehtml: HTML page with its background flashing a Morse code message
 * moversleep: move incoming files from a dir into another
+* mv-with-thumb: like mv, but also moves XDG thumbnails
 * pdf-watermark: watermark a chosen message on a PDF
 * pvrun: run a command and show its I/O progress with pv(1)
 * qgifview: very basic GIF image viewer
@@ -44,6 +47,8 @@ This repository hosts various small personal tools.
 * redmine2ical: convert Redmine’s timesheet to iCalendar format
 * set-cachedir: basic tool to create CACHEDIR.TAG files (prevent a folder from being backed up)
 * show-args: just show args, one per line
+* sort-with-numbers: sort stdin like sort(1) but sorts numbers
+* sqlite-insert-fill: 2 tools for inserting rows and updating others
 * stickimage: display an image always-on-top like a sticky note
 * supybot-shell: Supybot plugin: execute shell commands and see their output
 * tailsleep: like tail -f but quits when I/O activity stops

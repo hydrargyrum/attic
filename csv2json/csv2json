@@ -5,7 +5,6 @@ from argparse import ArgumentParser
 from collections import OrderedDict
 import csv
 import json
-import sys
 
 
 def sniff(fn):

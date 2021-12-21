@@ -23,3 +23,7 @@ Both inputs will be converted to this CSV:
 	1,4
 	2,5
 	3,6
+
+# License
+
+This is free software, distributed under the WTFPL 2.0.
