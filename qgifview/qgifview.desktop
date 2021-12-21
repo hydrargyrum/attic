@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=QGifView
+GenericName=GIF Image Viewer
+Comment=View GIF images
+Exec=qgifview %f
+Type=Application
+Terminal=false
+StartupNotify=true
+StartupWMClass=qgifview
+Categories=Graphics;Viewer;
+MimeType=image/gif;
