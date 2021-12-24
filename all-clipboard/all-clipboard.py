@@ -28,7 +28,10 @@ def do_mode(mode):
 	else:
 		for mime in all_data:
 			if mime.startswith("text"):
-				print(f"{mime}: {all_data[mime].decode()}")
+				try:
+					print(f"{mime}: {all_data[mime].decode()}")
+				except UnicodeDecodeError:
+					print(f"{mime}: {all_data[mime]!r}")
 			else:
 				print(f"{mime}: {all_data[mime]!r}")
 
