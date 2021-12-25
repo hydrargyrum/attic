@@ -113,7 +113,7 @@ class Inserter(object):
 		self.columns = [row[1] for row in self.cursor.execute('PRAGMA table_info(%s)' % self.table)]
 
 	def _column_type(self, obj):
-		return {str: 'TEXT', unicode: 'TEXT', int: 'INTEGER', long: 'INTEGER', float: 'REAL', bool: 'BOOLEAN'}.get(type(obj), 'NONE')
+		return {str: 'TEXT', int: 'INTEGER', float: 'REAL', bool: 'BOOLEAN'}.get(type(obj), 'NONE')
 
 
 def main():
