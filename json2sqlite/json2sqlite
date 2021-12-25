@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # license: WTFPLv2 [http://wtfpl.net]
 
-import sys, os
+import sys
+import os
 import sqlite3
 import json
 import argparse
@@ -11,12 +12,15 @@ import re
 def escape_name(name):
 	return "'%s'" % name.replace("'", "''")
 
+
 RE_VALIDATE = re.compile(r'^[a-zA-Z_]\w*$')
 def validate_name(name):
 	return bool(RE_VALIDATE.match(name))
 
+
 ForbiddenKeyError = lambda: ValueError('Keys may only contain letters, digits and underscores')
 UnsupportedTypeError = lambda: TypeError('Only dictionaries and lists are supported')
+
 
 class Inserter(object):
 	def __init__(self, dbfile, table, create=False, alter=False):
@@ -118,9 +122,9 @@ class Inserter(object):
 
 def main():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-f', '--file', dest='file', metavar='INPUTFILE')
-	parser.add_argument('-j', '--json', dest='json', metavar='INPUTJSON')
-	parser.add_argument('-d', '--database', dest='database', metavar='DATABASE')
+	parser.add_argument('-f', '--file', dest='file', metavar='INPUT_JSON_FILE', description='Input JSON file')
+	parser.add_argument('-j', '--json', dest='json', metavar='INPUT_JSON_DATA', description='Input JSON data (JSON passed as argument, not a filename!)')
+	parser.add_argument('-d', '--database', dest='database', metavar='DATABASE_FILE')
 	parser.add_argument('-t', '--table', dest='table', metavar='TABLE')
 	parser.add_argument('-u', '--update', dest='update_ids', action='append', metavar='COLUMN_MATCH_FOR_UPDATE')
 	parser.add_argument('--create', dest='create', action='store_true')
@@ -128,9 +132,9 @@ def main():
 
 	args = parser.parse_args()
 	if not args.database:
-		parser.error('Missing -d DATABASE')
+		parser.error('Missing -d DATABASE_FILE')
 	elif not args.file and not args.json:
-		parser.error('Missing -f FILE or -j JSON')
+		parser.error('Missing -f INPUT_JSON_FILE or -j INPUT_JSON_DATA')
 	elif not args.table:
 		parser.error('Missing -t TABLE')
 
@@ -151,6 +155,7 @@ def main():
 		inserter.insert_data(js)
 
 	inserter.commit()
+
 
 if __name__ == '__main__':
 	main()
