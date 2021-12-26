@@ -1,0 +1,17 @@
+#!/bin/sh -e
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+# list pass(1) entries in find(1) format, not tree(1) format
+# example:
+#
+#    foo/bar
+#    foo/baz
+#
+# instead of:
+#
+#    foo
+#    |-- bar
+#    |-- baz
+
+
+cd "${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+find . -name "*.gpg" | sed -e 's:^\./::' -e 's:\.gpg$::'

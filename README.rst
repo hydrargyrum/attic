@@ -33,6 +33,7 @@ This repository hosts various small personal tools.
 * morsehtml: HTML page with its background flashing a Morse code message
 * moversleep: move incoming files from a dir into another
 * mv-with-thumb: like mv, but also moves XDG thumbnails
+* pass-ls-entries: list pass(1) entries in find(1) format, not tree(1) format
 * pdf-watermark: watermark a chosen message on a PDF
 * pvrun: run a command and show its I/O progress with pv(1)
 * qgifview: very basic GIF image viewer
