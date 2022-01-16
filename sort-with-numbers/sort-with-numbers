@@ -12,6 +12,7 @@
 # - foo10.bar
 # sort-with-numbers can perform "version sorting" naturally
 
+import locale
 import fileinput
 import re
 
@@ -43,7 +44,19 @@ def extract_ints(line):
     return tuple(ret)
 
 
+def collate_strs(tup):
+    return tuple(
+        (type, part)
+        if type == 0
+        else (type, locale.strxfrm(part))
+        for type, part in tup
+    )
+
+
+# user locale for collation
+locale.setlocale(locale.LC_ALL, "")
+
 all_lines = list(fileinput.input())
-all_lines.sort(key=extract_ints)
+all_lines.sort(key=lambda line: collate_strs(extract_ints(line)))
 # warning: fileinput keeps all newlines
 print("".join(all_lines), end="")
