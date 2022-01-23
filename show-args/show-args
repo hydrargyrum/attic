@@ -2,5 +2,9 @@
 # license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
 # usage: show-args ARGUMENTS...
 # just show args, one per line
+# example:
+#   show-args foo "bar baz"
+#     foo
+#     bar baz
 
 printf "%s\\n" "$@"

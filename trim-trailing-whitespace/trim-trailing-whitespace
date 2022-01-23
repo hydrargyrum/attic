@@ -1,6 +1,13 @@
 #!/bin/sed -f
 # license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+#
 # remove trailing whitespace on each line
+#
 # warning: \r\n will likely be converted to \n
+# add -i to edit file in-place (if sed supports it)
+# sample usage:
+#     remove-trailing-whitespace < bad.txt > good.txt
+#     remove-trailing-whitespace -i file.txt
+
 
 s/[[:space:]]*$//
