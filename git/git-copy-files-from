@@ -2,13 +2,13 @@
 # SPDX-License-Identifier: WTFPL
 
 usage () {
-	cat << EOF
-usage: $0 <tree-ish> [<pathspec>...]
+	cat <<- EOF
+		usage: $0 <tree-ish> [<pathspec>...]
 
-Set the tree in the same state as <tree-ish>.
-If <pathspec> are given, operate only on those paths (recursively).
-Else, operate on the whole git repository root.
-EOF
+		Set the tree in the same state as <tree-ish>.
+		If <pathspec> are given, operate only on those paths (recursively).
+		Else, operate on the whole git repository root.
+	EOF
 }
 
 if [ $# -lt 1 ]

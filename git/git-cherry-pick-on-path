@@ -2,13 +2,13 @@
 # SPDX-License-Identifier: WTFPL
 
 usage () {
-	cat << EOF
-usage: $0 <commit> <pathspec>...
+	cat <<- EOF
+		usage: $0 <commit> <pathspec>...
 
-Apply diff from <commit> like git-cherry-pick, but operate only on changes
-from <pathspec> (recursively).
-There can be multiple <pathspec> arguments.
-EOF
+		Apply diff from <commit> like git-cherry-pick, but operate only on changes
+		from <pathspec> (recursively).
+		There can be multiple <pathspec> arguments.
+	EOF
 }
 
 if [ $# -lt 2 ]

@@ -23,11 +23,11 @@ case $# in
         brev="$2"
         ;;
     *)
-        cat >&2 << EOF
-usage: git blamed-diff FILE [REV]
-Prints diff of FILE between REV and REV~, annotating lines with commit info.
-If REV isn't specified, the diff between working directory and HEAD is used.
-EOF
+        cat >&2 <<- EOF
+		usage: git blamed-diff FILE [REV]
+		Prints diff of FILE between REV and REV~, annotating lines with commit info.
+		If REV isn't specified, the diff between working directory and HEAD is used.
+	EOF
         exit 1
 	;;
 esac
