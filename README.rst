@@ -27,6 +27,7 @@ This repository hosts various small personal tools.
 * json2sqlite: insert JSON data in SQLite
 * json2table: pretty-print a JSON list of objects in an ASCII-art table
 * keepassxprint: dump info and passwords from a KeePassX database
+* lch-color-chooser: CIE LCh color chooser and RGB converter
 * log-snippet: parse compilation-log and show snippets of files with context
 * log-ts-diff: parse log and replace timestamps with diff to previous timestamp
 * morse: text from/to Morse code converter, and optional beep player

@@ -33,3 +33,8 @@ git-commit-with-mtime calls git-commit but sets the date to a file's mtime.
 
 git-cherry-pick-on-path is like git-cherry-pick but it can restrict to only some
 path.
+
+---
+
+git-combine-remotes creates a new git remote with all the URLs of other specified
+remotes. This is useful to push to multiple URLs in one git-push call.
