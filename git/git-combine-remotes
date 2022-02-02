@@ -1,0 +1,28 @@
+#!/bin/sh -e
+# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+
+if [ $# -lt 2 ]
+then
+	cat <<- EOF
+		usage: $0 NEW_REMOTE REMOTES...
+
+		Create NEW_REMOTE using all URLs of existing REMOTES.
+	EOF
+fi
+
+mergeto=$1
+shift
+
+if git remote get-url "$mergeto" > /dev/null 2> /dev/null
+then
+	git remote rm "$mergeto"
+fi
+
+remote=$1
+shift
+git remote add "$mergeto" "$(git remote get-url "$remote")"
+
+for remote
+do
+	git remote set-url --add "$mergeto" "$(git remote get-url "$remote")"
+done
