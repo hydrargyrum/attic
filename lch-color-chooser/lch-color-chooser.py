@@ -23,6 +23,8 @@ class ColorSlider(QAbstractSlider):
 	lightness = 0
 	chroma = 0
 	hue = 0
+	forceGamut = False
+
 	margin = 10
 
 	def __init__(self):
@@ -47,12 +49,44 @@ class ColorSlider(QAbstractSlider):
 		self.hue = value
 		self.repaint()
 
+	@Slot(bool)
+	def setForceGamut(self, value):
+		self.forceGamut = value
+		self.repaint()
+
 	def buildColor(self, step):
 		orig = self.buildLCH(step)
-		new = convert_color(orig, sRGBColor)
-		rgb255 = new.get_upscaled_value_tuple()
-		# if LCH color is outside sRGB, values will be out of the range
-		rgb255 = map(lambda v: clamp(0, v, 255), rgb255)
+
+		def is_in_gamut(rgb):
+			return all(0 <= elem <= 1 for elem in rgb.get_value_tuple())
+
+		def convert_until_gamut(l, c, h):
+			lch_obj = LCHabColor(l, c, h)
+			rgb = convert_color(lch_obj, sRGBColor)
+			if is_in_gamut(rgb):
+				return rgb
+
+			c_lo = 0
+			c_hi = c
+			c /= 2
+			while (c_hi - c_lo) > .0001:
+				lch_obj = LCHabColor(l, c, h)
+				rgb = convert_color(lch_obj, sRGBColor)
+				if is_in_gamut(rgb):
+					c_lo = c
+				else:
+					c_hi = c
+
+				c = (c_lo + c_hi) / 2
+
+			return rgb
+
+		if self.forceGamut:
+			rgb = convert_until_gamut(orig.lch_l, orig.lch_c, orig.lch_h)
+		else:
+			rgb = convert_color(orig, sRGBColor)
+
+		rgb255 = rgb.get_upscaled_value_tuple()
 		return QColor(*rgb255)
 
 		(r, g, b), = colorspacious.cspace_convert(
@@ -71,10 +105,12 @@ class ColorSlider(QAbstractSlider):
 		# gradient
 		step_width = (self.width() - self.margin * 2) / self.maximum()
 		start = self.margin
-		for step in range(self.maximum()):
+		colors = [self.buildColor(step) for step in range(self.maximum())]
+
+		for color in colors:
 			pnt.fillRect(
-				int(start), 0, ceil(step_width), self.height(),
-				self.buildColor(step)
+				int(start), 4, ceil(step_width), self.height() - 8,
+				color
 			)
 			start += step_width
 
@@ -186,6 +222,8 @@ class Window(QColorDialog):
 			slider.valueChanged.connect(edit.setValue)
 			edit.valueChanged.connect(slider.setValue)
 
+			forceGamut.toggled.connect(slider.setForceGamut)
+
 			widget = QWidget()
 			widget.setLayout(QHBoxLayout())
 			widget.layout().addWidget(slider)
@@ -193,6 +231,8 @@ class Window(QColorDialog):
 
 			return widget
 
+		forceGamut = QCheckBox("If needed, mangle LCH color to fit into sRGB space (warning: slow)")
+		w.layout().addRow(forceGamut)
 		w.layout().addRow("&Lightness", buildWidget(self.sliders.lslider))
 		w.layout().addRow("&Chroma", buildWidget(self.sliders.cslider))
 		w.layout().addRow("&Hue", buildWidget(self.sliders.hslider))
