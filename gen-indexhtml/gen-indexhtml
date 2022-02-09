@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# this file is licensed under WTFPLv2 [http://wtfpl.net]
+# SPDX-License-Identifier: WTFPL
 
 cd "${1-.}"
 

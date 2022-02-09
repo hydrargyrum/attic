@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-# this file is licensed under the do What The Fuck you want Public License v2
-# http://www.wtfpl.net/
+# SPDX-License-Identifier: WTFPL
 
 # convert redmine timesheets into an iCalendar file for easy visualization
 

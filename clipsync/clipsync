@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# this file is licensed under WTFPLv2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 
 import signal
 import sys
