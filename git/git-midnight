@@ -1,0 +1,15 @@
+#!/bin/sh -e
+# SPDX-License-Identifier: WTFPL
+
+# like git-commit(1) but fake the commit date to use midnight today
+# useful for privacy reasons
+# takes the same options as git-commit(1)
+
+# example usage:
+# git midnight
+# git midnight -m "the commit message"
+# git midnight --amend --no-edit
+
+d=$(date +%Y.%m.%d)T00:00:00
+export GIT_AUTHOR_DATE=$d GIT_COMMITTER_DATE=$d
+git commit --date "$d" "$@"

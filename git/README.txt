@@ -38,3 +38,8 @@ path.
 
 git-combine-remotes creates a new git remote with all the URLs of other specified
 remotes. This is useful to push to multiple URLs in one git-push call.
+
+---
+
+git-midnight commits (or amends a commit) to fake the commit date and force it
+to midnight today. This can be used to hide the real commit date for privacy.
