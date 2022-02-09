@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 2013-01-26
-# license: WTFPL [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 # A Qt app that just displays a ruler to measure pixel lengths
 
 from PyQt5.QtCore import Qt, QSize, QRect, pyqtSlot as Slot

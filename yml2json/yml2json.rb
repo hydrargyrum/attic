@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # 2012-08-04
-# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 
 require 'json'
 require 'yaml'

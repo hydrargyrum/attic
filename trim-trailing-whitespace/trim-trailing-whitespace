@@ -1,5 +1,5 @@
 #!/bin/sed -f
-# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 #
 # remove trailing whitespace on each line
 #

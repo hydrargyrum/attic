@@ -1,5 +1,5 @@
 #!/usr/bin/env pytest
-# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 
 import os
 from pathlib import Path

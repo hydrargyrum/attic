@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 
 # sort stdin like sort(1) but consider digit characters as numbers to sort them.
 # e.g. sort(1) could output this:

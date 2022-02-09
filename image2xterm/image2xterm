@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # base: 2010-01-12
-# license: WTFPLv2
+# SPDX-License-Identifier: WTFPL
 
 import PIL.Image as Image
 import PIL.ImageColor as PILColor

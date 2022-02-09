@@ -1,5 +1,5 @@
 #!/bin/sh
-# license: WTFPLv2/public domain
+# SPDX-License-Identifier: WTFPL
 # 2012-05-12
 
 text='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz

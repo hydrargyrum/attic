@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 # Enable a bluetooth headset and out or in/out mode.
 
 find_bluez () {

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# license: Do What the Fuck You Want to Public License v2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 
 from pathlib import Path
 import subprocess

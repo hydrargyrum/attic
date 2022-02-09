@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# license: WTFPLv2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 
 from argparse import ArgumentParser
 from collections import OrderedDict

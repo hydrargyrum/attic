@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# license: Do What the Fuck You Want to Public License v2 [http://wtfpl.net]
+# SPDX-License-Identifier: WTFPL
 
 # typical usage: cheapthrottle PID
 

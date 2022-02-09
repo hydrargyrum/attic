@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# license: WTFPLv2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 # no warranty
 
 from __future__ import print_function # probably works in Python 2

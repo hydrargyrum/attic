@@ -7,7 +7,7 @@
 # It can encode text to a QR code image and save to a file.
 
 # took 4 evenings in 2010/12
-# license: WTFPL (basically public domain, http://sam.zoy.org/wtfpl/)
+# SPDX-License-Identifier: WTFPL
 # decoding is possible if 'zbar' module is installed, and 'qrencode' for encoding
 
 from PyQt5.QtCore import pyqtSignal as Signal, pyqtSlot as Slot, Qt, QRect, QSize, QUrl

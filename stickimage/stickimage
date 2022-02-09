@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# license: WTFPL [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 # a Qt app that displays an image always-on-top like a sticky note
 
 from argparse import ArgumentParser

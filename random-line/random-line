@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # based on Fisher-Yates shuffle
-# license: WTFPL
+# SPDX-License-Identifier: WTFPL
 
 import fileinput
 import random

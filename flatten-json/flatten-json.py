@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# license: WTFPLv2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 
 import argparse
 import json

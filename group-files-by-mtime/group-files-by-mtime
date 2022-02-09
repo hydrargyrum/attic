@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# license: WTFPLv2
+# SPDX-License-Identifier: WTFPL
 # requires GNU find(1) for "-printf"
 
 usage () {

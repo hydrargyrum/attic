@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# license: do What The Fuck you want Public License v2 [http://wtfpl.net]
+# SPDX-License-Identifier: WTFPL
 # Tool to parse a KeepassX password database and print its content
 # Warning: doesn't parse KeepassX2/KeepassXC format (.kdbx)
 

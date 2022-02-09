@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# license: Do What The Fuck You Want To Public License version 2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 # list pass(1) entries in find(1) format, not tree(1) format
 # example:
 #

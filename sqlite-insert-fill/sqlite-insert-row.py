@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# license: WTFPLv2 [http://www.wtfpl.net/]
+# SPDX-License-Identifier: WTFPL
 
 # yes this program contains a lot of injected strings in SQL requests
 # but identifiers aren't parametrizable, plus they are quoted in a strict way
