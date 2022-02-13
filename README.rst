@@ -13,6 +13,7 @@ This repository hosts various small personal tools.
 * csv2json: transform CSV into JSON
 * csv2table: pretty-print a CSV file with ASCII-art table
 * ffmcut: ffmcut: ffmpeg wrapper to cut a video between 2 timestamps
+* fix-broken-links-by-name: fix broken symlinks if target file changed dir but not name
 * flatten-json: flatten a deep json tree in a single json or reverse operation
 * fonts2png: render TTF fonts samples to image files
 * gen-indexhtml: create an index.html listing all files in dir

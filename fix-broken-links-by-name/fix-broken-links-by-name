@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: WTFPL
+
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
+import os.path
+from pathlib import Path
+from stat import S_ISREG
+from textwrap import dedent
+
+
+# prologue
+parser = ArgumentParser(
+	formatter_class=RawDescriptionHelpFormatter,
+	description=dedent("""
+	Fix broken symlinks from sym_dir in the situation where:
+	- the target file did change directory but did not change name
+	- the target file name is unique in a given tree (dst_dir)
+
+	Example:
+
+	Given files are:
+	- links/broken -> doesnotexist/foo
+	- exists/subdir/foo
+	- exists/subdir/bar
+
+	Then, executing this:
+	  fix-broken-links-by-name links/ exists/
+
+	will symlink links/broken -> exists/subdir/foo
+
+	However if there was a "exists/foo" in addition of "exists/subdir/foo",
+	fix-broken-links-by-name would not have been able to fix "broken"
+	because "foo" would be ambiguous.
+	""")
+)
+parser.add_argument(
+	"-n", "--dry-run", action="store_true",
+	help="display what would be done, but don't do it",
+)
+parser.add_argument(
+	"sym_dir", type=Path,
+	help="directory containing some broken symlinks to fix",
+)
+parser.add_argument(
+	"dst_dir", type=Path,
+	help="directory where to search for symlinks potential targets",
+)
+args = parser.parse_args()
+
+if not args.sym_dir.is_dir():
+	parser.error(f"{args.sym_dir!r} is not a directory")
+if not args.dst_dir.is_dir():
+	parser.error(f"{args.dst_dir!r} is not a directory")
+
+
+# indexing broken links first
+# as there should be much less links than target files
+# we will work on shorter files lists
+
+# index broken links
+broken = {}
+for sym_sub in args.sym_dir.rglob("*"):
+	if not sym_sub.is_symlink():
+		continue
+	try:
+		sym_sub.resolve(strict=True)
+	except FileNotFoundError:
+		target = sym_sub.resolve(strict=False)
+		broken.setdefault(target.name, []).append(sym_sub)
+	else:
+		# symlink not broken
+		continue
+
+# search regular files with the same filename as a broken symlink
+fixable = {}
+for dst_sub in args.dst_dir.rglob("*"):
+	flags = dst_sub.lstat()
+	if not S_ISREG(flags.st_mode):
+		continue
+	if dst_sub.name in broken:
+		fixable.setdefault(dst_sub.name, []).append(dst_sub)
+
+# finally, fix the symlinks
+for name, dests in fixable.items():
+	assert dests
+	try:
+		dst_sub, = dests
+	except ValueError:
+		# destination is ambiguous, can't fix broken links
+		continue
+
+	for sym_sub in broken[name]:
+		# Path.relative_to() prohibits "../", but we may need it
+		fixed = os.path.relpath(dst_sub, sym_sub.parent)
+
+		print(f"{str(sym_sub)!r} -> {fixed!r}")
+		if not args.dry_run:
+			# symlink_to() requires the sym not to exist yet
+			sym_sub.unlink()
+			sym_sub.symlink_to(fixed)
