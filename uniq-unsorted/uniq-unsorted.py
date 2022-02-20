@@ -3,11 +3,15 @@
 
 # uniq-unsorted: like uniq(1) but does not require lines to be sorted
 
+import signal
 import sys
 from fileinput import input
 
 
 seen = set()
+
+
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 # open in binary because:
 # - we don't care about their encoding
@@ -19,5 +23,17 @@ for line in input(mode="rb"):
         continue
 
     # input() keeps newlines, so don't append one
-    sys.stdout.buffer.write(line)
+    try:
+        sys.stdout.buffer.write(line)
+    except BrokenPipeError:
+        # BrokenPipeError is when stdout is piped and the process exits
+        # but when we exit(), python will try to flush stdout and raise
+        # another error...
+        # so we make it fail now, under our control, so it doesn't fail later
+        try:
+            sys.stdout.close()
+        except BrokenPipeError:
+            pass
+        break
+
     seen.add(line)

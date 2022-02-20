@@ -3,7 +3,9 @@
 
 import os
 from pathlib import Path
+import signal
 import subprocess
+import time
 
 import pytest
 
@@ -69,3 +71,28 @@ def test_file(tmp_path, encoding):
 	got = got.decode(encoding)
 
 	assert got == expected
+
+
+def test_interrupt():
+	proc = subprocess.Popen([app_exe], stdin=subprocess.PIPE)
+	time.sleep(1)
+	proc.send_signal(signal.SIGINT)
+	assert proc.wait(1) == -2
+
+
+def test_broken_pipe():
+	p1 = subprocess.Popen(
+		[app_exe], stdout=subprocess.PIPE,
+		stdin=subprocess.PIPE, encoding="utf-8",
+	)
+	p2 = subprocess.Popen(
+		["head", "-1"], stdin=p1.stdout, stdout=subprocess.PIPE,
+	)
+	p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+	p1.stdin.write("\n".join(str(i) for i in range(10000)))
+	p1.stdin.close()
+	output = p2.communicate()[0]
+
+	assert output == b"0\n"
+	assert p2.returncode == 0
+	assert p1.wait(1) == 0
