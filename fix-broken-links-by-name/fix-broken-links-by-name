@@ -4,7 +4,7 @@
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 import os.path
 from pathlib import Path
-from stat import S_ISREG
+from stat import S_ISREG, S_ISDIR
 from textwrap import dedent
 
 
@@ -36,6 +36,10 @@ parser = ArgumentParser(
 parser.add_argument(
 	"-n", "--dry-run", action="store_true",
 	help="display what would be done, but don't do it",
+)
+parser.add_argument(
+	"--directories", action="store_true",
+	help="search for directories instead of files",
 )
 parser.add_argument(
 	"sym_dir", type=Path,
@@ -75,8 +79,12 @@ for sym_sub in args.sym_dir.rglob("*"):
 fixable = {}
 for dst_sub in args.dst_dir.rglob("*"):
 	flags = dst_sub.lstat()
-	if not S_ISREG(flags.st_mode):
+
+	if not args.directories and not S_ISREG(flags.st_mode):
 		continue
+	elif args.directories and not S_ISDIR(flags.st_mode):
+		continue
+
 	if dst_sub.name in broken:
 		fixable.setdefault(dst_sub.name, []).append(dst_sub)
 
