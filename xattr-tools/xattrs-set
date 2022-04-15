@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: WTFPL
+# set/unset xattrs on files with a nice command-line syntax
+# example:
+#	set-xattrs user.foo=bar -user.qux *
+# sets "user.foo" to "bar" on all files and also unsets user.qux
+
+import os
+import re
+import shutil
+import subprocess
+import sys
+
+try:
+	from xattr import setxattr, removexattr
+except ImportError:
+	if not shutil.which("setfattr"):
+		sys.exit("neither setfattr nor xattr commands are installed")
+
+	def setxattr(filename, attr, value):
+		subprocess.run([
+			"setfattr",
+			"-n", attr.decode(),
+			"-v", value.decode(),
+			filename.decode(),
+		], check=True)
+
+
+	def removexattr(filename, attr):
+		subprocess.run([
+			"setfattr",
+			"-x", attr.decode(),
+			filename.decode(),
+		], check=True)
+
+
+def usage(msg=""):
+	if msg:
+		print(msg, file=sys.stderr)
+		print(file=sys.stderr)
+
+	print("usage: %s ATTRS... FILES..." % sys.argv[0], file=sys.stderr)
+	print(file=sys.stderr)
+	print("ATTRS are:", file=sys.stderr)
+	print("XATTR=VALUE for setting XATTR to VALUE", file=sys.stderr)
+	print("-XATTR for unsetting XATTR", file=sys.stderr)
+	sys.exit(64)
+
+
+delattrs = []
+setattrs = []
+
+for n, arg in enumerate(sys.argv[1:], 1):
+	if arg.startswith("-"):
+		delattrs.append(arg[1:])
+	elif re.match(r"(?:security|system|trusted|user)\.", arg):
+		k, _, v = arg.partition("=")
+		setattrs.append((k, v))
+	else:
+		break
+else:
+	usage("error: no FILES given")
+
+if not (delattrs or setattrs):
+	usage("error: no ATTRS given")
+
+for file in sys.argv[n:]:
+	for dattr in delattrs:
+		removexattr(file.encode(), dattr.encode())
+	for k, v in setattrs:
+		setxattr(file.encode(), k.encode(), v.encode())
