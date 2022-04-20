@@ -12,6 +12,7 @@ This repository hosts various small personal tools.
 * crc: basic CRC computation tool
 * csv2json: transform CSV into JSON
 * csv2table: pretty-print a CSV file with ASCII-art table
+* exiforientergui: GUI to losslessly modify EXIF orientation of an image
 * ffmcut: ffmcut: ffmpeg wrapper to cut a video between 2 timestamps
 * fix-broken-links-by-name: fix broken symlinks if target file changed dir but not name
 * flatten-json: flatten a deep json tree in a single json or reverse operation
