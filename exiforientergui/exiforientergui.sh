@@ -7,7 +7,7 @@ die () {
 }
 
 [ $# -eq 1 ] || die "usage: $0 IMAGE"
-which exiftool >/dev/null 2>/dev/null || die "exiftool is not installed"
+which montage >/dev/null 2>/dev/null || die "imagemagick is not installed"
 
 # main
 sz=300
@@ -19,9 +19,9 @@ montage \
 	"$img" -resize "${sz}x${sz}>"  \
 	\( -clone 0 -auto-orient -set label Current \) \
 	\( -clone 0 -set label 1 \) \
-	\( -clone 0 -rotate 180 -set label 3 \) \
-	\( -clone 0 -rotate 90 -set label 6 \) \
-	\( -clone 0 -rotate 270 -set label 8 \) \
+	\( -clone 0 -rotate 180 -set label 2 \) \
+	\( -clone 0 -rotate 90 -set label 3 \) \
+	\( -clone 0 -rotate 270 -set label 4 \) \
 	-delete 0 \
 	-tile 5x \
 	-geometry "${sz}x${sz}+0+0" \
@@ -35,10 +35,14 @@ trap 'kill $imgpid' EXIT
 sleep 1
 orientation=$(zenity --list \
 	--text "Choose orientation" \
-	--column "Orientation" 1 3 6 8
+	--column "Orientation" \
+	--column "Image" \
+	--hide-column=1 \
+	TopLeft 1 BottomRight 2 RightTop 3 LeftBottom 4
 )
-if [ "$orientation" -gt 0 ]
+# correspond to 1 3 6 8 in exif
+if [ -n "$orientation" ]
 then
-	exiftool -n -Orientation="$orientation" "$img"
+	mogrify -orient "$orientation" "$img"
 fi
 
