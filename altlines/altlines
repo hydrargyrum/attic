@@ -1,0 +1,18 @@
+#!/bin/sh -e
+# SPDX-License-Identifier: WTFPL
+
+n=0
+# expand: many terminals don't render reverse-video for tabs
+# IFS=: spaces would be mangled otherwise
+# -r: don't interpret backslashes
+expand | while IFS= read -r line
+do
+	if [ "$n" -eq 0 ]
+	then
+		printf "\033[0m%s\n" "$line"
+		n=1
+	else
+		printf "\033[07m%s\n" "$line"
+		n=0
+	fi
+done
