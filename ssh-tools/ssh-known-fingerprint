@@ -1,0 +1,17 @@
+#!/bin/sh -e
+# SPDX-License-Identifier: WTFPL
+
+if [ $# -lt 1 ] || [ $# -gt 2 ]
+then
+	echo "usage: $0 HOST [PORT]" >&2
+	exit 64
+fi
+
+if [ -z "$2" ]
+then
+	host=$1
+else
+	host="[$1]:$2"
+fi
+
+ssh-keygen -l -F "$host"

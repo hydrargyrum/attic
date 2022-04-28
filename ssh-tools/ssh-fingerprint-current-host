@@ -1,0 +1,7 @@
+#!/bin/sh -e
+# SPDX-License-Identifier: WTFPL
+
+for pub in /etc/ssh/*.pub
+do
+	ssh-keygen -l -f "$pub"
+done
