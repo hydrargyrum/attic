@@ -1,0 +1,6 @@
+#!/bin/sh -e
+# SPDX-License-Identifier: WTFPL
+
+printf "\033_%s\033\\" "$*"
+# or:
+# printf "\033]0;%s\020" "$*"
