@@ -34,6 +34,7 @@ trap 'kill $imgpid' EXIT
 
 sleep 1
 orientation=$(zenity --list \
+	--title "EXIF orienter GUI" \
 	--text "Choose orientation" \
 	--column "Orientation" \
 	--column "Image" \
