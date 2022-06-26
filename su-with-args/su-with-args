@@ -1,0 +1,29 @@
+#!/bin/sh -e
+# SPDX-License-Identifier: WTFPL
+
+usage () {
+	cat <<- EOF
+		usage: $0 USER COMMAND [ARGS…]
+
+		Calls \`su\` to run COMMAND ARGS… under USER.
+		Handles commands and args with spaces.
+		Example: su-with-args root cat /etc/passwd
+
+		Why isn't \`su -c "COMMAND ARGS"\` enough?
+		Because of spaces and to pass extra args, e.g. with \`rsync --rsh\`.
+
+		Note: passes --pty and --login options to \`su\`.
+		Note: uses COMMAND as command name (like \$0 but purely informational).
+	EOF
+}
+
+if [ $# -lt 2 ]
+then
+	usage >&2
+	exit 64  # EX_USAGE
+fi
+
+user=$1
+shift
+
+exec su --pty - "$user" -- -c '"$@"' "$1" "$@"

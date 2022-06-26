@@ -61,6 +61,7 @@ This repository hosts various small personal tools.
 * ssh-tools/ssh-known-fingerprint: show fingerprint of an already known host
 * stickimage: display an image always-on-top like a sticky note
 * supybot-shell: Supybot plugin: execute shell commands and see their output
+* su-with-args: calls su(1) but uses arguments properly
 * tailsleep: like tail -f but quits when I/O activity stops
 * trim-trailing-whitespace: remove spaces, tabs and alike at end of each line
 * uniq-unsorted: like uniq(1) but does not require lines to be sorted
