@@ -20,6 +20,8 @@ This repository hosts various small personal tools.
 * fonts2png: render TTF fonts samples to image files
 * gen-indexhtml: create an index.html listing all files in dir
 * git: misc git utilities
+* gotify-tools/gotify-push: command-line tool for pushing a gotify notification
+* gotify-tools/gotify-read: command-line tool for listing/reading gotify notifications
 * group-files-by-mtime: take files in a dir and move them to folders for each last modification time
 * headset-bluez: enable a bluetooth headset and out or in/out mode
 * hexgen: generate data from an hex dump
@@ -50,10 +52,13 @@ This repository hosts various small personal tools.
 * random-line: take a random line from stdin
 * realign-text-table: takes a malformed ASCII-drawn table and redraw borders properly
 * redmine2ical: convert Redmine’s timesheet to iCalendar format
+* screen-msg: 2 tools for setting screen(1) messages (hardstatus or transient messages)
 * set-cachedir: basic tool to create CACHEDIR.TAG files (prevent a folder from being backed up)
 * show-args: just show args, one per line
 * sort-with-numbers: sort stdin like sort(1) but sorts numbers
 * sqlite-insert-fill: 2 tools for inserting rows and updating others
+* ssh-tools/ssh-fingerprint-current-host: show fingerprint of current host ssh server key
+* ssh-tools/ssh-known-fingerprint: show fingerprint of an already known host
 * stickimage: display an image always-on-top like a sticky note
 * supybot-shell: Supybot plugin: execute shell commands and see their output
 * tailsleep: like tail -f but quits when I/O activity stops
