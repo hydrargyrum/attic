@@ -69,6 +69,7 @@ This repository hosts various small personal tools.
 * vhd: visual hex dump, splitting at newlines, not fixed-width lines
 * wakeonwan: wake remote machines with Wake-on-WAN
 * wallpaper-curtain: show an image with low-opacity on top of other windows
+* xattrs-csv: print a CSV of selected xattrs of selected files
 * xattrs-filter: filter a file list based on whether xattrs have desired values
 * xattrs-set: set/unset xattrs on files with a nice command-line syntax
 * xephyr-run-cmd: run a Xephyr server and run a command in it (like xvfb-run)

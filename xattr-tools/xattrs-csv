@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: WTFPL
+# print a CSV containing xattrs keys/values of files
+# example:
+#	xattrs-csv
+# prints a CSV of all xattrs of files in current directory
+#
+# example:
+#	xattrs-csv user.foobar /tmp/*
+# prints a CSV of user.foobar xattr (not other xattrs) of all files in /tmp
+
+import csv
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import sys
+
+try:
+	from xattr import getxattr, listxattr
+except ImportError:
+	if not shutil.which("getfattr"):
+		sys.exit("neither getfattr nor xattr commands are installed")
+
+	def getxattr(filename, attrname):
+		return subprocess.check_output([
+			"getfattr",
+			"--only-values",
+			"-n", attrname.decode(),
+			filename.decode(),
+		])
+
+
+	def listxattr(filename):
+		res = subprocess.check_output([
+			"getfattr",
+			filename.decode(),
+		], encoding="utf-8")
+		return res.strip().splitlines()[1:]
+
+
+def usage(msg=""):
+	if msg:
+		print(msg, file=sys.stderr)
+		print(file=sys.stderr)
+
+	print("usage: %s [XATTRS...] [FILES...]" % sys.argv[0], file=sys.stderr)
+	print(file=sys.stderr)
+	print("Print a CSV of selected XATTRS (all xattrs by default)", file=sys.stderr)
+	print("Of selected files (all files in current directory by default)", file=sys.stderr)
+	sys.exit(64)
+
+
+def is_xattr(name):
+	return bool(re.match(r"(?:security|system|trusted|user)\.", name))
+
+
+if sys.argv[1:] and sys.argv[1] in ("-h", "--help"):
+	usage()
+
+
+attrs_to_show = []
+
+n = 1
+for n, arg in enumerate(sys.argv[1:], 1):
+	if is_xattr(arg):
+		attrs_to_show.append(arg)
+	else:
+		break
+
+files = sys.argv[n:]
+if not files:
+	files = [str(p) for p in Path.cwd().iterdir()]
+
+all_files = {}
+all_fields = {}
+for file in files:
+	all_files[file] = {
+		attr: getxattr(file.encode(), attr).decode()
+		for attr in listxattr(file.encode())
+		if (not attrs_to_show) or attr in attrs_to_show
+	}
+	all_fields.update(all_files[file])
+#print(all_fields)
+#print(all_files)
+
+writer = csv.DictWriter(sys.stdout, fieldnames=["file", *all_fields.keys()])
+writer.writeheader()
+for file, attrs in all_files.items():
+	writer.writerow({"file": file, **attrs})
