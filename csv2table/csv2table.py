@@ -21,7 +21,7 @@ def read_rows(fd, args):
 			yield row
 	else:
 		for row in csv.reader(fd, delimiter=args.delimiter):
-			yield OrderedDict((str(n), v) for n, v in enumerate(row))
+			yield {str(n): v for n, v in enumerate(row)}
 
 
 def main():
@@ -32,11 +32,23 @@ def main():
 	parser.add_argument('file')
 	args = parser.parse_args()
 
-	with open(args.file) as fd:
+	if args.file == "-":
+		fd = sys.stdin
+	else:
+		fd = open(args.file)
+
+	with fd:
 		data = list(read_rows(fd, args))
+
 	table = PrettyTable()
+	table.field_names = data[0].keys()
+	table.header = args.header
+	table.align = "l"
+
 	for row in data:
-		table.add_row(row)
+		table.add_row([row[col] for col in table.field_names])
 	print(table)
 
-main()
+
+if __name__ == "__main__":
+	main()
