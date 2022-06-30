@@ -10,7 +10,7 @@
 # prints a CSV of user.foobar xattr (not other xattrs) of all files in /tmp
 
 import csv
-from pathlib import Path
+import os
 import re
 import shutil
 import subprocess
@@ -66,17 +66,16 @@ for n, arg in enumerate(sys.argv[1:], 1):
 	if is_xattr(arg):
 		attrs_to_show.append(arg)
 	else:
+		files = sys.argv[n:]
 		break
-
-files = sys.argv[n:]
-if not files:
-	files = [str(p) for p in Path.cwd().iterdir()]
+else:
+	files = sorted(os.listdir("."))
 
 all_files = {}
 all_fields = {}
 for file in files:
 	all_files[file] = {
-		attr: getxattr(file.encode(), attr).decode()
+		attr: getxattr(file.encode(), attr.encode()).decode()
 		for attr in listxattr(file.encode())
 		if (not attrs_to_show) or attr in attrs_to_show
 	}
