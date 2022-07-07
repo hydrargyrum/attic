@@ -1,0 +1,19 @@
+#!/bin/sh -e
+# SPDX-License-Identifier: WTFPL
+# like cat(1) but soaks stdin and waits that stdin reaches EOF
+
+sponge=
+
+cleanup () {
+	if [ -n "$sponge" ]
+	then
+		rm -f "$sponge"
+	fi
+}
+
+trap cleanup EXIT
+
+sponge=$(mktemp ${TMPDIR:-/tmp}/catsponge.XXXXXX)
+
+cat > "$sponge"
+cat "$sponge"

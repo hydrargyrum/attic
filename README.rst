@@ -6,6 +6,7 @@ This repository hosts various small personal tools.
 * all-clipboard: list clipboard data on stdout
 * altlines: mark every 2 lines with color
 * boxuni: convert ASCII-art boxes into Unicode-art boxes
+* catsponge: like cat(1) but soaks stdin and waits that stdin reaches EOF
 * cheapthrottle: throttling a process by sending it SIGSTOP/SIGCONT repeatedly
 * clipsync:
 * coordapp: always-on-top window that shows the mouse cursor coordinates
