@@ -7,7 +7,7 @@ trap "rm '$got'" EXIT
 
 
 init () {
-	./sort-with-numbers > "$got"
+	./sort-with-numbers "$@" > "$got"
 }
 
 check () {
@@ -131,3 +131,7 @@ check <<- EOF
 	é
 	z
 EOF
+
+# NUL separator
+printf "foo\000qux\000baz\000bar\000" | init -z
+printf "bar\000baz\000foo\000qux\000" | check

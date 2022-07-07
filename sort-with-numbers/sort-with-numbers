@@ -12,9 +12,48 @@
 # - foo10.bar
 # sort-with-numbers can perform "version sorting" naturally
 
+import argparse
 import locale
-import fileinput
 import re
+import sys
+
+
+def fileinput_sep(files=None, *, linesep="\n", openhook=None):
+    if files is None:
+        files = sys.argv[1:]
+    if not files:
+        files = ("-",)
+
+    for file in files:
+        if file == "-":
+            fp = sys.stdin
+        else:
+            if openhook:
+                fp = openhook(file)
+            else:
+                fp = open(file, "r")
+
+        with fp:
+            yield from iter_lines(fp, linesep=linesep)
+
+
+def iter_lines(fp, *, linesep="\n", bufsize=4096):
+    buf = ""
+    pos = -1
+    while True:
+        if pos < 0:
+            read = fp.read(bufsize)
+            if not read:
+                break
+
+            buf += read
+        else:
+            yield buf[:pos + 1]
+            buf = buf[pos + 1:]
+
+        pos = buf.find(linesep)
+
+    yield buf
 
 
 def extract_ints(line):
@@ -48,7 +87,7 @@ def collate_strs(tup):
     return tuple(
         (type, part)
         if type == 0
-        else (type, locale.strxfrm(part))
+        else (type, locale.strxfrm(part.rstrip("\x00")))
         for type, part in tup
     )
 
@@ -56,7 +95,14 @@ def collate_strs(tup):
 # user locale for collation
 locale.setlocale(locale.LC_ALL, "")
 
-all_lines = list(fileinput.input())
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "-z", help="NUL separated lines", dest="sep", action="store_const",
+    const="\x00", default="\n",
+)
+parser.add_argument("files", nargs="*")
+args = parser.parse_args()
+
+all_lines = list(fileinput_sep(args.files, linesep=args.sep))
 all_lines.sort(key=lambda line: collate_strs(extract_ints(line)))
-# warning: fileinput keeps all newlines
 print("".join(all_lines), end="")
