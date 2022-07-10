@@ -13,7 +13,7 @@ cleanup () {
 
 trap cleanup EXIT
 
-sponge=$(mktemp ${TMPDIR:-/tmp}/catsponge.XXXXXX)
+sponge=$(mktemp "${TMPDIR:-/tmp}"/catsponge.XXXXXX)
 
 cat > "$sponge"
 cat "$sponge"
