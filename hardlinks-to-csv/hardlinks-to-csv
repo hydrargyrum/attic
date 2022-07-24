@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: WTFPL
+
+# usage: hardlinks-to-csv [DIRECTORY...]
+# prints a CSV of file inodes having more than one hardlink
+# columns:
+# - inode (inode number)
+# - path (absolute path of the file)
+# - nlinks (number of hardlinks of the file)
+
+import csv
+from pathlib import Path
+import stat
+import sys
+
+
+paths = [Path(arg) for arg in sys.argv[1:]]
+if not paths:
+	paths = [Path.cwd()]
+paths = [path.resolve() for path in paths]
+
+writer = csv.writer(sys.stdout)
+writer.writerow(("inode", "path", "nlinks"))
+
+for root in paths:
+	for path in root.rglob('*'):
+		pathstat = path.lstat()
+		if pathstat.st_mode & stat.S_IFREG and pathstat.st_nlink > 1:
+			writer.writerow((pathstat.st_ino, str(path), pathstat.st_nlink))
