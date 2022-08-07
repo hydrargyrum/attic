@@ -1,0 +1,45 @@
+#!/bin/sh -e
+# SPDX-License-Identifier: WTFPL
+
+usage () {
+	cat >&2 <<- EOF
+		usage: $0 [locate|grep|sed|xargs|find|uniq|sort] ARGS...
+
+		Executes the given utility and its ARGS along with the appropriate
+		argument for accepting NUL-separated lines instead of
+		newline-separated.
+
+		For example:
+
+		    $0 xargs rm -v
+
+		is a shorthand for:
+
+		    xargs -0 rm -v
+	EOF
+}
+
+if [ $# -lt 2 ]
+then
+	usage
+	exit 64  # EX_USAGE
+fi
+
+cmd=$1
+shift 1
+
+case "$cmd" in
+	find)
+		exec find "$@" -print0
+		;;
+	locate|xargs)
+		exec "$cmd" -0 "$@"
+		;;
+	grep|sort|uniq|sed)
+		exec "$cmd" -z "$@"
+		;;
+	*)
+		usage
+		exit 64  # EX_USAGE
+		;;
+esac
