@@ -24,6 +24,7 @@ This repository hosts various small personal tools.
 * gotify-tools/gotify-push: command-line tool for pushing a gotify notification
 * gotify-tools/gotify-read: command-line tool for listing/reading gotify notifications
 * group-files-by-mtime: take files in a dir and move them to folders for each last modification time
+* hardlinks-to-csv: list files (and inodes) with more than 1 hardlink as CSV
 * headset-bluez: enable a bluetooth headset and out or in/out mode
 * hexgen: generate data from an hex dump
 * hibp: check if a password has been leaked on "Have I Been Pwned?" site (by checking hash prefix)
@@ -75,6 +76,7 @@ This repository hosts various small personal tools.
 * xattrs-set: set/unset xattrs on files with a nice command-line syntax
 * xephyr-run-cmd: run a Xephyr server and run a command in it (like xvfb-run)
 * yml2json: basic convert YAML to JSON
+* zeropipe: wrapper for other programs which can take NULL-separated lines
 
 For more info, see also: http://indigo.re
 
