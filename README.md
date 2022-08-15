@@ -20,8 +20,8 @@ This repository hosts various small personal tools.
 - [`fonts2png`](fonts2png): render TTF fonts samples to image files
 - [`gen-indexhtml`](gen-indexhtml): create an index.html listing all files in dir
 - [`git`](git): misc git utilities
-- [`gotify-tools/gotify-push`](gotify-tools/gotify-push): command-line tool for pushing a gotify notification
-- [`gotify-tools/gotify-read`](gotify-tools/gotify-read): command-line tool for listing/reading gotify notifications
+- [`gotify-tools/gotify-push`](gotify-tools/gotify-push.py): command-line tool for pushing a gotify notification
+- [`gotify-tools/gotify-read`](gotify-tools/gotify-read.py): command-line tool for listing/reading gotify notifications
 - [`group-files-by-mtime`](group-files-by-mtime): take files in a dir and move them to folders for each last modification time
 - [`hardlinks-to-csv`](hardlinks-to-csv): list files (and inodes) with more than 1 hardlink as CSV
 - [`headset-bluez`](headset-bluez): enable a bluetooth headset and out or in/out mode
@@ -62,7 +62,7 @@ This repository hosts various small personal tools.
 - [`ssh-tools/ssh-fingerprint-current-host`](ssh-tools/ssh-fingerprint-current-host): show fingerprint of current host ssh server key
 - [`ssh-tools/ssh-known-fingerprint`](ssh-tools/ssh-known-fingerprint): show fingerprint of an already known host
 - [`stickimage`](stickimage): display an image always-on-top like a sticky note
-- [`supybot-shell: Supybot plugin`](supybot-shell: Supybot plugin): execute shell commands and see their output
+- [`supybot-shell`](supybot-shell): Supybot plugin: execute shell commands and see their output
 - [`su-with-args`](su-with-args): calls su(1) but uses arguments properly
 - [`tailsleep`](tailsleep): like tail -f but quits when I/O activity stops
 - [`trim-trailing-whitespace`](trim-trailing-whitespace): remove spaces, tabs and alike at end of each line
