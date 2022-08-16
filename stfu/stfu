@@ -1,0 +1,22 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+
+# Fire and forget a command, run in background, discard stdout/stderr.
+# Accept "-l" for still logging output to a temp file.
+
+if [ $# -lt 1 ]
+then
+	cat <<- EOF
+		usage: $0 [-l] COMMAND [ARGS...]
+	EOF
+	exit 64  # EX_USAGE
+fi
+
+udir=/run/user/$(id -u)
+if [ "$1" = -l ] && [ -d "$udir" ]
+then
+	shift
+	exec "$@" > "$udir/$$.log" 2>&1 < /dev/null &
+else
+	exec "$@" > /dev/null 2> /dev/null < /dev/null &
+fi

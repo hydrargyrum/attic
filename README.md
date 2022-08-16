@@ -62,6 +62,7 @@ This repository hosts various small personal tools.
 - [`ssh-tools/ssh-fingerprint-current-host`](ssh-tools/ssh-fingerprint-current-host): show fingerprint of current host ssh server key
 - [`ssh-tools/ssh-known-fingerprint`](ssh-tools/ssh-known-fingerprint): show fingerprint of an already known host
 - [`stickimage`](stickimage): display an image always-on-top like a sticky note
+- [`stfu`](stfu): fire and forget a command, run in background, discard stdout/stderr
 - [`supybot-shell`](supybot-shell): Supybot plugin: execute shell commands and see their output
 - [`su-with-args`](su-with-args): calls su(1) but uses arguments properly
 - [`tailsleep`](tailsleep): like tail -f but quits when I/O activity stops
