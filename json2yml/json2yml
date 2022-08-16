@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+# SPDX-License-Identifier: WTFPL
+
+require 'json'
+require 'yaml'
+
+puts YAML::dump(JSON.parse($<.read))
