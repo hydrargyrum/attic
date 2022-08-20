@@ -21,6 +21,7 @@ This repository hosts various small personal tools.
 - [`git`](git): misc git utilities
 - [`gotify-tools/gotify-push`](gotify-tools/gotify-push.py): command-line tool for pushing a gotify notification
 - [`gotify-tools/gotify-read`](gotify-tools/gotify-read.py): command-line tool for listing/reading gotify notifications
+- [`group-lines`](group-lines): group stdin lines by a regular expression pattern
 - [`group-files-by-mtime`](group-files-by-mtime): take files in a dir and move them to folders for each last modification time
 - [`hardlinks-to-csv`](hardlinks-to-csv): list files (and inodes) with more than 1 hardlink as CSV
 - [`headset-bluez`](headset-bluez): enable a bluetooth headset and out or in/out mode
