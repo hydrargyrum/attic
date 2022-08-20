@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 got=$(mktemp sorted.XXXXXX)
-trap "rm '$got'" EXIT
+trap 'rm "$got"' EXIT
 
 
 init () {

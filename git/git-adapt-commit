@@ -32,11 +32,11 @@ COMMIT=$1
 shift
 
 WORKDIR=$(mktemp -t -d gitadapt.XXXXXX)
-trap "rmdir '$WORKDIR'" EXIT
+trap 'rmdir "$WORKDIR"' EXIT
 
 git worktree add -q "$WORKDIR" "${COMMIT}~"
 # cleanup (git-worktree remove also destroys the dir)
-trap "git worktree remove '$WORKDIR'" EXIT
+trap 'git worktree remove "$WORKDIR"' EXIT
 
 cd "$WORKDIR"
 "$@" >&2
