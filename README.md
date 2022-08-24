@@ -41,6 +41,7 @@ This repository hosts various small personal tools.
 - [`morsehtml`](morsehtml): HTML page with its background flashing a Morse code message
 - [`moversleep`](moversleep): move incoming files from a dir into another
 - [`mv-with-thumb`](mv-with-thumb): like mv, but also moves XDG thumbnails
+- [`no-utf8-bom`](no-utf8-bom): just remove pointless UTF-8 BOM from stdin or files
 - [`pass-ls-entries`](pass-ls-entries): list pass(1) entries in find(1) format, not tree(1) format
 - [`password-prompt`](password-prompt): simply prompt a password on tty and then print it
 - [`pdf-watermark`](pdf-watermark): watermark a chosen message on a PDF
