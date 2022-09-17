@@ -1,6 +1,11 @@
 #!/bin/sh -e
 # SPDX-License-Identifier: WTFPL
 
+if [ -t 1 ]
+then
+	COLUMNS=$(tput cols)
+fi
+
 n=0
 # expand: many terminals don't render reverse-video for tabs
 # IFS=: spaces would be mangled otherwise
@@ -12,7 +17,14 @@ do
 		printf "\033[0m%s\n" "$line"
 		n=1
 	else
-		printf "\033[07m%s\n" "$line"
+		if [ -t 1 ]
+		then
+			# \r is poorly interpreted by pagers, so reserve it for TTYs
+			# also, $COLUMNS makes no sense if stdout is redirected to a file
+			printf "\033[07m%${COLUMNS}s\r%s\n" "" "$line"
+		else
+			printf "\033[07m%s\n" "$line"
+		fi
 		n=0
 	fi
 done
