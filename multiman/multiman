@@ -1,0 +1,15 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+
+page=$1
+
+x-www-browser \
+	"https://pubs.opengroup.org/onlinepubs/9699919799/utilities/$page.html" \
+	"https://manpages.debian.org/unstable/$page.en" \
+	"https://man.archlinux.org/man/$page.en" \
+	"https://www.freebsd.org/cgi/man.cgi?query=$page&apropos=0&sektion=0&arch=default&format=html" \
+	"https://man.openbsd.org/$page" \
+	"https://man.netbsd.org/$page" \
+	"https://ss64.com/osx/$page.html"
+
+# TODO busybox pages for typically coreutils?
