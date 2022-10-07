@@ -18,7 +18,7 @@ def main():
 		buffer = re.sub(b'\\s', b'', buffer)
 
 		if len(buffer) % 2:
-			block, buffer = buffer[:-1], buffer[-1]
+			block, buffer = buffer[:-1], buffer[-1:]
 		else:
 			block, buffer = buffer, b''
 
