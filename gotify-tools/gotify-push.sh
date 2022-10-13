@@ -1,9 +1,14 @@
 #!/bin/sh -eu
 # SPDX-License-Identifier: WTFPL
 
-die () {
-	printf "error: %s\n" "$@" >&2
-	exit 1
+usage () {
+	cat >&2 <<-EOF
+		usage: $0 [-u URL] [-k TOKEN] [-K TOKENFILE] [-t TITLE] [-p PRIORITY] MESSAGE
+
+		\$GOTIFY_URL can be used instead of -u
+		\$GOTIFY_TOKEN can be used instead of -k
+	EOF
+	exit 64
 }
 
 jsonstr () {
@@ -46,13 +51,7 @@ do
 			TITLE=$OPTARG
 			;;
 		\?)
-			cat >&2 <<-EOF
-				usage: $0 [-u URL] [-k TOKEN] [-K TOKENFILE] [-t TITLE] [-p PRIORITY] MESSAGE
-
-				\$GOTIFY_URL can be used instead of -u
-				\$GOTIFY_TOKEN can be used instead of -k
-			EOF
-			exit 64
+			usage
 			;;
 	esac
 done
@@ -60,17 +59,25 @@ shift $(( $OPTIND - 1 ))
 
 if [ -z "${GOTIFY_URL:-}" ]
 then
-	die 'missing $GOTIFY_URL or -u URL'
+	printf 'error: missing $GOTIFY_URL or -u URL\n\n' >&2
+	usage
 fi
 
 if [ -z "${GOTIFY_TOKEN:-}" ]
 then
-	die 'missing $GOTIFY_TOKEN or -t TOKEN or -T TOKENFILE'
+	printf 'error: missing $GOTIFY_TOKEN or -t TOKEN or -T TOKENFILE\n\n' >&2
+	usage
 fi
 
 if ! PRIORITY=$(printf %d "$PRIORITY" 2>/dev/null)
 then
-	die 'bad -p PRIORITY number'
+	printf 'error: bad -p PRIORITY number\n\n' >&2
+	usage
+fi
+
+if [ -z "$*" ]
+then
+	usage
 fi
 
 message=$(printf %s "$*" | jsonstr)
