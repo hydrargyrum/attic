@@ -20,14 +20,20 @@ args = parser.parse_args()
 
 # extra
 extra = {}
+# foo::bar::baz.qux=42 => {"foo::bar": {"baz": {"qux": "42"}}}
 for kv in args.extra:
 	k, sep, v = kv.partition("=")
 	if not sep:
 		parser.error(f"bad extra format: {kv}")
-	k, sep, subk = k.rpartition("::")
+	namespace, sep, k = k.rpartition("::")
 	if not sep:
 		parser.error(f"bad extra format: {kv}")
-	extra.setdefault(k, {})[subk] = v
+
+	subd = extra.setdefault(namespace, {})
+	ks = k.split(".")
+	for subk in ks[:-1]:
+		subd = subd.setdefault(subk, {})
+	subd[ks[-1]] = v
 
 # session
 session = requests.Session()
