@@ -9,5 +9,4 @@
 #     remove-trailing-whitespace < bad.txt > good.txt
 #     remove-trailing-whitespace -i file.txt
 
-
-s/[[:space:]]*$//
+s/[[:space:]][[:space:]]*$//
