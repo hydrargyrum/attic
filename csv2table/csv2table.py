@@ -2,11 +2,10 @@
 # SPDX-License-Identifier: WTFPL
 
 from argparse import ArgumentParser
-from collections import OrderedDict
 import csv
 import sys
 
-from prettytable import PrettyTable
+from prettytable import PrettyTable, SINGLE_BORDER
 
 
 def sniff(fn):
@@ -26,10 +25,11 @@ def read_rows(fd, args):
 
 def main():
 	parser = ArgumentParser()
-	parser.add_argument('--header', action='store_true')
+	parser.add_argument('-H', '--header', action='store_true')
 	parser.add_argument('-d', '--delimiter', default=',')
+	parser.add_argument('-b', '--box', action='store_true')
 	parser.add_argument('--sniff', action='store_true')
-	parser.add_argument('file')
+	parser.add_argument('file', nargs='?', default='-')
 	args = parser.parse_args()
 
 	if args.file == "-":
@@ -41,6 +41,8 @@ def main():
 		data = list(read_rows(fd, args))
 
 	table = PrettyTable()
+	if args.box:
+		table.set_style(SINGLE_BORDER)
 	table.field_names = data[0].keys()
 	table.header = args.header
 	table.align = "l"
