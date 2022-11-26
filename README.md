@@ -81,6 +81,7 @@ This repository hosts various small personal tools.
 - [`xephyr-run-cmd`](xephyr-run-cmd): run a Xephyr server and run a command in it (like xvfb-run)
 - [`yml2json`](yml2json): basic convert YAML to JSON
 - [`zeropipe`](zeropipe): wrapper for other programs which can take NULL-separated lines
+- [`zlib-uncompress`](zlib-uncompress): uncompress stdin with raw zlib (not gzip)
 
 For more info, see also: http://indigo.re
 
