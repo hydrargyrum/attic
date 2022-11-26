@@ -10,3 +10,4 @@
 - netbsd manual pages
 - ss64.com for macosx manual pages
 
+Pass `-n` option to only display URLs that would be opened, but don't open them.

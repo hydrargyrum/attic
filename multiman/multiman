@@ -1,9 +1,20 @@
 #!/bin/sh -eu
 # SPDX-License-Identifier: WTFPL
 
+printlines () {
+	printf "%s\n" "$@"
+}
+
+cmd=x-www-browser
+if [ "$1" = -n ]
+then
+	cmd=printlines
+	shift
+fi
+
 page=$1
 
-x-www-browser \
+"$cmd" \
 	"https://pubs.opengroup.org/onlinepubs/9699919799/utilities/$page.html" \
 	"https://manpages.debian.org/unstable/$page.en" \
 	"https://man.archlinux.org/man/$page.en" \
