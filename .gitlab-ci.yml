@@ -1,0 +1,10 @@
+include:
+  - flatten-json/.gitlab-ci.yml
+  - group-lines/.gitlab-ci.yml
+  - uniq-unsorted/.gitlab-ci.yml
+  - log-ts-diff/.gitlab-ci.yml
+  - json2csv/.gitlab-ci.yml
+  - catsponge/.gitlab-ci.yml
+  - hexgen/.gitlab-ci.yml
+  - morse/.gitlab-ci.yml
+  - zlib-uncompress/.gitlab-ci.yml

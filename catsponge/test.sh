@@ -10,7 +10,7 @@ trap 'rm -f "$tmp1" "$tmp2"' EXIT
 
 # check stdin = stdout
 seq 10 > "$tmp1"
-seq 10 | catsponge > "$tmp2"
+seq 10 | ./catsponge > "$tmp2"
 diff -u "$tmp1" "$tmp2"
 
 # check stdout is not written before EOF is reached
@@ -26,7 +26,7 @@ diff -u "$tmp1" "$tmp2"
 		echo fail > "$tmp2"  # poor man's pipefail
 		exit 1
 	fi
-} | catsponge > "$tmp1"
+} | ./catsponge > "$tmp1"
 
 if [ -s "$tmp2" ]
 then

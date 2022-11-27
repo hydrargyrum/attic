@@ -1,0 +1,15 @@
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+
+test-log-ts-diff:
+  image: python:3
+  stage: test
+  script:
+    - cd $CI_PROJECT_DIR/log-ts-diff
+    - if [ -f requirements.txt ]; then pip install -r requirements.txt ; fi
+    - pip install pytest
+    - ./test.py
