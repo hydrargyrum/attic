@@ -56,6 +56,8 @@ This repository hosts various small personal tools.
 - [`radiodump`](radiodump): circular buffer and dump to file
 - [`random-line`](random-line): take a random line from stdin
 - [`realign-text-table`](realign-text-table): takes a malformed ASCII-drawn table and redraw borders properly
+- [`gitlab-delete-your-comments.py`](redacting/gitlab-delete-your-comments.py): delete your own gitlab comments on issues/MRs/etc.
+- [`matrix-redact-room.py`](redacting/matrix-redact-room.py): redact messages in a Matrix room of all users or a specific user (resumable)
 - [`redmine2ical`](redmine2ical): convert Redmine’s timesheet to iCalendar format
 - [`screen-msg`](screen-msg): 2 tools for setting screen(1) messages (hardstatus or transient messages)
 - [`set-cachedir`](set-cachedir): basic tool to create CACHEDIR.TAG files (prevent a folder from being backed up)
