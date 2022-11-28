@@ -1,4 +1,5 @@
 include:
+  - crc/.gitlab-ci.yml
   - flatten-json/.gitlab-ci.yml
   - group-lines/.gitlab-ci.yml
   - uniq-unsorted/.gitlab-ci.yml
