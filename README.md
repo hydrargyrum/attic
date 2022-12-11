@@ -70,6 +70,7 @@ This repository hosts various small personal tools.
 - [`stfu`](stfu): fire and forget a command, run in background, discard stdout/stderr
 - [`supybot-shell`](supybot-shell): Supybot plugin: execute shell commands and see their output
 - [`su-with-args`](su-with-args): calls su(1) but uses arguments properly
+- [`table-add-border`](table-add-border): add a border to borderless Go tables
 - [`tailsleep`](tailsleep): like tail -f but quits when I/O activity stops
 - [`trim-trailing-whitespace`](trim-trailing-whitespace): remove spaces, tabs and alike at end of each line
 - [`uniq-unsorted`](uniq-unsorted): like uniq(1) but does not require lines to be sorted
