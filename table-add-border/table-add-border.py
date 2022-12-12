@@ -9,7 +9,7 @@ from prettytable import PrettyTable, SINGLE_BORDER
 
 # TODO: accept ANSI-colored entries, where width != number of codepoints
 
-lines = sys.stdin.read().strip("\n").split("\n")
+lines = sys.stdin.read().expandtabs().strip("\n").split("\n")
 splitpoints = [
 	{mtc.start() for mtc in re.finditer(r"^\S|(?<=\s)\S", line)}
 	for line in lines
@@ -17,6 +17,8 @@ splitpoints = [
 intersect = splitpoints[0]
 for sp in splitpoints[1:]:
 	intersect &= sp
+
+assert len(intersect) > 1, "oops, could not detect columns"
 
 intersect = sorted(intersect)
 
@@ -30,6 +32,7 @@ def split_at(line, points):
 
 
 table = PrettyTable([cell.strip() for cell in split_at(lines[0], intersect)])
+table.align = "l"
 table.set_style(SINGLE_BORDER)
 for line in lines[1:]:
 	table.add_row([cell.strip() for cell in split_at(line, intersect)])
