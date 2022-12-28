@@ -14,6 +14,7 @@ This repository hosts various small personal tools.
 - [`csv2table`](csv2table): pretty-print a CSV file with ASCII-art table
 - [`exiforientergui`](exiforientergui): GUI to losslessly modify EXIF orientation of an image
 - [`ffmcut`](ffmcut): ffmpeg wrapper to cut a video between 2 timestamps
+- [`first-avail-command`](first-avail-command): run the first command (in a list) which is installed
 - [`fix-broken-links-by-name`](fix-broken-links-by-name): fix broken symlinks if target file changed dir but not name
 - [`flatten-json`](flatten-json): flatten a deep json tree in a single json or reverse operation
 - [`fonts2png`](fonts2png): render TTF fonts samples to image files

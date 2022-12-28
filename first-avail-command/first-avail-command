@@ -1,0 +1,25 @@
+#!/bin/env python3
+# SPDX-License-Identifier: WTFPL
+
+import sys
+from shutil import which
+from subprocess import run
+from shlex import split
+
+
+if len(sys.argv) < 2 or sys.argv[1] == "-h":
+	sys.exit(f"usage: {sys.argv[0]} COMMAND [COMMAND...] -- ARGS...")
+
+try:
+	pos = sys.argv.index("--")
+except ValueError:
+	sys.exit("error: '--' must be passed after commands")
+
+for cmd in sys.argv[1:pos]:
+	cmdlist = split(cmd)
+	if which(cmdlist[0]):
+		proc = run(cmdlist + sys.argv[pos + 1:])
+		sys.exit(proc.returncode)
+
+else:
+	sys.exit("error: none of the commands exist")
