@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 # SPDX-License-Identifier: WTFPL
 
 import sys
@@ -13,7 +13,7 @@ if len(sys.argv) < 2 or sys.argv[1] == "-h":
 try:
 	pos = sys.argv.index("--")
 except ValueError:
-	sys.exit("error: '--' must be passed after commands")
+	sys.exit(f"error: '--' must be passed after commands passed to {sys.argv[0]}")
 
 for cmd in sys.argv[1:pos]:
 	cmdlist = split(cmd)
