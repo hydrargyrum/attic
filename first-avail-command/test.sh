@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh -eu
 # SPDX-License-Identifier: WTFPL
 
 cd "$(dirname "$0")"
