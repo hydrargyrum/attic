@@ -1,0 +1,11 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+
+if [ -z "${FXRELAY_TOKEN-}" ]
+then
+	echo '$FXRELAY_TOKEN must be set' >&2
+	exit 1
+fi
+
+curl -f -s https://relay.firefox.com/api/v1/relayaddresses/ \
+	-H "Authorization: Token $FXRELAY_TOKEN"
