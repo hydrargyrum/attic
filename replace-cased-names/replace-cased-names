@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: WTFPL
+
+import argparse
+import os
+import re
+import sys
+import tempfile
+
+
+def to_camel(snake):
+    parts = snake.split("_")
+    return "".join([parts[0], *[part.capitalize() for part in parts[1:]]])
+
+
+def to_kebab(snake):
+    return snake.replace("_", "-")
+
+
+def to_caps(snake):
+    return snake.upper()
+
+
+def to_javaclass(snake):
+    parts = snake.split("_")
+    return "".join([part.capitalize() for part in parts])
+
+
+def to_snake(snake):
+    return snake
+
+
+VARIANTS = {
+    "camel": to_camel,
+    "kebab": to_kebab,
+    "snake": to_snake,
+    "caps": to_caps,
+    "javaclass": to_javaclass,
+}
+
+
+def build_replaces():
+    replaces = []
+    for func in VARIANTS.values():
+        replaces.append((func(args.old_name), func(args.new_name)))
+    return replaces
+
+
+def replace_line(line):
+    for pair in replacements:
+        line = line.replace(*pair)
+    return line
+
+
+def replace_file(filename):
+    with (
+        open(filename) as infp,
+        tempfile.NamedTemporaryFile("w+", dir=os.path.dirname(filename), delete=False) as outfp
+    ):
+        for line in infp:
+            print(replace_line(line), end="", file=outfp)
+        os.replace(outfp.name, filename)
+
+
+def replace_stdin():
+    for line in sys.stdin:
+        print(replace_line(line), end="")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("old_name", metavar="old_name")
+    parser.add_argument("new_name", metavar="new_name")
+    parser.add_argument("files", nargs="+")
+    args = parser.parse_args()
+
+    validate_re = re.compile("[a-z_0-9]+")
+    if not validate_re.fullmatch(args.old_name):
+        parser.error(f"old_name should be in lower snake case: {args.old_name!r}")
+    if not validate_re.fullmatch(args.new_name):
+        parser.error(f"new_name should be in lower snake case: {args.new_name!r}")
+
+    replacements = build_replaces()
+
+    for filename in args.files:
+        if filename == "-":
+            replace_stdin()
+        else:
+            replace_file(filename)
