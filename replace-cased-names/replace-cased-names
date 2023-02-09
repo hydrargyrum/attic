@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: WTFPL
 
 import argparse
+import enum
 import os
 import re
 import sys
@@ -21,7 +22,7 @@ def to_caps(snake):
     return snake.upper()
 
 
-def to_javaclass(snake):
+def to_pascal(snake):
     parts = snake.split("_")
     return "".join([part.capitalize() for part in parts])
 
@@ -30,12 +31,20 @@ def to_snake(snake):
     return snake
 
 
+class Case(str, enum.Enum):
+    camel = "camel"
+    kebab = "kebab"
+    snake = "snake"
+    upper = "upper"
+    pascal = "pascal"
+
+
 VARIANTS = {
-    "camel": to_camel,
-    "kebab": to_kebab,
-    "snake": to_snake,
-    "caps": to_caps,
-    "javaclass": to_javaclass,
+    Case.camel: to_camel,
+    Case.kebab: to_kebab,
+    Case.snake: to_snake,
+    Case.upper: to_caps,
+    Case.pascal: to_pascal,
 }
 
 
