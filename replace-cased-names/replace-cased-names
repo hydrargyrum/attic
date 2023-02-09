@@ -50,8 +50,16 @@ VARIANTS = {
 
 def build_replaces():
     replaces = []
-    for func in VARIANTS.values():
-        replaces.append((func(args.old_name), func(args.new_name)))
+    for name, func in VARIANTS.items():
+        from_ = getattr(args, f"{name}_from", None)
+        if from_ is None:
+            from_ = func(args.old_name)
+        to = getattr(args, f"{name}_to", None)
+        if to is None:
+            to = func(args.new_name)
+
+        replaces.append((from_, to))
+
     return replaces
 
 
@@ -80,6 +88,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("old_name", metavar="old_name")
     parser.add_argument("new_name", metavar="new_name")
+    parser.add_argument("--snake-from")
+    parser.add_argument("--snake-to")
+    parser.add_argument("--kebab-from")
+    parser.add_argument("--kebab-to")
+    parser.add_argument("--camel-from")
+    parser.add_argument("--camel-to")
+    parser.add_argument("--pascal-from")
+    parser.add_argument("--pascal-to")
     parser.add_argument("files", nargs="+")
     args = parser.parse_args()
 
