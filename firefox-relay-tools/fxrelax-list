@@ -7,5 +7,5 @@ then
 	exit 1
 fi
 
-curl -f -s https://relay.firefox.com/api/v1/relayaddresses/ \
+curl -f -S -s https://relay.firefox.com/api/v1/relayaddresses/ \
 	-H "Authorization: Token $FXRELAY_TOKEN"
