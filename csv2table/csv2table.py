@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 import csv
 import sys
 
-from prettytable import PrettyTable, SINGLE_BORDER
+from prettytable import PrettyTable, SINGLE_BORDER, MARKDOWN
 
 
 def sniff(fn):
@@ -28,6 +28,7 @@ def main():
 	parser.add_argument('-H', '--header', action='store_true')
 	parser.add_argument('-d', '--delimiter', default=',')
 	parser.add_argument('-b', '--box', action='store_true')
+	parser.add_argument('--markdown', action='store_true')
 	parser.add_argument('--sniff', action='store_true')
 	parser.add_argument('file', nargs='?', default='-')
 	args = parser.parse_args()
@@ -43,6 +44,8 @@ def main():
 	table = PrettyTable()
 	if args.box:
 		table.set_style(SINGLE_BORDER)
+	elif args.markdown:
+		table.set_style(MARKDOWN)
 	table.field_names = data[0].keys()
 	table.header = args.header
 	table.align = "l"
