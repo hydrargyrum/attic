@@ -56,7 +56,7 @@ def iter_lines(fp, *, linesep="\n", bufsize=4096):
     yield buf
 
 
-def extract_ints(line):
+def extract_ints(line, trim_whitespace=False):
     # split the string into parts:
     # - string with digits are coerced to int and thus compared as ints
     # - non-digits are compared as string
@@ -72,6 +72,9 @@ def extract_ints(line):
 
     ret = []
     for part_str in re.findall(r"\D+|\d+", line):
+        if trim_whitespace:
+            part_str = part_str.strip()
+
         try:
             part_as_num = int(part_str)
         except ValueError:
@@ -100,9 +103,14 @@ parser.add_argument(
     "-z", help="NUL separated lines", dest="sep", action="store_const",
     const="\x00", default="\n",
 )
+parser.add_argument(
+    "--trim-whitespace", help="trim whitespace", action="store_true",
+)
 parser.add_argument("files", nargs="*")
 args = parser.parse_args()
 
 all_lines = list(fileinput_sep(args.files, linesep=args.sep))
-all_lines.sort(key=lambda line: collate_strs(extract_ints(line)))
+all_lines.sort(
+    key=lambda line:
+        collate_strs(extract_ints(line, args.trim_whitespace)))
 print("".join(all_lines), end="")
