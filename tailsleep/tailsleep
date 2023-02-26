@@ -12,20 +12,20 @@ def read_file(filename,
               sleep_time=1, end_after_inactivity_iter=5,
               suggested_block_size=4096):
 	"""Generates data of a growing file.
-	
+
 	Yields blocks of data.
 	When file end is reached, it waits `sleep_time` seconds
 	`end_after_inactivity_iter` times. If file has no more data within
 	that period, the generator ends.
 	"""
-	
+
 	def _read_some():
 		for _ in range(end_after_inactivity_iter):
 			block = f.read(suggested_block_size)
 			if block:
 				return block
 			time.sleep(sleep_time)
-	
+
 	with open(filename, 'rb') as f:
 		while True:
 			block = _read_some()
@@ -42,7 +42,7 @@ def _quit(signum, stack):
 def main():
 	locale.setlocale(locale.LC_ALL, '')
 
-	if len(sys.argv) != 2:
+	if len(sys.argv) != 2 or sys.argv[1] in {'-h', '--help'}:
 		print('usage: %s FILE' % sys.argv[0], file=sys.stderr)
 		sys.exit(os.EX_USAGE)
 
