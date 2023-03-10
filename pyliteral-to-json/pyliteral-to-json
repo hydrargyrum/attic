@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: WTFPL
+
+import argparse
+import ast
+import json
+import sys
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file", nargs="?")
+    args = parser.parse_args()
+
+    if args.file:
+        with open(args.file) as fp:
+            text = fp.read()
+    else:
+        text = sys.stdin.read()
+
+    data = ast.literal_eval(text)
+    print(json.dumps(data, indent=4))

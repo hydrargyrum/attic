@@ -51,6 +51,7 @@ This repository hosts various small personal tools.
 - [`password-prompt`](password-prompt): simply prompt a password on tty and then print it
 - [`pdf-watermark`](pdf-watermark): watermark a chosen message on a PDF
 - [`pvrun`](pvrun): run a command and show its I/O progress with pv(1)
+- [`pyliteral-to-json`](pyliteral-to-json): read a python literal dict/list/string and convert to JSON
 - [`qgifview`](qgifview): very basic GIF image viewer
 - [`qr2unicode`](qr2unicode): display QR-codes on console using Unicode box-drawing characters
 - [`qr-shot`](qr-shot): decode a QR code image from part of the screen
