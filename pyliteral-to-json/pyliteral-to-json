@@ -3,8 +3,57 @@
 
 import argparse
 import ast
+import datetime
 import json
 import sys
+
+
+class Evaluator(ast.NodeTransformer):
+    def eval_datetime(self, node):
+        try:
+            args = [ast.literal_eval(arg) for arg in node.args]
+        except ValueError as exc:
+            raise ValueError("args should be literals") from exc
+        obj = datetime.datetime(*args)
+        return ast.Constant(value=str(obj))
+
+    #def eval_timezone(self, node):
+
+    #def eval_timedelta(self, node):
+    #    kwargs = {
+    #        kw.arg: ast.literal_eval(kw.value)
+    #        for kw in node.keywords
+    #    }
+    #    return datetime.timedelta(**kwargs)
+
+    def eval_UUID(self, node):
+        if len(node.args) != 1 or not isinstance(node.args[0], ast.Constant):
+            raise ValueError(f"bad UUID args: {node.args!r}")
+        return node.args[0]
+
+    def eval_Decimal(self, node):
+        if len(node.args) != 1 or not isinstance(node.args[0], ast.Constant):
+            raise ValueError(f"bad Decimal args: {node.args!r}")
+        return node.args[0]
+
+    def visit_Call(self, node):
+        name = None
+        if isinstance(node.func, ast.Name):
+            name = node.func.id
+        elif isinstance(node.func, ast.Attribute):
+            name = node.func.attr
+
+        if name is None:
+            raise ValueError(f"cannot find function name of {node.func}")
+        try:
+            func = getattr(self, f"eval_{name}")
+        except AttributeError:
+            raise ValueError(f"function {name!r} is not allowed")
+
+        if any(not kw.arg for kw in node.keywords):
+            raise ValueError("starred keyword arguments are not allowed")
+
+        return func(node)
 
 
 if __name__ == "__main__":
@@ -18,5 +67,7 @@ if __name__ == "__main__":
     else:
         text = sys.stdin.read()
 
-    data = ast.literal_eval(text)
+    node = ast.parse(text, args.file or "-", "eval")
+    node = Evaluator().visit(node)
+    data = ast.literal_eval(node)
     print(json.dumps(data, indent=4))

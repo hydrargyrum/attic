@@ -29,3 +29,14 @@ def test_error():
 
 	with pytest.raises(subprocess.CalledProcessError):
 		run("[id(1)]")
+
+	with pytest.raises(subprocess.CalledProcessError):
+		run("[datetime(1+1)]")
+
+
+def test_datetime():
+	assert run("""[datetime(2013, 4, 5)]""") == ["2013-04-05 00:00:00"]
+
+
+def test_decimal():
+	assert run("""[Decimal('1')]""") == ["1"]
