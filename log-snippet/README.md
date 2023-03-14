@@ -24,7 +24,7 @@ For each file/line number, `log-snippet` will show the content of the line numbe
 For example, pipe `flake8` output into `log-snippet` and show up to 2 lines before and 2 lines after around the mentioned line:
 
 ```
-% flake8 bad.py other.py | ~/progextern/attic/log-snippet/log-snippet.sh -C 2
+% flake8 bad.py other.py | log-snippet.sh -C 2
 bad.py-2-
 bad.py-3-def foo1():
 bad.py:4:    qux=1
