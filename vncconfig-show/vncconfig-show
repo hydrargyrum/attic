@@ -1,9 +1,35 @@
 #!/bin/sh -eu
 # SPDX-License-Identifier: WTFPL
 
+usage () {
+	cat <<- EOF
+		usage: $0 [-h] [-d]
+
+		-h: prints this help
+		-d: prints option descriptions instead of option values
+	EOF
+	exit "$1"
+}
+
+option=-get
+
+while getopts hd name
+do
+	case "$name" in
+		d)
+			option=-desc ;;
+		h)
+			usage 0 ;;
+		?)
+			usage 64 >&2 ;; # EX_USAGE
+	esac
+done
+shift $((OPTIND - 1))
+
+#
 vncconfig -list | sort -f | while read name
 do
 	printf "%s: " "$name"
-	value=$(vncconfig -get "$name")
+	value=$(vncconfig "$option" "$name")
 	printf "%s\n" "$value"
 done
