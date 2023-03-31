@@ -1,0 +1,9 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+
+vncconfig -list | sort -f | while read name
+do
+	printf "%s: " "$name"
+	value=$(vncconfig -get "$name")
+	printf "%s\n" "$value"
+done
