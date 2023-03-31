@@ -1,7 +1,20 @@
 #!/bin/sh -e
 # SPDX-License-Identifier: WTFPL
 
-cd "${1-.}"
+die () {
+	ex=$1
+	shift
+    printf "%s\n" "$*" >&2
+    exit "$ex"
+}
+
+[ $# -le 1 ] || die 64 "usage: $0 [DIR]"
+[ "${1-}" != -h ] || die 0 "usage: $0 [DIR]"
+
+dir="${1-.}"
+[ -d "$dir" ] || die 1 "error: $dir is not a directory"
+
+cd "$dir"
 
 rm -f index.html
 

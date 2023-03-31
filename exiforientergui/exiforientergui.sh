@@ -6,8 +6,13 @@ die () {
 	exit 1
 }
 
-[ $# -eq 1 ] || die "usage: $0 IMAGE"
-which montage >/dev/null 2>/dev/null || die "imagemagick is not installed"
+if [ $# -ne 1 ] || [ "$1" = -h ]
+then
+	die "usage: $0 IMAGE"
+fi
+command -v montage >/dev/null 2>/dev/null || die "error: imagemagick is not installed"
+
+[ -f "$1" ] || die "error: $1 is not a file"
 
 # main
 sz=300

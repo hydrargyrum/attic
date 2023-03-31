@@ -15,6 +15,10 @@ if [ $# -lt 1 ]
 then
 	usage >&2
 	exit 64  # EX_USAGE
+elif [ "$1" = -h ]
+then
+	usage
+	exit 0
 fi
 
 file="$1"

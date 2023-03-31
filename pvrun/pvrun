@@ -1,9 +1,8 @@
 #!/bin/sh -e
 # SPDX-License-Identifier: WTFPL
 
-if [ $# -eq 0 ]
-then
-	cat >&2 <<- EOF
+usage () {
+	cat <<- EOF
 		usage: $0 COMMAND [ARGUMENTS...]
 
 		Run COMMAND ARGUMENTS and show its I/O progress with pv(1).
@@ -17,8 +16,11 @@ then
 		runs "cp bigfile.tar another.tar /destination" and shows
 		progress bars of the copy operations.
 	EOF
-	exit 64  # EX_USAGE
-fi
+	exit "$1"
+}
+
+[ $# -gt 0 ] || usage 64 >&2  # EX_USAGE
+[ "$1" != -h ] || usage 0
 
 if which pv >/dev/null 2>&1
 then
