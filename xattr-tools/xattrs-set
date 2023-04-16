@@ -39,33 +39,50 @@ def usage(msg=""):
 		print(msg, file=sys.stderr)
 		print(file=sys.stderr)
 
-	print("usage: %s ATTRS... FILES..." % sys.argv[0], file=sys.stderr)
+	print("usage: %s [-v] ATTRS... FILES..." % sys.argv[0], file=sys.stderr)
 	print(file=sys.stderr)
 	print("ATTRS are:", file=sys.stderr)
 	print("XATTR=VALUE for setting XATTR to VALUE", file=sys.stderr)
 	print("-XATTR for unsetting XATTR", file=sys.stderr)
+	print(file=sys.stderr)
+	print("Note: XATTR names usually starts with 'user.'")
 	sys.exit(64)
 
 
 delattrs = []
 setattrs = []
+ambiguous = None
+verbose = False
 
 for n, arg in enumerate(sys.argv[1:], 1):
-	if arg.startswith("-"):
+	if arg == "-h":
+		usage()
+	elif arg == "-v":
+		verbose = True
+	elif arg.startswith("-"):
 		delattrs.append(arg[1:])
 	elif re.match(r"(?:security|system|trusted|user)\.", arg):
 		k, _, v = arg.partition("=")
 		setattrs.append((k, v))
 	else:
+		if "=" in arg:
+			ambiguous = arg
 		break
 else:
 	usage("error: no FILES given")
 
 if not (delattrs or setattrs):
-	usage("error: no ATTRS given")
+	if ambiguous:
+		usage(f"error: no valid ATTRS given (missing 'user.' prefix before {ambiguous!r}?)")
+	else:
+		usage("error: no ATTRS given")
 
 for file in sys.argv[n:]:
 	for dattr in delattrs:
+		if verbose:
+			print(f"removing xattr {dattr!r} from file {file!r}")
 		removexattr(file.encode(), dattr.encode())
 	for k, v in setattrs:
+		if verbose:
+			print(f"setting xattr {k!r}={v!r} from file {file!r}")
 		setxattr(file.encode(), k.encode(), v.encode())
