@@ -79,6 +79,7 @@ This repository hosts various small personal tools.
 - [`su-with-args`](su-with-args): calls su(1) but uses arguments properly
 - [`table-add-border`](table-add-border): add a border to borderless Go tables
 - [`tailsleep`](tailsleep): like tail -f but quits when I/O activity stops
+- [`toml2json`](toml2json): convert TOML to JSON
 - [`trim-trailing-whitespace`](trim-trailing-whitespace): remove spaces, tabs and alike at end of each line
 - [`uniq-unsorted`](uniq-unsorted): like uniq(1) but does not require lines to be sorted
 - [`univisible`](univisible): tweak Unicode combinations and visualize them
