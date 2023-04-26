@@ -20,7 +20,7 @@ def run(input):
 
 
 def test_basic():
-	assert run("""{0o1: u'2', 0x3: None}""") == {"1": "2", "3": None}
+	assert run("""{0o1: u'2', 0x3: None,}""") == {"1": "2", "3": None}
 
 
 def test_error():
