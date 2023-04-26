@@ -95,7 +95,7 @@ This repository hosts various small personal tools.
 - [`zeropipe`](zeropipe): wrapper for other programs which can take NULL-separated lines
 - [`zlib-uncompress`](zlib-uncompress): uncompress stdin with raw zlib (not gzip)
 
-For more info, see also: http://indigo.re
+For more info, see also: https://indigo.re
 
 ## Licence
 
