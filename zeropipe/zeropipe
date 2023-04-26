@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: WTFPL
 
 usage () {
-	cat >&2 <<- EOF
+	cat <<- EOF
 		usage: $0 [locate|grep|sed|xargs|find|uniq|sort] ARGS...
 
 		Executes the given utility and its ARGS along with the appropriate
@@ -21,7 +21,7 @@ usage () {
 
 if [ $# -lt 2 ]
 then
-	usage
+	usage >&2
 	exit 64  # EX_USAGE
 fi
 
@@ -38,8 +38,12 @@ case "$cmd" in
 	grep|sort|uniq|sed)
 		exec "$cmd" -z "$@"
 		;;
-	*)
+	-h)
 		usage
+		exit 0
+		;;
+	*)
+		usage >&2
 		exit 64  # EX_USAGE
 		;;
 esac
