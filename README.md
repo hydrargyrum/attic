@@ -53,6 +53,7 @@ This repository hosts various small personal tools.
 - [`pdf-watermark`](pdf-watermark): watermark a chosen message on a PDF
 - [`pvrun`](pvrun): run a command and show its I/O progress with pv(1)
 - [`pyliteral-to-json`](pyliteral-to-json): read a python literal dict/list/string and convert to JSON
+- [`pyqt5-to-pyqt6`](pyqt5-to-pyqt6): dumb port a file from PyQt5 to PyQt6
 - [`qgifview`](qgifview): very basic GIF image viewer
 - [`qr2unicode`](qr2unicode): display QR-codes on console using Unicode box-drawing characters
 - [`qr-shot`](qr-shot): decode a QR code image from part of the screen
