@@ -38,4 +38,4 @@ Hardlocking accounts can be done with /etc/security/time.conf
 
 ## Dependencies
 
-Requires Python3 and PyQt5, and a compositing window manager for translucency to work.
+Requires Python3 and PyQt6, and a compositing window manager for translucency to work.

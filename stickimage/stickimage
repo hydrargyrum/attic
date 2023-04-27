@@ -5,9 +5,9 @@
 from argparse import ArgumentParser
 import sys
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QLabel, QApplication
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import QLabel, QApplication
 
 
 class Display(QLabel):
@@ -18,8 +18,8 @@ class Display(QLabel):
 		super(Display, self).__init__()
 
 		self.setPixmap(pix)
-		self.setFocusPolicy(Qt.NoFocus)
-		self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus)
+		self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+		self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.WindowDoesNotAcceptFocus)
 
 	def enterEvent(self, ev):
 		self.setWindowOpacity(self.hover_opacity)
@@ -31,10 +31,10 @@ class Display(QLabel):
 		self.clearFocus()
 
 	def mousePressEvent(self, ev):
-		self.clicked = ev.pos()
+		self.clicked = ev.position()
 
 	def mouseMoveEvent(self, ev):
-		self.move(ev.globalPos() - self.clicked)
+		self.move((ev.globalPosition() - self.clicked).toPoint())
 
 
 if __name__ == '__main__':
@@ -56,11 +56,11 @@ if __name__ == '__main__':
 	if args.hover_opacity is None:
 		args.hover_opacity = args.opacity
 	if args.borderless:
-		d.setWindowFlags(d.windowFlags() | Qt.FramelessWindowHint)
+		d.setWindowFlags(d.windowFlags() | Qt.WindowType.FramelessWindowHint)
 
 	d.hover_opacity = args.hover_opacity
 	d.opacity = args.opacity
 	d.setWindowOpacity(d.opacity)
 
 	d.show()
-	app.exec_()
+	app.exec()

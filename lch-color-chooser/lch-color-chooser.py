@@ -7,9 +7,9 @@ from math import ceil
 # import colorspacious  # lib seems buggy
 from colormath.color_objects import LCHabColor, sRGBColor
 from colormath.color_conversions import convert_color
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtGui import *
+from PyQt6.QtCore import *
 
 
 Slot = pyqtSlot
@@ -32,7 +32,10 @@ class ColorSlider(QAbstractSlider):
 		self.setLayout(QHBoxLayout())
 		self.setMaximum(self.maximum())
 		self.setMinimumSize(self.maximum(), 5)
-		self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+		self.setSizePolicy(
+			QSizePolicy.Policy.Expanding,
+			QSizePolicy.Policy.Preferred
+		)
 
 	@Slot(int)
 	def setChroma(self, value):
@@ -139,7 +142,7 @@ class ColorSlider(QAbstractSlider):
 
 	def mousePressEvent(self, ev):
 		vw = self.width() - self.margin * 2
-		vpos = clamp(0, ev.x() - self.margin, vw)
+		vpos = clamp(0, ev.pos().x() - self.margin, vw)
 		lpos = int(vpos * self.maximum() / vw)
 
 		self.setSliderDown(True)
@@ -147,7 +150,7 @@ class ColorSlider(QAbstractSlider):
 
 	def mouseMoveEvent(self, ev):
 		vw = self.width() - self.margin * 2
-		vpos = clamp(0, ev.x() - self.margin, vw)
+		vpos = clamp(0, ev.pos().x() - self.margin, vw)
 		lpos = int(vpos * self.maximum() / vw)
 
 		self.setSliderDown(True)
@@ -155,7 +158,7 @@ class ColorSlider(QAbstractSlider):
 
 	def mouseReleaseEvent(self, ev):
 		vw = self.width() - self.margin * 2
-		vpos = clamp(0, ev.x() - self.margin, vw)
+		vpos = clamp(0, ev.pos().x() - self.margin, vw)
 		lpos = int(vpos * self.maximum() / vw)
 
 		self.setSliderPosition(lpos)

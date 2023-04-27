@@ -10,16 +10,14 @@
 # SPDX-License-Identifier: WTFPL
 # decoding is possible if 'zbar' module is installed, and 'qrencode' for encoding
 
-from PyQt5.QtCore import pyqtSignal as Signal, pyqtSlot as Slot, Qt, QRect, QSize, QUrl
-from PyQt5.QtGui import QPixmap, QCursor
-from PyQt5.QtWidgets import QLabel, QDialog, QMainWindow, QApplication, QMessageBox, QTextEdit, QVBoxLayout, QFileDialog, QScrollArea, QDialogButtonBox, QLineEdit, QRubberBand, QFormLayout, qApp
+from PyQt6.QtCore import pyqtSignal as Signal, pyqtSlot as Slot, Qt, QRect, QSize, QUrl
+from PyQt6.QtGui import QPixmap, QCursor
+from PyQt6.QtWidgets import QLabel, QDialog, QMainWindow, QApplication, QMessageBox, QTextEdit, QVBoxLayout, QFileDialog, QScrollArea, QDialogButtonBox, QLineEdit, QRubberBand, QFormLayout
 
 import sys
 import time
 import tempfile
 
-if sys.version_info.major > 2:
-	unicode = str
 
 def tryImport(modulename):
 	try:
@@ -74,10 +72,10 @@ class ImageCropperDropper(QLabel):
 
 		self.setAcceptDrops(True)
 
-		self.marker = QRubberBand(QRubberBand.Rectangle, self)
+		self.marker = QRubberBand(QRubberBand.Shape.Rectangle, self)
 		self.markOrigin = self.markEnd = None
 
-		self.setContextMenuPolicy(Qt.ActionsContextMenu)
+		self.setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu)
 		self.addAction(mainwin.cropAction)
 		self.addAction(mainwin.saveAction)
 
@@ -108,7 +106,7 @@ class ImageCropperDropper(QLabel):
 		return QRect().adjusted(x1, y1, x2, y2)
 
 	def mouseMoveEvent(self, ev):
-		if ev.buttons() != Qt.LeftButton:
+		if ev.buttons() != Qt.MouseButton.LeftButton:
 			return QLabel.mouseMoveEvent(self, ev)
 		self.markEnd = ev.pos()
 		diffpoint = self.markEnd - self.markOrigin
@@ -117,7 +115,7 @@ class ImageCropperDropper(QLabel):
 		#~ ev.accept()
 
 	def mousePressEvent(self, ev):
-		if ev.button() != Qt.LeftButton:
+		if ev.button() != Qt.MouseButton.LeftButton:
 			return QLabel.mousePressEvent(self, ev)
 		self.markOrigin = ev.pos()
 		self.marker.move(ev.pos())
@@ -127,12 +125,12 @@ class ImageCropperDropper(QLabel):
 
 	def dragEnterEvent(self, ev):
 		if ev.mimeData().hasUrls():
-			ev.setDropAction(Qt.CopyAction)
+			ev.setDropAction(Qt.DropAction.CopyAction)
 			ev.accept()
 
 	def dropEvent(self, ev):
 		if ev.mimeData().hasUrls():
-			ev.setDropAction(Qt.CopyAction)
+			ev.setDropAction(Qt.DropAction.CopyAction)
 			ev.accept()
 			self.fileDropped.emit(ev.mimeData().urls()[0])
 
@@ -149,7 +147,10 @@ class EncoderDialog(QDialog):
 
 		self.text = QLineEdit()
 
-		self.buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+		self.buttons = QDialogButtonBox(
+			QDialogButtonBox.StandardButton.Ok
+			| QDialogButtonBox.StandardButton.Cancel
+		)
 		self.buttons.accepted.connect(self.validateAndAccept)
 		self.buttons.rejected.connect(self.reject)
 
@@ -161,7 +162,7 @@ class EncoderDialog(QDialog):
 	@Slot()
 	def validateAndAccept(self):
 		if self.text.text():
-			self.value = {'text': unicode(self.text.text())}
+			self.value = {'text': self.text.text()}
 			self.accept()
 
 
@@ -174,7 +175,7 @@ class DecoderDialog(QDialog):
 		self.textDisplay = QTextEdit(text)
 		self.textDisplay.setReadOnly(True)
 
-		self.buttons = QDialogButtonBox(QDialogButtonBox.Ok)
+		self.buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
 		self.buttons.accepted.connect(self.accept)
 
 		self.setLayout(QVBoxLayout())
@@ -205,11 +206,11 @@ class Window(QMainWindow):
 
 		self.scroller = QScrollArea()
 		self.scroller.setWidgetResizable(True)
-		self.scroller.setAlignment(Qt.AlignCenter)
+		self.scroller.setAlignment(Qt.AlignmentFlag.AlignCenter)
 		self.setCentralWidget(self.scroller)
 
 		self.cropper = ImageCropperDropper(self)
-		self.cropper.setAlignment(Qt.AlignCenter)
+		self.cropper.setAlignment(Qt.AlignmentFlag.AlignCenter)
 		self.scroller.setWidget(self.cropper)
 
 		self.status = self.statusBar()
@@ -232,7 +233,7 @@ class Window(QMainWindow):
 		#~ g = QRect(self.geometry())
 		self.hide()
 		time.sleep(1)
-		pix = qApp.primaryScreen().grabWindow(QApplication.desktop().winId())
+		pix = QApplication.instance().primaryScreen().grabWindow()
 		#~ pix = QPixmap.grabWindow(QApplication.desktop().winId())
 		self.show()
 		#~ self.setGeometry(g)
@@ -278,7 +279,7 @@ class Window(QMainWindow):
 			pix = self.loadImage()
 			if not pix or pix.isNull():
 				return
-		QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+		QApplication.setOverrideCursor(QCursor(Qt.CursorShape.WaitCursor))
 		text = decodeImage(pix)
 		QApplication.restoreOverrideCursor()
 		if not text:
@@ -290,13 +291,19 @@ class Window(QMainWindow):
 	def displayEncodeDialog(self):
 		if not hasattr(self, 'encodeDialog'):
 			self.encodeDialog = EncoderDialog(self)
-		ok = (self.encodeDialog.exec_() == QDialog.Accepted)
+		ok = (self.encodeDialog.exec() == QDialog.DialogCode.Accepted)
 		if not ok:
 			return
 		text = self.encodeDialog.value['text']
 		if len(text) > 1000:
-			if QMessageBox.question(self, 'Warning', 'The text entered is quite large, this could make the app crash. Continue anyway?', QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
+			if QMessageBox.question(
+				self, 'Warning', 'The text entered is quite large, this could make the app crash. Continue anyway?',
+				QMessageBox.StandardButton.Yes
+				| QMessageBox.StandardButton.No
+			) != QMessageBox.StandardButton.Yes:
+
 				return
+
 		pix = encodeText(text)
 
 		self.cropper.setStyleSheet('*{background: white;}')
@@ -311,4 +318,4 @@ if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	w = Window()
 	w.show()
-	sys.exit(app.exec_())
+	sys.exit(app.exec())

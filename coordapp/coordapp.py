@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: WTFPL
 
-from PyQt5.QtCore import pyqtSignal as Signal, pyqtSlot as Slot, QPoint, QBasicTimer, Qt
-from PyQt5.QtGui import QCursor, QKeySequence
-from PyQt5.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QAction, qApp, QMainWindow, QApplication, QPushButton, QMessageBox
+from PyQt6.QtCore import pyqtSignal as Signal, pyqtSlot as Slot, QPoint, QBasicTimer, Qt
+from PyQt6.QtGui import QCursor, QKeySequence, QAction
+from PyQt6.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QMainWindow, QApplication, QPushButton, QMessageBox
 
 import sys
 
@@ -117,23 +117,23 @@ class CoordApp(QMainWindow):
 
 		## shortcuts
 		self.copyAction = QAction(self)
-		self.copyAction.setShortcut(QKeySequence(QKeySequence.Copy))
+		self.copyAction.setShortcut(QKeySequence(QKeySequence.StandardKey.Copy))
 		self.copyAction.triggered.connect(self.copyToClibpoard)
 		self.addAction(self.copyAction)
 
 		self.toggleGrabAction = QAction(self)
-		self.toggleGrabAction.setShortcut(QKeySequence(Qt.Key_G))
+		self.toggleGrabAction.setShortcut(QKeySequence(Qt.Key.Key_G))
 		self.toggleGrabAction.triggered.connect(self.follower.toggleGrab)
 		self.toggleGrabAction.triggered.connect(self._showGrabInfo)
 		self.addAction(self.toggleGrabAction)
 
 		self.toggleFollowAction = QAction(self)
-		self.toggleFollowAction.setShortcut(QKeySequence(Qt.Key_Space))
+		self.toggleFollowAction.setShortcut(QKeySequence(Qt.Key.Key_Space))
 		self.toggleFollowAction.triggered.connect(self.follower.toggleFollow)
 		self.addAction(self.toggleFollowAction)
 
 		self.toggleAlwaysOnTopAction = QAction(self)
-		self.toggleAlwaysOnTopAction.setShortcut(QKeySequence(Qt.Key_A))
+		self.toggleAlwaysOnTopAction.setShortcut(QKeySequence(Qt.Key.Key_A))
 		self.toggleAlwaysOnTopAction.triggered.connect(self.toggleAlwaysOnTop)
 		self.addAction(self.toggleAlwaysOnTopAction)
 
@@ -157,7 +157,7 @@ class CoordApp(QMainWindow):
 		return QMainWindow.hideEvent(self, ev)
 
 	def toggleAlwaysOnTop(self):
-		self.setWindowFlags(self.windowFlags() ^ Qt.WindowStaysOnTopHint)
+		self.setWindowFlags(self.windowFlags() ^ Qt.WindowType.WindowStaysOnTopHint)
 		self.show() # setWindowFlags hides...
 
 	@Slot()
@@ -168,7 +168,7 @@ class CoordApp(QMainWindow):
 	@Slot()
 	def copyToClibpoard(self):
 		text = self.label.text().replace(' ', '')
-		qApp.clipboard().setText(text)
+		QApplication.instance().clipboard().setText(text)
 		self.statusBar().showMessage('%s copied to clipboard' % text, 2000)
 
 	def showHelp(self):
@@ -183,4 +183,4 @@ if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	gui = CoordApp()
 	gui.show()
-	sys.exit(app.exec_())
+	sys.exit(app.exec())

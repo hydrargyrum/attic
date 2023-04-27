@@ -6,10 +6,10 @@ import signal
 import sys
 from argparse import ArgumentParser
 
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QIcon, QKeySequence, QPixmap
-from PyQt5.QtWidgets import (
-    QAction, QApplication, QLabel, QMenu, QMessageBox, QStyle, QSystemTrayIcon,
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QIcon, QKeySequence, QPixmap, QAction
+from PyQt6.QtWidgets import (
+    QApplication, QLabel, QMenu, QMessageBox, QStyle, QSystemTrayIcon,
 )
 
 
@@ -18,18 +18,18 @@ class Display(QLabel):
         super().__init__()
 
         self.setPixmap(pix)
-        self.setFocusPolicy(Qt.NoFocus)
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.setWindowFlags(
             self.windowFlags()
-            | Qt.WindowStaysOnTopHint
-            | Qt.WindowDoesNotAcceptFocus
-            | Qt.WindowTransparentForInput
-            | Qt.FramelessWindowHint
-            | Qt.X11BypassWindowManagerHint
+            | Qt.WindowType.WindowStaysOnTopHint
+            | Qt.WindowType.WindowDoesNotAcceptFocus
+            | Qt.WindowType.WindowTransparentForInput
+            | Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.X11BypassWindowManagerHint
         )
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
-        self.setAttribute(Qt.WA_X11DoNotAcceptFocus, True)
-        self.setAttribute(Qt.WA_QuitOnClose, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_X11DoNotAcceptFocus, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_QuitOnClose, True)
 
     def focusInEvent(self, ev):
         self.clearFocus()
@@ -46,7 +46,7 @@ class TrayIcon(QSystemTrayIcon):
         # mostly useless
         quitAction = QAction("&Quit", self)
         quitAction.setShortcut(QKeySequence("Alt+Q"))
-        quitAction.setShortcutContext(Qt.ApplicationShortcut)
+        quitAction.setShortcutContext(Qt.ShortcutContext.ApplicationShortcut)
         quitAction.triggered.connect(QApplication.instance().quit)
 
         self.menu = QMenu()
@@ -86,11 +86,19 @@ if __name__ == '__main__':
     screen = app.screens()[0]
     screen_geom = screen.virtualGeometry()
     if args.mode == "fit":
-        pix = pix.scaled(screen_geom.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pix = pix.scaled(
+            screen_geom.size(),
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation
+        )
         screen_geom.moveCenter(pix.rect().center())
         pix = pix.copy(screen_geom.intersected(pix.rect()))
     elif args.mode == "cover":
-        pix = pix.scaled(screen_geom.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        pix = pix.scaled(
+            screen_geom.size(),
+            Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+            Qt.TransformationMode.SmoothTransformation
+        )
         screen_geom.moveCenter(pix.rect().center())
         pix = pix.copy(screen_geom.intersected(pix.rect()))
 
@@ -101,13 +109,13 @@ if __name__ == '__main__':
             "Warning",
             "No system tray is available. This app can only be quit by killing the process. Continue?",
         )
-        if button == QMessageBox.No:
+        if button == QMessageBox.StandardButton.No:
             sys.exit("No system tray, quitting")
 
     if has_tray:
         tray = TrayIcon()
         tray.setIcon(QIcon(pix))
-        tray.setIcon(app.style().standardIcon(QStyle.SP_DialogCancelButton))
+        tray.setIcon(app.style().standardIcon(QStyle.StandardPixmap.SP_DialogCancelButton))
         tray.show()
 
         def show_message():
@@ -128,4 +136,4 @@ if __name__ == '__main__':
     # Qt catches SIGINT but we want to quit easily
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-    app.exec_()
+    app.exec()

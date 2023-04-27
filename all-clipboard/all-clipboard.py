@@ -4,7 +4,7 @@
 from argparse import ArgumentParser
 import sys
 
-from PyQt5.QtGui import QClipboard, QGuiApplication
+from PyQt6.QtGui import QClipboard, QGuiApplication
 
 
 def get_clips_of_mode(mode):
@@ -61,6 +61,6 @@ app = QGuiApplication([])
 clipboard = app.clipboard()
 
 if args.clipboard:
-	do_mode(QClipboard.Clipboard)
+	do_mode(QClipboard.Mode.Clipboard)
 if args.selection:
-	do_mode(QClipboard.Selection)
+	do_mode(QClipboard.Mode.Selection)

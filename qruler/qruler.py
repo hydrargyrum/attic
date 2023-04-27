@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: WTFPL
 # A Qt app that just displays a ruler to measure pixel lengths
 
-from PyQt5.QtCore import Qt, QSize, QRect, pyqtSlot as Slot
-from PyQt5.QtGui import QPainter, QKeySequence
-from PyQt5.QtWidgets import QApplication, QWidget, QAction
+from PyQt6.QtCore import Qt, QSize, QRect, pyqtSlot as Slot
+from PyQt6.QtGui import QPainter, QKeySequence, QAction
+from PyQt6.QtWidgets import QApplication, QWidget
 
 import sys
 
@@ -13,7 +13,7 @@ import sys
 class RulerWidget(QWidget):
 	def __init__(self, *args):
 		super(RulerWidget, self).__init__(*args)
-		self.orientation = Qt.Horizontal
+		self.orientation = Qt.Orientation.Horizontal
 		self.firstEdge = False
 		self.inv = False
 
@@ -44,7 +44,7 @@ class RulerWidget(QWidget):
 			tickStart = 0
 			tickEnd = length
 
-		if self.orientation == Qt.Horizontal:
+		if self.orientation == Qt.Orientation.Horizontal:
 			if self.inv:
 				tick = self.size().width() - tick - 1
 
@@ -74,7 +74,7 @@ class RulerWidget(QWidget):
 	def _drawTickLabel(self, painter, tick, pos):
 		label = str(tick)
 
-		if self.orientation == Qt.Horizontal:
+		if self.orientation == Qt.Orientation.Horizontal:
 			if self.inv:
 				tick = self.size().width() - tick - 1
 
@@ -83,7 +83,11 @@ class RulerWidget(QWidget):
 			else:
 				tickStart = self.size().height() - pos - 10
 
-			textFlags = Qt.TextDontClip | Qt.AlignBottom | Qt.AlignHCenter
+			textFlags = (
+				Qt.TextFlag.TextDontClip
+				| Qt.AlignmentFlag.AlignBottom
+				| Qt.AlignmentFlag.AlignHCenter
+			)
 			rect = QRect(tick - 10, tickStart, 20, 10)
 			painter.drawText(rect, textFlags, label)
 		else:
@@ -95,12 +99,16 @@ class RulerWidget(QWidget):
 			else:
 				tickStart = self.size().width() - pos - 20
 
-			textFlags = Qt.TextDontClip | Qt.AlignRight | Qt.AlignVCenter
+			textFlags = (
+				Qt.TextFlag.TextDontClip
+				| Qt.AlignmentFlag.AlignRight
+				| Qt.AlignmentFlag.AlignVCenter
+			)
 			rect = QRect(tickStart, tick - 5, 20, 10)
 			painter.drawText(rect, textFlags, label)
 
 	def sizeHint(self):
-		if self.orientation == Qt.Horizontal:
+		if self.orientation == Qt.Orientation.Horizontal:
 			return QSize(300, 50)
 		else:
 			return QSize(50, 300)
@@ -115,7 +123,7 @@ class RulerWindow(RulerWidget):
 			'Press B to toggle borderless.\n'
 			'Press R to toggle reverse direction of the ruler.'
 		)
-		self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+		self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
 
 		self.vertAction = QAction('&Vertical', self)
 		self.vertAction.setShortcut(QKeySequence('v'))
@@ -140,23 +148,23 @@ class RulerWindow(RulerWidget):
 		self.invAction.triggered.connect(self.toggleInv)
 		self.addAction(self.invAction)
 
-		self.setContextMenuPolicy(Qt.ActionsContextMenu)
+		self.setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu)
 
 	def keyPressEvent(self, event):
 		xy = None
-		if event.key() == Qt.Key_Left:
+		if event.key() == Qt.Key.Key_Left:
 			xy = -1, 0
-		elif event.key() == Qt.Key_Right:
+		elif event.key() == Qt.Key.Key_Right:
 			xy = 1, 0
-		elif event.key() == Qt.Key_Up:
+		elif event.key() == Qt.Key.Key_Up:
 			xy = 0, -1
-		elif event.key() == Qt.Key_Down:
+		elif event.key() == Qt.Key.Key_Down:
 			xy = 0, 1
 
 		if xy is None:
 			super(RulerWindow, self).keyPressEvent(event)
 		else:
-			if event.modifiers() & Qt.ShiftModifier:
+			if event.modifiers() & Qt.KeyboardModifier.ShiftModifier:
 				self.resize(self.width() + xy[0], self.height() + xy[1])
 			else:
 				self.move(self.x() + xy[0], self.y() + xy[1])
@@ -166,11 +174,11 @@ class RulerWindow(RulerWidget):
 
 	@Slot()
 	def toggleVertical(self):
-		if self.orientation == Qt.Horizontal:
-			self.setOrientation(Qt.Vertical)
+		if self.orientation == Qt.Orientation.Horizontal:
+			self.setOrientation(Qt.Orientation.Vertical)
 			self.vertAction.setChecked(True)
 		else:
-			self.setOrientation(Qt.Horizontal)
+			self.setOrientation(Qt.Orientation.Horizontal)
 			self.vertAction.setChecked(False)
 		self.resize(self.height(), self.width()) # transpose size
 
@@ -179,8 +187,14 @@ class RulerWindow(RulerWidget):
 		size = self.size()
 
 		self.hide()  # seems the flag can't be set when window is visible
-		self.setWindowFlags(self.windowFlags() ^ Qt.FramelessWindowHint)
-		self.borderAction.setChecked(self.windowFlags() & Qt.FramelessWindowHint)
+		self.setWindowFlags(
+			self.windowFlags()
+			^ Qt.WindowType.FramelessWindowHint
+		)
+		self.borderAction.setChecked(
+			self.windowFlags()
+			& Qt.WindowType.FramelessWindowHint
+		)
 		self.show()
 
 		self.resize(size)
@@ -200,7 +214,7 @@ def main():
 	app = QApplication(sys.argv)
 	win = RulerWindow()
 	win.show()
-	sys.exit(app.exec_())
+	sys.exit(app.exec())
 
 
 if __name__ == "__main__":
