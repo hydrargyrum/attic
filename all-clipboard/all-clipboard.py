@@ -27,6 +27,10 @@ def do_mode(mode):
 			sys.stdout.buffer.write(data)
 	else:
 		for mime in all_data:
+			if args.list:
+				print(mime)
+				continue
+
 			if mime.startswith("text"):
 				try:
 					print(f"{mime}: {all_data[mime].decode()}")
@@ -48,6 +52,10 @@ parser.add_argument(
 parser.add_argument(
 	"--mime",
 	help="Only display clipboard data with type MIME (instead of everything)",
+)
+parser.add_argument(
+	"--list", action="store_true",
+	help="Output only MIME types",
 )
 
 args = parser.parse_args()
