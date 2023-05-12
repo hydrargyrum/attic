@@ -18,37 +18,42 @@ command -v montage >/dev/null 2>/dev/null || die "error: imagemagick is not inst
 sz=300
 img=$1
 
-montage \
-	-gravity center \
-	-pointsize 64 \
-	"$img" -resize "${sz}x${sz}>"  \
-	\( -clone 0 -auto-orient -set label Current \) \
-	\( -clone 0 -set label 1 \) \
-	\( -clone 0 -rotate 180 -set label 2 \) \
-	\( -clone 0 -rotate 90 -set label 3 \) \
-	\( -clone 0 -rotate 270 -set label 4 \) \
-	-delete 0 \
-	-tile 5x \
-	-geometry "${sz}x${sz}+0+0" \
-	x: &
-# passing $img each time would reread and resize the file 5 times
-# so using -clone is much faster
-imgpid=$!
+tmpd=$(mktemp -d ${TMPDIR:-/tmp}/exiforienter.XXXXXX)
+trap 'rm -rf "$tmpd"' EXIT
 
-trap 'kill $imgpid' EXIT
+convert "$img" -resize "${sz}x${sz}>" -auto-orient "$tmpd/0.png"
+convert "$img" -resize "${sz}x${sz}>" "$tmpd/1.png"
+convert "$tmpd/1.png" -rotate 180 "$tmpd/2.png"
+convert "$tmpd/1.png" -rotate 90 "$tmpd/3.png"
+convert "$tmpd/1.png" -rotate 270 "$tmpd/4.png"
 
-sleep 1
-orientation=$(zenity --list \
+orientation=$({
+	# correspond to 1 3 6 8 in exif
+	cat <<- EOF
+		$tmpd/0.png
+		nothing
+		$tmpd/1.png
+		TopLeft 
+		$tmpd/2.png
+		BottomRight
+		$tmpd/3.png
+		RightTop
+		$tmpd/4.png
+		LeftBottom
+	EOF
+} | zenity --list \
+	--imagelist \
+	--width=$(( sz + 100 )) \
+	--height=$(( sz + sz / 2 )) \
 	--title "EXIF orienter GUI" \
 	--text "Choose orientation" \
-	--column "Orientation" \
 	--column "Image" \
-	--hide-column=1 \
-	TopLeft 1 BottomRight 2 RightTop 3 LeftBottom 4
+	--column "Orientation" \
+	--hide-column 2 \
+	2>/dev/null
 )
-# correspond to 1 3 6 8 in exif
-if [ -n "$orientation" ]
+
+if [ "$orientation" != nothing ]
 then
 	mogrify -orient "$orientation" "$img"
 fi
-
