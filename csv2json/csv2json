@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 from collections import OrderedDict
 import csv
 import json
+import sys
 
 
 def sniff(fn):
@@ -27,10 +28,15 @@ def main():
 	parser.add_argument('--header', action='store_true')
 	parser.add_argument('-d', '--delimiter', default=',')
 	parser.add_argument('--sniff', action='store_true')
-	parser.add_argument('file')
+	parser.add_argument('file', nargs="?", default="-")
 	args = parser.parse_args()
 
-	with open(args.file) as fd:
+	if args.file == "-":
+		fd = sys.stdin
+	else:
+		fd = open(args.file)
+
+	with fd:
 		data = list(read_rows(fd, args))
 	print(json.dumps(data))
 
