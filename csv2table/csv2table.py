@@ -51,7 +51,7 @@ def main():
 	table.align = "l"
 
 	for row in data:
-		table.add_row([row[col] for col in table.field_names])
+		table.add_row([row.get(col) for col in table.field_names])
 	print(table)
 
 
