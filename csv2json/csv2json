@@ -15,8 +15,8 @@ def sniff(fn):
 
 
 def read_rows(fd, args):
-	if args.header:
-		for row in csv.DictReader(fd, delimiter=args.delimiter):
+	if args.header or args.columns:
+		for row in csv.DictReader(fd, fieldnames=args.columns, delimiter=args.delimiter):
 			yield row
 	else:
 		for row in csv.reader(fd, delimiter=args.delimiter):
@@ -25,11 +25,15 @@ def read_rows(fd, args):
 
 def main():
 	parser = ArgumentParser()
+	parser.add_argument('--columns')
 	parser.add_argument('--header', action='store_true')
 	parser.add_argument('-d', '--delimiter', default=',')
 	parser.add_argument('--sniff', action='store_true')
 	parser.add_argument('file', nargs="?", default="-")
 	args = parser.parse_args()
+
+	if args.columns:
+		args.columns = args.columns.split(",")
 
 	if args.file == "-":
 		fd = sys.stdin
