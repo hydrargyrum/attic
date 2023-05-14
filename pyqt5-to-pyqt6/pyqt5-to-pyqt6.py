@@ -70,8 +70,9 @@ def main():
     m = re.search("mouse(?:Press|Move|Release)Event", text)
     if m:
         print(f"warning: {m[0]} is used, QMouseEvent interface changed")
-    if "QAction" in text:
-        print("warning: QAction moved to PyQt6.QtGui")
+    m = re.search("QAction|QFileSystemModel", text)
+    if m:
+        print(f"warning: {m[0]} moved to PyQt6.QtGui")
     if "qApp" in text:
         print("warning: qApp has been removed")
 
