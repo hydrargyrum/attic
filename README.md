@@ -40,6 +40,7 @@ This repository hosts various small personal tools.
 - [`json-elide-strings`](json-elide-strings): elide too long strings in JSON data
 - [`keepassxprint`](keepassxprint): dump info and passwords from a KeePassX database
 - [`lch-color-chooser`](lch-color-chooser): CIE LCh color chooser and RGB converter
+- [`links2markdown`](links2markdown): fetch title of links in a text file and replace to build Markdown links
 - [`log-snippet`](log-snippet): parse compilation-log and show snippets of files with context
 - [`log-ts-diff`](log-ts-diff): parse log and replace timestamps with diff to previous timestamp
 - [`morse`](morse): text from/to Morse code converter, and optional beep player
