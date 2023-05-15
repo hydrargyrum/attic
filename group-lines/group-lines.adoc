@@ -1,0 +1,40 @@
+= group-lines(1)
+
+== Name
+
+group-lines - group stdin lines by a regular expression pattern
+
+== Synopsis
+
+*group-lines* _PATTERN_
+
+== Options
+
+_PATTERN_::
+  A (python) regular expression by which to group lines.
+
+== Example
+
+To group lines with year-date pattern, one could run `+group-lines "\b\d{4}-\d{2}\b"+`.
+
+With this input
+
+....
+foo 2022-08-20
+baz 2022-09-01
+bar 2022-08-19
+qux 2021-08-20
+....
+
+This would be yield:
+
+....
+2021-08:
+qux 2021-08-20
+2022-08:
+foo 2022-08-20
+bar 2022-08-19
+2022-09:
+baz 2022-09-01
+....
+

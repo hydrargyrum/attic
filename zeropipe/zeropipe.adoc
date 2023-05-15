@@ -1,0 +1,40 @@
+= zeropipe(1)
+
+== Name
+
+zeropipe - wrapper for other programs which can take NULL-separated lines
+
+== Synopsis
+
+*zeropipe* _COMMAND_ [_ARGS_]...
+
+== Description
+
+Programs use stdin/stdout for processing newline-separated data, but sometimes a newline could appear in data without being a record separator.
+Some programs can use NULL-character-separated data, but the arguments to specify NULL-separated data often vary and it's easy to forget.
+When *zeropipe* wraps a program supporting that, it passes the correct argument.
+
+_COMMAND_ can be one of::
+* *basename*
+* *dirname*
+* *find*
+* *fzf*
+* *grep*
+* *head*
+* *locate*
+* *ls*
+* *sed*
+* *sort*
+* *tail*
+* *uniq*
+* *xargs*
+
+Other _ARGS_ are passed verbatim to _COMMAND_.
+
+== Examples
+
+....
+zeropipe find -size 0 | zeropipe xargs rm
+....
+
+Remove empty files, but support filenames containing spaces and newline characters.

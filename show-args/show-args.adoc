@@ -1,0 +1,14 @@
+= show-args(1)
+
+== Name
+
+show-args - just show args, one per line
+
+== Synopsis
+
+*show-args* [ARGS]...
+
+== Description
+
+*show-args* displays its arguments, one on each line.
+It's intended as a debug tool.

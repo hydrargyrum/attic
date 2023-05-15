@@ -1,0 +1,15 @@
+= git-amend-author(1)
+
+== Name
+
+git-amend-author - modifies the author name and email of the last commit
+
+== Synopsis
+
+*git amend-author* _NAME_ _EMAIL_
+
+== Description
+
+*git-amend-author* modifies both the author name/email and committer
+name/email.
+It doesn't reset the author timestamp though.

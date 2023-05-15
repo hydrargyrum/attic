@@ -1,0 +1,21 @@
+= git-midnight(1)
+
+== Name
+
+git-midnight - like git-commit(1) but fake the date to midnight
+
+== Synopsis
+
+*git-midnight* [_OPTIONS_]
+
+== Options
+
+*git-midnight* takes the same options as *git-commit(1)*
+
+== Description
+
+*git-midnight* commits to fake the commit date and force it to midnight today.
+This can be used to hide the real commit date for privacy.
+
+It's possible to pass _--amend_ to modify the date of the last commit, just like it could be passed to *git-commit(1)*.
+Options passed to *git-midnight* are forwarded to *git-commit(1)* verbatim.
