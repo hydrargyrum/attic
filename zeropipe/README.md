@@ -13,3 +13,18 @@ The same command with zeropipe:
 
     zeropipe locate __MACOSX | zeropipe grep 'OSX$' | zeropipe xargs rm -vr
 
+## Supported commands
+
+zeropipe accepts:
+
+- find
+- fzf
+- grep
+- head
+- locate
+- ls
+- sed
+- sort
+- tail
+- uniq
+- xargs

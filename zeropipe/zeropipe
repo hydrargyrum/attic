@@ -3,7 +3,7 @@
 
 usage () {
 	cat <<- EOF
-		usage: $0 [locate|grep|sed|xargs|find|uniq|sort] ARGS...
+		usage: $0 [find|fzf|grep|head|locate|ls|sed|sort|tail|uniq|xargs] ARGS...
 
 		Executes the given utility and its ARGS along with the appropriate
 		argument for accepting NUL-separated lines instead of
@@ -19,7 +19,7 @@ usage () {
 	EOF
 }
 
-if [ $# -lt 2 ]
+if [ $# -lt 1 ]
 then
 	usage >&2
 	exit 64  # EX_USAGE
@@ -35,14 +35,21 @@ case "$cmd" in
 	locate|xargs)
 		exec "$cmd" -0 "$@"
 		;;
-	grep|sort|uniq|sed)
+	grep|sort|uniq|sed|head|tail)
 		exec "$cmd" -z "$@"
+		;;
+	ls)
+		exec "$cmd" --zero "$@"
+		;;
+	fzf)
+		exec "$cmd" --read0 --print0 "$@"
 		;;
 	-h)
 		usage
 		exit 0
 		;;
 	*)
+		printf "unrecognized command: %s\n\n" "$cmd" >&2
 		usage >&2
 		exit 64  # EX_USAGE
 		;;
