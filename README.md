@@ -2,6 +2,7 @@
 
 This repository hosts various small personal tools.
 
+- [`ascetic`](ascetic): set rlimit and exec command
 - [`all-clipboard`](all-clipboard): list clipboard data on stdout
 - [`altlines`](altlines): mark every 2 lines with color
 - [`boxuni`](boxuni): convert ASCII-art boxes into Unicode-art boxes
