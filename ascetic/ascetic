@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: WTFPL
 
 import argparse
+import os
 import resource
-import subprocess
 import sys
 
 
@@ -82,7 +82,7 @@ def main():
         print(f"setting {name} to soft={new[0]} hard={new[1]}", file=sys.stderr)
         resource.setrlimit(LIMITS[name], new)
 
-    subprocess.run([args.command, *args.args])
+    os.execvp(args.command, args.args)
 
 
 if __name__ == "__main__":
