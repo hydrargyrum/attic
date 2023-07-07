@@ -16,7 +16,9 @@ This repository hosts various small personal tools.
 - [`exiforientergui`](exiforientergui): GUI to losslessly modify EXIF orientation of an image
 - [`ffmcut`](ffmcut): ffmpeg wrapper to cut a video between 2 timestamps
 - [`firefox-relay-tools/fxrelay-add`](firefox-relay-tools/fxrelay-add): add a Firefox Relay address
+- [`firefox-relay-tools/fxrelay-delete`](firefox-relay-tools/fxrelay-delete): delete a Firefox Relay address
 - [`firefox-relay-tools/fxrelay-list`](firefox-relay-tools/fxrelay-list): list Firefox Relay addresses
+- [`firefox-relay-tools/fxrelay-set-block`](firefox-relay-tools/fxrelay-set-block): control Firefox Relay mail blocking level
 - [`first-avail-command`](first-avail-command): run the first command (in a list) which is installed
 - [`fix-broken-links-by-name`](fix-broken-links-by-name): fix broken symlinks if target file changed dir but not name
 - [`flatten-json`](flatten-json): flatten a deep json tree in a single json or reverse operation
