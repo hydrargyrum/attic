@@ -82,7 +82,7 @@ def main():
         print(f"setting {name} to soft={new[0]} hard={new[1]}", file=sys.stderr)
         resource.setrlimit(LIMITS[name], new)
 
-    os.execvp(args.command, args.args)
+    os.execlp(args.command, args.command, *args.args)
 
 
 if __name__ == "__main__":
