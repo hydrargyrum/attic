@@ -17,6 +17,19 @@ import json
 import sys
 
 
+def read(fd):
+    with fd:
+        text = fd.read()
+
+    try:
+        return json.loads(text, object_pairs_hook=OrderedDict)
+    except json.JSONDecodeError as initial:
+        try:
+            return [json.loads(line, object_pairs_hook=OrderedDict) for line in text.split("\n") if line]
+        except json.JSONDecodeError:
+            raise initial
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-s', '--separator', default=',')
 parser.add_argument('-f', '--file', default='-', help='JSON file to read (standard input by default)')
@@ -29,11 +42,15 @@ if args.file == '-':
 else:
     fd = open(args.file, 'r')
 
-with fd:
-    data = json.load(fd, object_pairs_hook=OrderedDict)
+data = read(fd)
 
-if isinstance(data, list) and all(isinstance(obj, dict) for obj in data):
-    pass
+okdata = False
+if isinstance(data, list):
+    if all(isinstance(obj, dict) for obj in data):
+        okdata = True
+    elif all(isinstance(obj, list) for obj in data):
+        data = [{col: obj[n] for n, col in enumerate(data[0])} for obj in data[1:]]
+        okdata = True
 elif isinstance(data, dict) and all(isinstance(obj, list) for obj in data.values()):
     def get(l, n):
         try:
@@ -43,8 +60,10 @@ elif isinstance(data, dict) and all(isinstance(obj, list) for obj in data.values
 
     nrows = max(len(v) for v in data.values())
     data = [OrderedDict((k, get(data[k], n)) for k in data) for n in range(nrows)]
-else:
-    assert False, 'input must be a JSON list of dictionaries or a dictionary with lists'
+    okdata = True
+
+if not okdata:
+    raise ValueError('input must be a JSON list of dictionaries or a dictionary with lists')
 
 order = args.field or []
 keys = OrderedDict((k, None) for k in order)

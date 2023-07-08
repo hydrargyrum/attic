@@ -100,6 +100,25 @@ def dedent(text):
             s p a c e s are,ok
             ''',
         ),
+        # basic json lines
+        (
+            (),
+            """["foo","bar"]\n[1,2]\n[3,4]\n""",
+            """
+            foo,bar
+            1,2
+            3,4
+            """
+        ),
+        (
+            (),
+            """{"foo":1,"bar":2}\n{"bar":4,"foo":3}\n""",
+            """
+            foo,bar
+            1,2
+            3,4
+            """
+        ),
     ]
 )
 def test_simple(args, input, output):
