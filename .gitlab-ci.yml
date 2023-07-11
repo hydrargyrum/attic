@@ -1,11 +1,42 @@
-include:
-  - catsponge/.gitlab-ci.yml
-  - crc/.gitlab-ci.yml
-  - flatten-json/.gitlab-ci.yml
-  - group-lines/.gitlab-ci.yml
-  - hexgen/.gitlab-ci.yml
-  - json2csv/.gitlab-ci.yml
-  - log-ts-diff/.gitlab-ci.yml
-  - morse/.gitlab-ci.yml
-  - uniq-unsorted/.gitlab-ci.yml
-  - zlib-uncompress/.gitlab-ci.yml
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+
+# TODO isolate venvs, don't install all locales
+test-generic:
+  stage: test
+  image: python:3-slim
+  script: |
+    set -eu
+    apt update
+    # required for sort-with-numbers
+    apt install -y --no-install-recommends locales-all
+    pip install pytest || exit 1
+
+    err=1
+    for f in "$CI_PROJECT_DIR"/*/test.py "$CI_PROJECT_DIR"/*/test.sh
+    do
+      echo "Testing $f" >&2
+      cd "$(dirname "$f")"
+      if [ -f requirements.txt ]
+      then
+        pip install -r requirements.txt
+      fi >&2
+      "$f" >&2 || echo "FAILED for $f"
+    done | grep FAILED || err=0
+    exit $err
+
+lint-shellcheck:
+  stage: test
+  image: docker.io/pipelinecomponents/shellcheck
+  script: |
+    err=1
+    set -eu
+    grep -r -l '^# shellcheck enable=' "$CI_PROJECT_DIR"/* | while read file
+    do
+      shellcheck "$file"
+    done | grep . || err=0
+    exit $err

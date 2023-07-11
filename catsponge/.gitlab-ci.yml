@@ -1,6 +1,0 @@
-test-catsponge:
-  image: debian:stable
-  stage: test
-  script:
-    - cd $CI_PROJECT_DIR/catsponge
-    - ./test.sh
