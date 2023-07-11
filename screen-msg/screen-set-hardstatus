@@ -1,5 +1,6 @@
 #!/bin/sh -e
 # SPDX-License-Identifier: WTFPL
+# shellcheck enable=
 
 printf "\033_%s\033\\" "$*"
 # or:

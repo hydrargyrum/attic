@@ -1,5 +1,6 @@
 #!/bin/sh
 # SPDX-License-Identifier: WTFPL
+# shellcheck enable=
 # 2012-05-12
 
 text='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz

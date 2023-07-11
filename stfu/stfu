@@ -1,5 +1,6 @@
 #!/bin/sh -eu
 # SPDX-License-Identifier: WTFPL
+# shellcheck enable=
 
 # Fire and forget a command, run in background, discard stdout/stderr.
 # Accept "-l" for still logging output to a temp file.

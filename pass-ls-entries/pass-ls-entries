@@ -1,5 +1,6 @@
 #!/bin/sh -e
 # SPDX-License-Identifier: WTFPL
+# shellcheck enable=
 # list pass(1) entries in find(1) format, not tree(1) format
 # example:
 #

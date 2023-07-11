@@ -1,5 +1,6 @@
 #!/bin/sh -e
 # SPDX-License-Identifier: WTFPL
+# shellcheck enable=
 
 if [ $# -ne 2 ]
 then
@@ -7,7 +8,7 @@ then
 		usage: $0 <NAME> <EMAIL>
 
 		Amends the last commit and change both author and committer names to
-		NAME and emails to EMAIL. Do not touch the author timestamp.
+		NAME and emails to EMAIL. Does not touch the author timestamp.
 	EOF
 	exit 64  # EX_USAGE
 fi

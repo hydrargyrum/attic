@@ -1,5 +1,6 @@
 #!/bin/sh -e
 # SPDX-License-Identifier: WTFPL
+# shellcheck enable=
 
 # like git-commit(1) but fake the commit date to use midnight today
 # useful for privacy reasons

@@ -1,5 +1,6 @@
 #!/bin/sh -e
 # SPDX-License-Identifier: WTFPL
+# shellcheck enable=
 # requires GNU find(1) for "-printf"
 
 usage () {

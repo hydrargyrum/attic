@@ -1,5 +1,6 @@
 #!/bin/sh -eu
 # SPDX-License-Identifier: WTFPL
+# shellcheck enable=
 
 cd "$(dirname "$0")"
 

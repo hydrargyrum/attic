@@ -1,4 +1,5 @@
 #!/bin/sh -eu
+# shellcheck enable=
 
 cd "$(dirname "$0")"
 

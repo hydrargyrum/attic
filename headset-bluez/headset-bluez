@@ -1,5 +1,6 @@
 #!/bin/sh -e
 # SPDX-License-Identifier: WTFPL
+# shellcheck enable=
 # Enable a bluetooth headset and out or in/out mode.
 
 find_bluez () {
