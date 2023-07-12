@@ -27,8 +27,14 @@ def main():
 	parser = ArgumentParser()
 	parser.add_argument('-H', '--header', action='store_true')
 	parser.add_argument('-d', '--delimiter', default=',')
-	parser.add_argument('-b', '--box', action='store_true')
-	parser.add_argument('--markdown', action='store_true')
+	parser.add_argument(
+		'-b', '--box', action='store_true',
+		help='Use Unicode pretty characters instead of plain ASCII table',
+	)
+	parser.add_argument(
+		'--markdown', action='store_true',
+		help='Output markdown table',
+	)
 	parser.add_argument('--sniff', action='store_true')
 	parser.add_argument('file', nargs='?', default='-')
 	args = parser.parse_args()
