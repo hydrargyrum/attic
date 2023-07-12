@@ -4,6 +4,7 @@
 import os
 from pathlib import Path
 from subprocess import check_call
+from shutil import copy
 from uuid import uuid4
 
 import vignette
@@ -16,11 +17,10 @@ os.chdir(Path(__file__).parent)
 @pytest.fixture()
 def src_path(tmp_path):
     tmp_path.joinpath('foo').mkdir()
-    check_call([
-        'convert',
-        'rose:',
+    copy(
+        'test.png',
         str(tmp_path.joinpath('foo/1.png'))
-    ])
+    )
     yield tmp_path.joinpath('foo')
 
 
