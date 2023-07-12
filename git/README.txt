@@ -49,3 +49,10 @@ Usage: `git combine-remotes NEW_REMOTE REMOTE1 REMOTE2...`
 
 `git-midnight` commits (or amends a commit) to fake the commit date and force it
 to midnight today. This can be used to hide the real commit date for privacy.
+
+----
+
+`git-edit-index` spawn an editor to edit the staged content of a file, but leaves
+the working directory file untouched at the end.
+
+Usage: `git edit-index FILE`

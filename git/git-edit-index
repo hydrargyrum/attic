@@ -1,0 +1,35 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+# shellcheck enable=
+
+usage () {
+	cat <<- EOF
+		usage: $0 FILE
+
+		Spawn an editor on the content of staged content of FILE (or its
+		committed state if nothing is staged).
+		When the editor quits, the contents of FILE are the new staged
+		content, and working directory FILE is restored to its state before
+		the editor was started.
+	EOF
+}
+
+if [ $# -lt 1 ]
+then
+	usage >&2
+	exit 64  # EX_USAGE
+elif [ "$1" = -h ]
+then
+	usage
+	exit 0
+fi
+
+file=$1
+
+saved=$(mktemp "$file.XXXXXX")
+mv "$file" "$saved"
+trap 'mv "$saved" "$file"' EXIT
+
+git checkout -- "$file"
+$(git var GIT_EDITOR) "$file"
+git add "$file"
