@@ -60,6 +60,7 @@ This repository hosts various small personal tools.
 - [`py-subclasses`](py-subclasses): show found subclasses of a class
 - [`pyqt5-to-pyqt6`](pyqt5-to-pyqt6): dumb port a file from PyQt5 to PyQt6
 - [`qgifview`](qgifview): very basic GIF image viewer
+- [`qpeep`](qpeep): window covering with a hole following the cursor
 - [`qr2unicode`](qr2unicode): display QR-codes on console using Unicode box-drawing characters
 - [`qr-shot`](qr-shot): decode a QR code image from part of the screen
 - [`qruler`](qruler): tool window that measures width and height in pixels
