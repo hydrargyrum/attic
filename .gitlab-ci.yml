@@ -3,12 +3,18 @@ variables:
 
 cache:
   paths:
-    - .cache/pip
+    - "$CI_PROJECT_DIR/.cache/pip"
+    - "$CI_PROJECT_DIR/.cache/apt"
 
 # TODO isolate venvs, don't install all locales
 test-generic:
   stage: test
   image: python:3-slim
+  before_script:
+    - 'mkdir -p "$CI_PROJECT_DIR/.cache/apt/partial"'
+    - "rm -f /etc/apt/apt.conf.d/docker-clean"
+    - 'echo "Dir::Cache::Archives \"$CI_PROJECT_DIR/.cache/apt\";" >> /etc/apt/apt.conf'
+
   script: |
     set -eu
     apt update
