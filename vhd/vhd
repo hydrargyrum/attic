@@ -4,7 +4,15 @@
 # rewritten for modernization in 2019
 
 from argparse import ArgumentParser, FileType
+import os
 import sys
+
+def has_colors():
+    if "NO_COLOR" in os.environ:
+        return False
+    if "CLICOLOR_FORCE" in os.environ:
+        return True
+    return sys.stdout.isatty()
 
 try:
     import termcolor
@@ -13,7 +21,7 @@ except ImportError:
         return s
 else:
     def styled(s, *args, **kwargs):
-        if sys.stdout.isatty():
+        if has_colors():
             s = termcolor.colored(s, *args, **kwargs)
         return s
 
