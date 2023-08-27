@@ -40,3 +40,9 @@ def test_datetime():
 
 def test_decimal():
 	assert run("""[Decimal('1')]""") == ["1"]
+
+
+def test_set():
+	assert run("""set()""") == []
+	assert run("""frozenset()""") == []
+	assert run("""frozenset({1})""") == [1]

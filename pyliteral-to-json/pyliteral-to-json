@@ -36,6 +36,18 @@ class Evaluator(ast.NodeTransformer):
             raise ValueError(f"bad Decimal args: {node.args!r}")
         return node.args[0]
 
+    def eval_set(self, node):
+        if len(node.args) != 0:
+            raise ValueError(f"bad set args: {node.args!r}")
+        return ast.List([])
+
+    def eval_frozenset(self, node):
+        if len(node.args) == 0:
+            return ast.List([])
+        if len(node.args) != 1 or not isinstance(node.args[0], ast.Set):
+            raise ValueError(f"bad set args: {node.args!r}")
+        return ast.List(node.args[0].elts)
+
     def visit_Call(self, node):
         name = None
         if isinstance(node.func, ast.Name):
@@ -57,7 +69,10 @@ class Evaluator(ast.NodeTransformer):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Convert python literal dict/list/string to JSON."
+        + " If FILE is not given, read stdin",
+    )
     parser.add_argument("file", nargs="?")
     args = parser.parse_args()
 

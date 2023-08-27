@@ -21,6 +21,10 @@ which can be given to any tool supporting JSON. It can then be [processed](https
 
 `pyliteral-to-json` does not use the infamous `eval()`.
 
-## datetimes
+## other types
 
-`pyliteral-to-json` also interprets naive datetime objects like `datetime.datetime(2023, 3, 10, 15, 26, 12, 273109)` and convert them to JSON strings.
+`pyliteral-to-json` also interprets:
+
+- tuples and sets like `{1, 2, 3}` or `set()` and convert them to JSON arrays
+- naive datetime objects like `datetime.datetime(2023, 3, 10, 15, 26, 12, 273109)` and convert them to JSON strings
+- `UUID('00000000-0000-0000-0000-000000000000')` syntax and convert to JSON strings
