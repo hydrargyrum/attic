@@ -34,6 +34,8 @@ def read(fd):
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--file', default='-', help='JSON file to read (standard input by default)')
 parser.add_argument('-k', '--keep-only', action='store_const', const=True, help='Keep only specified keys')
+parser.add_argument('-b', '--box', action='store_true', help='Use Unicode pretty characters instead of plain ASCII table')
+parser.add_argument('--markdown', action='store_true', help='Output markdown table')
 parser.add_argument('field', nargs='*', help='display field in the leftmost columns')
 args = parser.parse_args()
 
@@ -77,6 +79,11 @@ else:
 keys = list(keys)
 
 table = prettytable.PrettyTable(field_names=keys)
+if args.box:
+    table.set_style(prettytable.SINGLE_BORDER)
+elif args.markdown:
+    table.set_style(prettytable.MARKDOWN)
+
 for d in data:
     table.add_row([d.get(k) for k in keys])
 print(table)
