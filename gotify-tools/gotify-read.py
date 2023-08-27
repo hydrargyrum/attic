@@ -19,6 +19,9 @@ parser.add_argument("--appid", type=int, dest="app_id")
 parser.add_argument("--pretty", action="store_true")
 args = parser.parse_args()
 
+if not args.url:
+	parser.error("missing --url param")
+
 # session
 session = requests.Session()
 session.headers["X-Gotify-Key"] = os.environ["GOTIFY_TOKEN"]
