@@ -8,9 +8,9 @@ import os
 import sys
 
 def has_colors():
-    if "NO_COLOR" in os.environ:
+    if os.environ.get("NO_COLOR"):
         return False
-    if "CLICOLOR_FORCE" in os.environ:
+    if os.environ.get("CLICOLOR_FORCE") or os.environ.get("FORCE_COLOR"):
         return True
     return sys.stdout.isatty()
 
