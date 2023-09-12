@@ -1,6 +1,6 @@
 # pvrun
 
-Run a command and show its I/O progress with pv(1).
+Run a command and show its I/O progress with [pv(1)](https://www.ivarch.com/programs/pv.shtml).
 
 # Synopsis
 
@@ -31,8 +31,8 @@ which runs the regular cp command, but also displays progress bars.
 
 # Requirements
 
-The `pv` command must be installed, as it does the heavy lifting of tracking
-file descriptors, showing progress bars, etc.
+The [`pv`](https://www.ivarch.com/programs/pv.shtml) command must be installed,
+as it does the heavy lifting of tracking file descriptors, showing progress bars, etc.
 
 # License
 
