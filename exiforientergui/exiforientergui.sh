@@ -33,7 +33,7 @@ orientation=$({
 		$tmpd/0.png
 		nothing
 		$tmpd/1.png
-		TopLeft 
+		TopLeft
 		$tmpd/2.png
 		BottomRight
 		$tmpd/3.png
@@ -50,6 +50,7 @@ orientation=$({
 	--column "Image" \
 	--column "Orientation" \
 	--hide-column 2 \
+	--print-column 2 \
 	2>/dev/null
 )
 
