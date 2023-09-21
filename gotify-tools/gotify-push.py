@@ -15,6 +15,7 @@ parser.add_argument("--url", default=os.environ.get("GOTIFY_URL"))
 parser.add_argument("-t", "--title")
 parser.add_argument("-p", "--priority", type=int, default=0)
 parser.add_argument("-e", "--extra", action="append", metavar="NAMESPACE::ACTION::KEY=VALUE", default=[])
+parser.add_argument("--timeout", type=int, default=60)
 parser.add_argument("message", nargs="+")
 args = parser.parse_args()
 
@@ -48,7 +49,9 @@ pdata = {
 }
 
 # request
-response = session.post(urljoin(args.url, "message"), json=pdata)
+response = session.post(
+	urljoin(args.url, "message"), json=pdata, timeout=args.timeout,
+)
 response.raise_for_status()
 
 print(json.dumps(response.json(), indent=2))

@@ -42,6 +42,7 @@ esac
 
 curl -f -S -s https://relay.firefox.com/api/v1/relayaddresses/"$1"/ \
 	-X PATCH \
+	-m 60 \
 	-H "Authorization: Token $FXRELAY_TOKEN" \
 	-H "content-type: application/json" \
 	-d "$json"

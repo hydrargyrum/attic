@@ -15,7 +15,7 @@ import requests
 def verify(pass_cb=getpass, prompt='Password to check on HIBP: '):
     expected = hashlib.sha1(pass_cb(prompt).encode('utf-8')).hexdigest().upper()
     url = 'https://api.pwnedpasswords.com/range/%s' % expected[:5]
-    hashes = requests.get(url).text.split()
+    hashes = requests.get(url, timeout=60).text.split()
     for h in hashes:
         h = expected[:5] + h.upper()
         if h.startswith(expected):

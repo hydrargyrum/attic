@@ -31,6 +31,7 @@ jsonstr () {
 
 PRIORITY=1
 TITLE=
+TIMEOUT=60
 
 while getopts p:u:k:K:t: f
 do
@@ -85,6 +86,7 @@ TITLE=$(printf %s "$TITLE" | jsonstr)
 
 curl \
 	-s -S -f \
+	-m "$TIMEOUT" \
 	-H 'Content-Type: application/json' \
 	-H "X-Gotify-Key: $GOTIFY_TOKEN" \
 	-d "{\"message\": \"$message\", \"title\": \"${TITLE}\", \"priority\": ${PRIORITY}}" \
