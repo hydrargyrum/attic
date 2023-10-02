@@ -1,0 +1,30 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+# shellcheck enable=
+
+if [ $# -ne 2 ] || [ "${1-}" = -h ] || [ "${1-}" = --help ]
+then
+	cat >&2 <<- EOF
+		usage: $0 <TAG>
+
+		Read CHANGELOG.md, extract only what's relevant to version TAG
+		and create tag TAG with extracted text as tag text.
+		Expects CHANGELOG.md in format from <https://keepachangelog.com/en/1.1.0/>
+	EOF
+	exit 64  # EX_USAGE
+fi
+
+tag=$1
+changefile=$(mktemp taglog.XXXXXX)
+trap 'rm -f "$changefile"' EXIT
+
+awk " \
+	BEGIN { take=0 } \
+	/^## \[.*\] -/ { take=0 } \
+	/^## \[$tag\] -/,/^## \[.*\] -/ { take=1 } \
+	take==1 { print } \
+	" \
+	< CHANGELOG.md \
+	> "$changefile"
+
+git tag -a "$tag" -F "$changefile"

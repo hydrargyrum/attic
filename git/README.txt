@@ -56,3 +56,9 @@ to midnight today. This can be used to hide the real commit date for privacy.
 the working directory file untouched at the end.
 
 Usage: `git edit-index FILE`
+
+----
+
+`git-tag-from-changelog-md` reads CHANGELOG.md, extracts only what's relevant
+to version TAG and creates tag TAG with extracted text as tag text.
+Expects CHANGELOG.md in format from <https://keepachangelog.com/en/1.1.0/>.
