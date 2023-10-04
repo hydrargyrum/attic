@@ -10,6 +10,7 @@ This repository hosts various small personal tools.
 - [`cheapthrottle`](cheapthrottle): throttling a process by sending it SIGSTOP/SIGCONT repeatedly
 - [`clipsync`](clipsync):
 - [`coordapp`](coordapp): always-on-top window that shows the mouse cursor coordinates
+- [`count-unsorted`](count-unsorted): like `uniq -c` but not requiring sorted input
 - [`crc`](crc): basic CRC computation tool
 - [`csv2json`](csv2json): transform CSV into JSON
 - [`csv2table`](csv2table): pretty-print a CSV file with ASCII-art table
