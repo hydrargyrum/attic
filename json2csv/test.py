@@ -1,4 +1,5 @@
 #!/usr/bin/env pytest
+# SPDX-License-Identifier: WTFPL
 
 import os
 import subprocess

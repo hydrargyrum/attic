@@ -1,3 +1,4 @@
 #!/bin/sed -f
+# SPDX-License-Identifier: WTFPL
 
 1s/^\xef\xbb\xbf//
