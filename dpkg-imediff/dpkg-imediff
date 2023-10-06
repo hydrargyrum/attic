@@ -1,0 +1,26 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+
+# When installing packages, dpkg needs to preserve modifications to files in
+# /etc, but sometimes a config file was also modified in the package, leading
+# to a conflict. dpkg prompts what to do:
+# Y: overwrite modifications to /etc, force package content
+# N: don't use package content, keep /etc modifications
+# Z: start a shell
+# imediff is an editor for resolving conflicts.
+# So, use `Z` command and just start `dpkg-imediff`. imediff must be installed.
+
+error () {
+	echo "error: $1" >&2
+	exit 1
+}
+
+if [ $# -gt 0 ]
+then
+	error "$0 must be called within a dpkg conflict shell, without arguments"
+elif [ -z "${DPKG_CONFFILE_OLD-}" ]
+then
+	error "$0 must be called within a dpkg conflict shell"
+fi
+
+imediff -o "$DPKG_CONFFILE_OLD" "$DPKG_CONFFILE_OLD" "$DPKG_CONFFILE_NEW"

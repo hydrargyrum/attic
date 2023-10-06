@@ -14,6 +14,7 @@ This repository hosts various small personal tools.
 - [`crc`](crc): basic CRC computation tool
 - [`csv2json`](csv2json): transform CSV into JSON
 - [`csv2table`](csv2table): pretty-print a CSV file with ASCII-art table
+- [`dpkg-imediff`](dpkg-imediff): when dpkg interactively prompts for resolving a config file conflict, run this to start a merge editor
 - [`exiforientergui`](exiforientergui): GUI to losslessly modify EXIF orientation of an image
 - [`ffmcut`](ffmcut): ffmpeg wrapper to cut a video between 2 timestamps
 - [`firefox-relay-tools/fxrelay-add`](firefox-relay-tools/fxrelay-add): add a Firefox Relay address
