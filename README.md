@@ -4,6 +4,7 @@ This repository hosts various small personal tools.
 
 - [`all-clipboard`](all-clipboard): list clipboard data on stdout
 - [`altlines`](altlines): mark every 2 lines with color
+- [`args2csv`](args2csv): output one CSV row with arguments as cells
 - [`ascetic`](ascetic): set rlimit and exec command
 - [`boxuni`](boxuni): convert ASCII-art boxes into Unicode-art boxes
 - [`catsponge`](catsponge): like cat(1) but soaks stdin and waits that stdin reaches EOF
