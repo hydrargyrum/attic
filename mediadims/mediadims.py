@@ -27,6 +27,7 @@ TRACK_SORT_KEY = {
     "General": 0,
     "Video": 1,
     "Audio": 2,
+    "Image": 3,
 }
 
 

@@ -19,6 +19,8 @@ case $1 in
 		echo $((val / 1000))
 		;;
 
+	# mediainfo can extract static image dimensions, but we can't query both
+	# at the same time
 	width)
 		mediainfo '--Inform=Video;%Width%' "$2"
 		;;
@@ -29,7 +31,6 @@ case $1 in
 
 	wxh)
 		echo "$("$0" width "$2")x$("$0" height "$2")"
-		#mediainfo '--Inform=General;%Duration%' "$2"
 		;;
 
 	*)
