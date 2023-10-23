@@ -17,7 +17,8 @@ def main():
 	else:
 		fp = open(args.file, "rb")
 
-	d = tomllib.load(fp)
+	with fp:
+		d = tomllib.load(fp)
 	print(json.dumps(d, indent=4, default=str))
 
 

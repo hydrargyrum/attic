@@ -18,7 +18,8 @@ def main():
 		fp = open(args.file)
 
 	cfg = configparser.ConfigParser()
-	cfg.read_file(fp)
+	with fp:
+		cfg.read_file(fp)
 	d = {
 		section: {
 			k: v
