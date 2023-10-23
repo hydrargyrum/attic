@@ -4,6 +4,7 @@
 import binascii
 import os
 import re
+import signal
 import sys
 
 
@@ -35,7 +36,7 @@ def main():
 
 
 if __name__ == '__main__':
-	try:
-		main()
-	except (KeyboardInterrupt, BrokenPipeError):
-		sys.exit(os.EX_IOERR)
+	signal.signal(signal.SIGINT, signal.SIG_DFL)
+	signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+
+	main()

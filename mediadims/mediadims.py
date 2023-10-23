@@ -4,6 +4,7 @@
 import argparse
 import json
 import locale
+import signal
 import subprocess
 import shutil
 import sys
@@ -35,6 +36,10 @@ def track_sort_key(track):
 
 def main():
     locale.setlocale(locale.LC_ALL, '')
+
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+
     parser = argparse.ArgumentParser()
     parser.add_argument("info", choices=["duration", "width", "height", "wxh"])
     parser.add_argument("file")

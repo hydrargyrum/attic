@@ -95,4 +95,4 @@ def test_broken_pipe():
 
 	assert output == b"0\n"
 	assert p2.returncode == 0
-	assert p1.wait(1) == 0
+	assert p1.wait(1) == -13
