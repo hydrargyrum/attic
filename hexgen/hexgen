@@ -27,11 +27,11 @@ def main():
 			try:
 				sys.stdout.buffer.write(binascii.unhexlify(block))
 			except binascii.Error:
-				print('Unexpected non-hex data', file=sys.stderr)
+				print('error: unexpected non-hex data', file=sys.stderr)
 				sys.exit(os.EX_DATAERR)
 
 	if buffer:
-		print('Too short data', file=sys.stderr)
+		print('error: too short data', file=sys.stderr)
 		sys.exit(os.EX_DATAERR)
 
 
