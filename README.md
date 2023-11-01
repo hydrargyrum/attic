@@ -102,6 +102,7 @@ This repository hosts various small personal tools.
 - [`xattrs-csv`](xattrs-csv): print a CSV of selected xattrs of selected files
 - [`xattrs-filter`](xattrs-filter): filter a file list based on whether xattrs have desired values
 - [`xattrs-set`](xattrs-set): set/unset xattrs on files with a nice command-line syntax
+- [`xbel-add`](xbel-tools/xbel-add.py): add a path to "recently used" files in GTK/Qt file chooser
 - [`xephyr-run-cmd`](xephyr-run-cmd): run a Xephyr server and run a command in it (like xvfb-run)
 - [`yml2json`](yml2json): basic convert YAML to JSON
 - [`zeropipe`](zeropipe): wrapper for other programs which can take NULL-separated lines
