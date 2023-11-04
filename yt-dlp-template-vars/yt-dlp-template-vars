@@ -1,0 +1,116 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+# shellcheck enable=
+
+usage () {
+	cat <<-EOF
+		usage: $0 URL
+
+		Outputs yt-dlp templating variables for URL
+		Then use with (for example): yt-dlp -o '%(title)s.%(ext)s' URL
+	EOF
+}
+
+if ! command -v yt-dlp >/dev/null 2>&1
+then
+	echo "error: please install yt-dlp" >&2
+	exit 1
+fi
+
+if [ $# -ne 1 ]
+then
+	usage >&2
+	exit 64 # EX_USAGE
+elif [ $1 = -h ]
+then
+	usage
+	exit 0
+fi
+
+url=$1
+template=$(cat <<- EOF
+%%(id)s: %(id)s
+%%(title)s: %(title)s
+%%(fulltitle)s: %(fulltitle)s
+%%(ext)s: %(ext)s
+%%(alt_title)s: %(alt_title)s
+%%(description)s: %(description)s
+%%(display_id)s: %(display_id)s
+%%(uploader)s: %(uploader)s
+%%(license)s: %(license)s
+%%(creator)s: %(creator)s
+%%(timestamp)s: %(timestamp)s
+%%(upload_date)s: %(upload_date)s
+%%(release_timestamp)s: %(release_timestamp)s
+%%(release_date)s: %(release_date)s
+%%(modified_timestamp)s: %(modified_timestamp)s
+%%(modified_date)s: %(modified_date)s
+%%(uploader_id)s: %(uploader_id)s
+%%(channel)s: %(channel)s
+%%(channel_id)s: %(channel_id)s
+%%(channel_follower_count)s: %(channel_follower_count)s
+%%(channel_is_verified)s: %(channel_is_verified)s
+%%(location)s: %(location)s
+%%(duration)s: %(duration)s
+%%(duration_string)s: %(duration_string)s
+%%(view_count)s: %(view_count)s
+%%(concurrent_view_count)s: %(concurrent_view_count)s
+%%(like_count)s: %(like_count)s
+%%(dislike_count)s: %(dislike_count)s
+%%(repost_count)s: %(repost_count)s
+%%(average_rating)s: %(average_rating)s
+%%(comment_count)s: %(comment_count)s
+%%(age_limit)s: %(age_limit)s
+%%(live_status)s: %(live_status)s
+%%(is_live)s: %(is_live)s
+%%(was_live)s: %(was_live)s
+%%(playable_in_embed)s: %(playable_in_embed)s
+%%(availability)s: %(availability)s
+%%(start_time)s: %(start_time)s
+%%(end_time)s: %(end_time)s
+%%(extractor)s: %(extractor)s
+%%(extractor_key)s: %(extractor_key)s
+%%(epoch)s: %(epoch)s
+%%(autonumber)s: %(autonumber)s
+%%(video_autonumber)s: %(video_autonumber)s
+%%(n_entries)s: %(n_entries)s
+%%(playlist_id)s: %(playlist_id)s
+%%(playlist_title)s: %(playlist_title)s
+%%(playlist)s: %(playlist)s
+%%(playlist_count)s: %(playlist_count)s
+%%(playlist_index)s: %(playlist_index)s
+%%(playlist_autonumber)s: %(playlist_autonumber)s
+%%(playlist_uploader)s: %(playlist_uploader)s
+%%(playlist_uploader_id)s: %(playlist_uploader_id)s
+%%(webpage_url)s: %(webpage_url)s
+%%(webpage_url_basename)s: %(webpage_url_basename)s
+%%(webpage_url_domain)s: %(webpage_url_domain)s
+%%(original_url)s: %(original_url)s
+%%(chapter)s: %(chapter)s
+%%(chapter_number)s: %(chapter_number)s
+%%(chapter_id)s: %(chapter_id)s
+%%(series)s: %(series)s
+%%(season)s: %(season)s
+%%(season_number)s: %(season_number)s
+%%(season_id)s: %(season_id)s
+%%(episode)s: %(episode)s
+%%(episode_number)s: %(episode_number)s
+%%(episode_id)s: %(episode_id)s
+%%(track)s: %(track)s
+%%(track_number)s: %(track_number)s
+%%(track_id)s: %(track_id)s
+%%(artist)s: %(artist)s
+%%(genre)s: %(genre)s
+%%(album)s: %(album)s
+%%(album_type)s: %(album_type)s
+%%(album_artist)s: %(album_artist)s
+%%(disc_number)s: %(disc_number)s
+%%(release_year)s: %(release_year)s
+%%(section_title)s: %(section_title)s
+%%(section_number)s: %(section_number)s
+%%(section_start)s: %(section_start)s
+%%(section_end)s: %(section_end)s
+EOF
+)
+
+yt-dlp --get-filename --no-write-info-json -o "$template" "$url"
