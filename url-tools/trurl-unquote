@@ -1,0 +1,6 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+# same as urlunquote, but uses [trurl](https://curl.se/trurl/)
+# instead of python standard library
+
+trurl -g "{query}" "whatever?$1"

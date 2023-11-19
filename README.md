@@ -96,6 +96,7 @@ This repository hosts various small personal tools.
 - [`trim-trailing-whitespace`](trim-trailing-whitespace): remove spaces, tabs and alike at end of each line
 - [`uniq-unsorted`](uniq-unsorted): like uniq(1) but does not require lines to be sorted
 - [`univisible`](univisible): tweak Unicode combinations and visualize them
+- [`urlunquote`](url-tools): unquote text using URL quoting rules
 - [`vhd`](vhd): visual hex dump, splitting at newlines, not fixed-width lines
 - [`vncconfig-show`](vncconfig-show/vncconfig-show): show VNC server options with vncconfig(1)
 - [`wakeonwan`](wakeonwan): wake remote machines with Wake-on-WAN
