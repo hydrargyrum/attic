@@ -1,0 +1,61 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+# shellcheck enable=
+
+usage () {
+	cat <<- EOF
+		usage: $0 COMMAND...
+		   or: $0 DIR
+
+		Start a GNU screen session and run every argument in a
+		dedicated window of the screen session in parallel.
+		If only a DIR is given, run every executable of DIR instead.
+	EOF
+	exit "$1"
+}
+
+if [ $# -eq 0 ] || [ "$1" = -h ]
+then
+	usage 64 >&2
+fi
+case "$1" in
+	-*)
+		usage 64 >&2
+		;;
+esac
+
+session=
+if [ -d "$1" ] && [ $# -eq 1 ]
+then
+	session="run-dir-$(basename "$1")"
+	set -- "$1"/*
+else
+	session="run-dir-$(basename "$(pwd)")"
+fi
+
+self="$(basename "$0")"
+started=n
+
+for cmd in "$@"
+do
+	if ! [ -f "$cmd" ] || ! [ -x "$cmd" ]
+	then
+		continue
+	fi
+	cmdname=$(basename "$cmd")
+	if [ "$cmdname" = "$self" ]
+	then
+		# try to prevent infinite loop
+		echo "ignoring $cmd as it is this runner" >&2
+		continue
+	fi
+
+	if [ $started = n ]
+	then
+		echo "started screen session: $session" >&2
+		screen -dmS "$session"
+		started=y
+	fi
+	echo "started command: $cmd" >&2
+	screen -S "$session" -X screen -t "$cmdname" "$cmd"
+done

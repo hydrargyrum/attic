@@ -78,6 +78,7 @@ This repository hosts various small personal tools.
 - [`matrix-redact-room.py`](redacting/matrix-redact-room.py): redact messages in a Matrix room of all users or a specific user (resumable)
 - [`redmine2ical`](redmine2ical): convert Redmine’s timesheet to iCalendar format
 - [`replace-cased-names`](replace-cased-names): replace a string in files retaining the original snake_case/camelCase/etc.
+- [`screen-run-dir`](screen-run-dir): start GNU screen and run given commands in separate windows
 - [`screen-msg`](screen-msg): 2 tools for setting screen(1) messages (hardstatus or transient messages)
 - [`set-cachedir`](set-cachedir): basic tool to create CACHEDIR.TAG files (prevent a folder from being backed up)
 - [`show-args`](show-args): just show args, one per line
