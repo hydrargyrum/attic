@@ -105,6 +105,7 @@ This repository hosts various small personal tools.
 - [`xbel-add`](xbel-tools/xbel-add.py): add a path to "recently used" files in GTK/Qt file chooser
 - [`xephyr-run-cmd`](xephyr-run-cmd): run a Xephyr server and run a command in it (like xvfb-run)
 - [`yml2json`](yml2json): basic convert YAML to JSON
+- [`yt-dlp-template-vars`](yt-dlp-template-vars): outputs yt-dlp templating variables for a URL
 - [`zeropipe`](zeropipe): wrapper for other programs which can take NULL-separated lines
 - [`zlib-uncompress`](zlib-uncompress): uncompress stdin with raw zlib (not gzip)
 
