@@ -43,5 +43,4 @@ cat < example-flat.json | diff -u - "$got"
 
 # --no-lists
 init --expand --no-lists < example-flat.json
-check < example-normal-no-lists.json 
-
+check < example-normal-no-lists.json

@@ -12,6 +12,6 @@ BEGIN {
 		gsub("\"", "\"\"", ARGV[i])
 		printf("\"%s\"", ARGV[i])
 	}
-	print
+	print ""
 	exit
 }

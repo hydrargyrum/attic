@@ -3,4 +3,4 @@
 # same as urlunquote, but uses [trurl](https://curl.se/trurl/)
 # instead of python standard library
 
-trurl -g "{query}" "whatever?$1"
+trurl -g "{query}" "whatever?${1:?missing URL parameter}"

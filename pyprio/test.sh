@@ -30,3 +30,6 @@ init "1+2*3+4"
 check <<- EOF
 	(1 + (2 * 3)) + 4
 EOF
+
+# lazy, just check it doesn't crash
+init "foo(123, *[bar], kw=val, **{qux: quuux})"
