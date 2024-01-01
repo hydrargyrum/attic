@@ -1,0 +1,57 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+
+usage () {
+	cat <<-EOF
+		usage: $0 {FILE.vtt | -}
+
+		Transforms FILE.vtt subtitles into FILE.srt format (overwrites it if it exists).
+		If argument is "-", convert stdin to stdout.
+		Warning, it's rough on the edges and does not handle all VTT features.
+	EOF
+}
+
+convert () {
+	# FIXME line/align may be a little bit too hardcoded
+	sed -E \
+		-e 's/ line:[0-9]+% align:.*$//' \
+		-e '0,/^00/ { /^00/p ; d }' | \
+	awk '
+		BEGIN { n=1 }
+		NR==1 { print n }
+		{ print; }
+		/^$/ { n+=1; print n; }
+	'
+}
+
+if [ $# -ne 1 ]
+then
+	usage >&2
+	exit 64  # EX_USAGE
+elif [ "$1" = -h ] || [ "$1" = --help ]
+then
+	usage
+	exit 0
+elif [ "$1" = - ]
+then
+	convert
+	exit 0
+elif ! [ -f "$1" ]
+then
+	echo "error: no such file: $1" >&2
+	usage >&2
+	exit 64
+elif [ "$1" = "${1%.vtt}" ]
+then
+	echo "error: $1 does not end in .vtt" >&2
+	exit 64
+fi
+
+target=${1%.vtt}.srt
+if [ -f "$target" ]
+then
+	echo "Warning: overwriting $target" >&2
+fi
+
+convert < "$1" > "$target"
+echo "Successfully wrote $target" >&2

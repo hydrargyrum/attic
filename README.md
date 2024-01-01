@@ -99,6 +99,7 @@ This repository hosts various small personal tools.
 - [`urlunquote`](url-tools): unquote text using URL quoting rules
 - [`vhd`](vhd): visual hex dump, splitting at newlines, not fixed-width lines
 - [`vncconfig-show`](vncconfig-show/vncconfig-show): show VNC server options with vncconfig(1)
+- [`vtt-to-srt`](vtt-to-srt/vtt-to-srt): convert VTT file to SRT format
 - [`wakeonwan`](wakeonwan): wake remote machines with Wake-on-WAN
 - [`wallpaper-curtain`](wallpaper-curtain): show an image with low-opacity on top of other windows
 - [`xattrs-csv`](xattrs-csv): print a CSV of selected xattrs of selected files
