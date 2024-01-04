@@ -5,6 +5,7 @@
 
 from argparse import ArgumentParser, FileType
 import os
+import signal
 import sys
 
 def has_colors():
@@ -54,6 +55,9 @@ def print_line(line):
 
 
 def main():
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+
     parser = ArgumentParser(description='Visual Hex Dump')
     parser.add_argument(
         "-L", "--line-numbers", action="store_true",
