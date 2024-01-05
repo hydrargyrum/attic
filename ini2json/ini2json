@@ -17,7 +17,7 @@ def main():
 	else:
 		fp = open(args.file)
 
-	cfg = configparser.ConfigParser()
+	cfg = configparser.ConfigParser(interpolation=None)
 	with fp:
 		cfg.read_file(fp)
 	d = {

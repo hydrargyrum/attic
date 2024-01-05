@@ -25,6 +25,7 @@
         "can_values_be_as_well": "True",
         "does_that_mean_anything_special": "False",
         "purpose": "formatting for readability",
-        "multiline_values": "are\nhandled just fine as\nlong as they are indented\ndeeper than the first line\nof a value"
+        "multiline_values": "are\nhandled just fine as\nlong as they are indented\ndeeper than the first line\nof a value",
+        "interpolation": "%(disabled)s"
     }
 }
