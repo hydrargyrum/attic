@@ -44,8 +44,14 @@ def add_bookmark(url, xbel):
 def main():
     locale.setlocale(locale.LC_ALL, "")
     parser = argparse.ArgumentParser()
-    parser.add_argument("path", type=Path)
-    parser.add_argument("--xbel", default=DEFAULT_PATH)
+    parser.add_argument(
+        "path", type=Path,
+        help="Path to add as recently used in XBEL file",
+    )
+    parser.add_argument(
+        "--xbel", default=DEFAULT_PATH,
+        help=f"Path of XBEL file (default: {DEFAULT_PATH})",
+    )
     args = parser.parse_args()
 
     args.path = args.path.resolve()

@@ -67,7 +67,10 @@ def main():
         "--line-addresses", action="store_true",
         help="Display byte offsets at start of lines (in hexadecimal base)",
     )
-    parser.add_argument('--hex', action='store_true')
+    parser.add_argument(
+        "--hex", action="store_true",
+        help="Always display hex values for all bytes (instead of fancy display ASCII bytes)",
+    )
     parser.add_argument('file', nargs='?', type=FileType('rb'), default=sys.stdin.buffer)
     args = parser.parse_args()
 

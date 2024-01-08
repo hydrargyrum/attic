@@ -8,8 +8,11 @@ import sys
 
 
 def main():
-	argparser = argparse.ArgumentParser()
-	argparser.add_argument("file", nargs="?", default="-")
+	argparser = argparse.ArgumentParser(epilog="Outputs JSON to stdout")
+	argparser.add_argument(
+		"file", nargs="?", default="-",
+		help="Input file to read, or '-' for stdin (default)",
+	)
 	args = argparser.parse_args()
 
 	if args.file == "-":

@@ -10,12 +10,12 @@ import requests
 
 
 # parser
-parser = argparse.ArgumentParser()
-parser.add_argument("--url", default=os.environ.get("GOTIFY_URL"))
-parser.add_argument("-t", "--title")
-parser.add_argument("-p", "--priority", type=int, default=0)
+parser = argparse.ArgumentParser(description="Send a Gotify notification")
+parser.add_argument("--url", default=os.environ.get("GOTIFY_URL"), help="URL of Gotify server")
+parser.add_argument("-t", "--title", help="Notification title")
+parser.add_argument("-p", "--priority", type=int, default=0, help="Notification priority (default: 0)")
 parser.add_argument("-e", "--extra", action="append", metavar="NAMESPACE::ACTION::KEY=VALUE", default=[])
-parser.add_argument("--timeout", type=int, default=60)
+parser.add_argument("--timeout", type=int, default=60, help="Timeout in seconds for Gotify connection (default: 60)")
 parser.add_argument("message", nargs="+")
 args = parser.parse_args()
 

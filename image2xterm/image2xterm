@@ -131,11 +131,24 @@ def main():
 	import argparse
 
 	parser = argparse.ArgumentParser(description='Print an image on terminal with 256 colors palette')
-	parser.add_argument('-r', '--rows', dest='rows', metavar='SIZE', type=int)
-	parser.add_argument('-c', '--columns', dest='cols', metavar='SIZE', type=int)
-	parser.add_argument('--spaces', action='store_true')
-	parser.add_argument('--truecolor', action='store_true')
-	parser.add_argument('file')
+	parser.add_argument(
+		"-r", "--rows", dest="rows", metavar="SIZE", type=int,
+		help="Desired number of output rows, by default guess from terminal",
+	)
+	parser.add_argument(
+		"-c", "--columns", dest="cols", metavar="SIZE", type=int,
+		help="Desired number of output columns, by default guess from terminal",
+	)
+	parser.add_argument(
+		"--spaces", action="store_true",
+		help="Paint using ASCII space character, instead of Unicode block characters."
+		+ " Results in bigger 'pixels'."
+	)
+	parser.add_argument(
+		"--truecolor", action="store_true",
+		help="Use 24-bits RGB instead of default 256 colors palette",
+	)
+	parser.add_argument("file", help="Input image file")
 	opts = parser.parse_args()
 
 	if opts.rows is None:

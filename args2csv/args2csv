@@ -15,9 +15,12 @@ if __name__ == "__main__":
 	signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 	parser = argparse.ArgumentParser(
-		description="Output one CSV row with arguments as cells",
+		description="Output one CSV row with process arguments as CSV cells",
 	)
-	parser.add_argument('-s', '--separator', default=',')
+	parser.add_argument(
+		"-s", "--separator", default=",",
+		help="Output CSV separator (default: ',')",
+	)
 	parser.add_argument('args', nargs='*')
 	args = parser.parse_args()
 

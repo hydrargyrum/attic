@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: WTFPL
 # parse log and replace timestamps with diff to previous timestamp
 
+import argparse
 import datetime
 from fileinput import input
 import re
@@ -60,6 +61,11 @@ def duration_to_str(duration):
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="parse log and replace timestamps with diff to previous timestamp",
+    )
+    args = parser.parse_args()
+
     old_time = None
 
     for line in input():

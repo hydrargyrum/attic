@@ -32,14 +32,16 @@ def reversed_by_count(iterator):
     yield from reversed(group)
 
 
-parser = ArgumentParser()
+parser = ArgumentParser(
+    epilog="By default, sort from most common occurrences to least common.",
+)
 parser.add_argument(
     "-S", "--no-sort", action="store_false", default=True, dest="sort",
-    help="Sort in reverse (descending) order",
+    help="Don't sort lines by number of occurrences, use order of appearance",
 )
 parser.add_argument(
     "-r", "--reverse", action="store_true", dest="desc",
-    help="Sort in reverse (descending) order",
+    help="Sort lines from least common occurrences to most common",
 )
 parser.add_argument("files", nargs="*")
 args = parser.parse_args()

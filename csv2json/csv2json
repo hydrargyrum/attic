@@ -25,10 +25,24 @@ def read_rows(fd, args):
 
 def main():
 	parser = ArgumentParser()
-	parser.add_argument('--columns')
-	parser.add_argument('--header', action='store_true')
-	parser.add_argument('-d', '--delimiter', default=',')
-	parser.add_argument('--sniff', action='store_true')
+	parser.add_argument(
+		"--columns",
+		help="Comma-separated list of CSV fields, like forcing a CSV header."
+		+ " See --header. Does not skip the first line.",
+	)
+	parser.add_argument(
+		"--header", action="store_true",
+		help="The first CSV row is a header, take its cells as column names."
+		+ " The JSON output will use these keys in each row.",
+	)
+	parser.add_argument(
+		"-d", "--delimiter", default=","
+		help="Input CSV delimiter (default: ',')",
+	)
+	parser.add_argument(
+		"--sniff", action="store_true",
+		help="Try to guess the CSV format and header. May not work as expected."
+	)
 	parser.add_argument('file', nargs="?", default="-")
 	args = parser.parse_args()
 

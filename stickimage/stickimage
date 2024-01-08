@@ -40,11 +40,23 @@ class Display(QLabel):
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
 
-	parser = ArgumentParser()
-	parser.add_argument('--borderless', action='store_const', const=True)
-	parser.add_argument('--hover-opacity', type=float)
-	parser.add_argument('--opacity', type=float, default=1)
-	parser.add_argument('file')
+	parser = ArgumentParser(
+		description="app that displays an image always-on-top like a sticky note",
+	)
+	parser.add_argument(
+		"--borderless", action="store_const", const=True,
+		help="Hide image window border",
+	)
+	parser.add_argument(
+		"--hover-opacity", type=float, metavar="NUMBER",
+		help="When the mouse cursor hovers the image, set image opacity to"
+		+ " NUMBER (between 0 and 1). Default: use the same as --opacity",
+	)
+	parser.add_argument(
+		"--opacity", type=float, default=1,
+		help="Set image opacity to NUMBER (between 0 and 1). Default: 1",
+	)
+	parser.add_argument("file", help="image to display")
 	args = parser.parse_args(app.arguments()[1:])
 
 	pix = QPixmap(args.file)

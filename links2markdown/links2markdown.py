@@ -78,8 +78,13 @@ def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("file", default="-", nargs="?")
+    parser = argparse.ArgumentParser(
+        epilog="Outputs processed text on stdout",
+    )
+    parser.add_argument(
+        "file", default="-", nargs="?",
+        help="Input file to process ('-' for stdin)",
+    )
     args = parser.parse_args()
 
     if args.file == "-":

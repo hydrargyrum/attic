@@ -11,12 +11,14 @@ import requests
 
 
 # parser
-parser = argparse.ArgumentParser()
-parser.add_argument("--url")
-parser.add_argument("--limit", type=int)
-parser.add_argument("--after", type=int)
-parser.add_argument("--appid", type=int, dest="app_id")
-parser.add_argument("--pretty", action="store_true")
+parser = argparse.ArgumentParser(
+	description="Read Gotify notifications and output in JSON",
+)
+parser.add_argument("--url", help="URL of Gotify server")
+parser.add_argument("--limit", type=int, help="Limit the number of retrieved messages")
+parser.add_argument("--after", type=int, help="Display messages after this id only")
+parser.add_argument("--appid", type=int, dest="app_id", help="Gotify app (reader) ID")
+parser.add_argument("--pretty", action="store_true", help="Display in human format instead of JSON")
 args = parser.parse_args()
 
 if not args.url:

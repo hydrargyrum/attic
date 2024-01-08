@@ -21,8 +21,14 @@ def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-l", "--length", type=int, default=80)
+    parser = argparse.ArgumentParser(
+        epilog="Warning: if input text contains invisible characters or ANSI "
+        + "escape sequences, lines may get truncated earlier than expected",
+    )
+    parser.add_argument(
+        "-l", "--length", type=int, default=80,
+        help="Truncate line to LENGTH characters (not bytes). Default: 80",
+    )
     parser.add_argument("file", default="-", nargs="?")
     args = parser.parse_args()
 

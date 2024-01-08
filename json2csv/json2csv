@@ -32,9 +32,9 @@ def read(fd):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-s', '--separator', default=',')
+parser.add_argument("-s", "--separator", default=",", help="Output CSV separator (default: ',')")
 parser.add_argument('-f', '--file', default='-', help='JSON file to read (standard input by default)')
-parser.add_argument('-k', '--keep-only', action='store_const', const=True, help='Keep only specified keys')
+parser.add_argument('-k', '--keep-only', action='store_const', const=True, help='Keep only specified fields')
 parser.add_argument('field', nargs='*', help='display field in the leftmost columns')
 args = parser.parse_args()
 

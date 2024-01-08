@@ -164,9 +164,18 @@ def main():
 	)
 	parser.add_argument('--flatten', action='store_const', const=flatten, dest='op')
 	parser.add_argument('--expand', action='store_const', const=expand_lists, dest='op')
-	parser.add_argument('--no-lists', action='store_true')
-	parser.add_argument('--separator', default='/')
-	parser.add_argument('--indent', action='store_true')
+	parser.add_argument(
+		"--no-lists", action="store_true",
+		help="With --expand, only output JSON dicts, not lists. See above description",
+	)
+	parser.add_argument(
+		"--separator", default="/",
+		help="Path separator to use in flattened form (default: '/')",
+	)
+	parser.add_argument(
+		"--indent", action="store_true",
+		help="Indent JSON output (instead of outputting a single line)",
+	)
 	parser.add_argument('file', nargs='?')
 	args = parser.parse_args()
 
