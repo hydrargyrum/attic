@@ -36,8 +36,8 @@ def test_basic(input, expected):
 	[
 		(["àccented", "lïñes"], ["àccented", "lïñes"], "utf-8"),
 		(["àccented", "lïñes"], ["àccented", "lïñes"], "latin-1"),
-		([
-			"àccented", "lïñes", "lïñes"], ["àccented", "lïñes"],
+		(
+			["àccented", "lïñes", "lïñes"], ["àccented", "lïñes"],
 			"latin-1"
 		),
 		(

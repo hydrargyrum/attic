@@ -38,11 +38,11 @@ class MouseFollower(QWidget):
 	@Slot()
 	def toggleGrab(self):
 		refollow = self.following
-		
+
 		if refollow:
 			self.endFollow()
 		self.grabbing = not self.grabbing
-		
+
 		if refollow:
 			self.startFollow()
 
@@ -172,11 +172,13 @@ class CoordApp(QMainWindow):
 		self.statusBar().showMessage('%s copied to clipboard' % text, 2000)
 
 	def showHelp(self):
-		QMessageBox.information(self, 'Help',
-		                        'Press [Ctrl-C] (or your copy shortcut) to copy coordinates to clipboard.\n'
-		                        'Press [Space] to toggle mouse-follow.\n'
-		                        'Press [A] to toggle always-on-top.\n'
-		                        'Press [G] to toggle mouse-grabbing mode (faster, but prevents you to click when enabled).')
+		QMessageBox.information(
+			self, 'Help',
+			'Press [Ctrl-C] (or your copy shortcut) to copy coordinates to clipboard.\n'
+			'Press [Space] to toggle mouse-follow.\n'
+			'Press [A] to toggle always-on-top.\n'
+			'Press [G] to toggle mouse-grabbing mode (faster, but prevents you to click when enabled).'
+		)
 
 
 if __name__ == '__main__':

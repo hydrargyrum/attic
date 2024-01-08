@@ -23,7 +23,7 @@ class Merger:
         dest = schemas[0]
         for el in schemas[1:]:
             self.merge_one(dest, el)
-    
+
     def merge_one(self, dest, other):
         if dest['type'] == 'null':
             # if other['type'] == 'null':
@@ -36,7 +36,7 @@ class Merger:
         func = getattr(self, f"do_merge_{dest['type']}", None)
         if func is not None:
             func(dest, other)
-    
+
     def do_merge_object(self, dest, other):
         for ok in other['properties']:
             if ok in dest['properties']:
@@ -70,7 +70,7 @@ class Builder:
                 ret['properties'][k] = self.typing(v)
             return ret
         else:
-            assert False
+            raise AssertionError()
 
     def create(self, data):
         ret = {"$schema": "http://json-schema.org/schema#"}
