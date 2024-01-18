@@ -1,0 +1,11 @@
+#compdef qunpak
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'-l[List archive only]' \
+	'-x[Extract archive \(default\)]' \
+	'-O+[Extract files into DIR]:DIR:_files -/' \
+	':Extract FILE:_files' \
+	'::Handle only files matching PATTERN:'

@@ -1,0 +1,12 @@
+#compdef flatten-json
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	--flatten \
+	--expand \
+	'--no-lists[With --expand, only output JSON dicts, not lists. See above description]' \
+	'--separator=[Path separator to use in flattened form \(default\: '"'"'/'"'"'\)]:SEPARATOR:' \
+	'--indent[Indent JSON output \(instead of outputting a single line\)]' \
+	::FILE:_files

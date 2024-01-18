@@ -1,0 +1,11 @@
+#compdef vhd
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'(-L --line-numbers)-L[Display line numbers \(in decimal base, starting at 1\)]' \
+	'(-L --line-numbers)--line-numbers[Display line numbers \(in decimal base, starting at 1\)]' \
+	'--line-addresses[Display byte offsets at start of lines \(in hexadecimal base\)]' \
+	'--hex[Always display hex values for all bytes \(instead of fancy display ASCII bytes\)]' \
+	::FILE:_files

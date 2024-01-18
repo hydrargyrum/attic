@@ -1,0 +1,8 @@
+#compdef pyqt5-to-pyqt6
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	-d \
+	:FILE:_files

@@ -1,0 +1,10 @@
+#compdef univisible
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'-d[Use NFKD form \(decomposed\)]' \
+	'-c[Use NFKC form \(composed\)]' \
+	'-v[Print visually composing glyphs]' \
+	'-i[Print info about each codepoint]'

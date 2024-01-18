@@ -1,0 +1,11 @@
+#compdef moversleep
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'--delay=[Delay \(in seconds\) between lookups]:DELAY:_numbers' \
+	'(-f --force)-f[Overwrite files in DST]' \
+	'(-f --force)--force[Overwrite files in DST]' \
+	':Source dir from where to look files:Path' \
+	':Destination dir where to move files:Path'

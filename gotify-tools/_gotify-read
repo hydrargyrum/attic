@@ -1,0 +1,11 @@
+#compdef gotify-read
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'--url=[URL of Gotify server]:URL:' \
+	'--limit=[Limit the number of retrieved messages]:LIMIT:_numbers' \
+	'--after=[Display messages after this id only]:AFTER:_numbers' \
+	'--appid=[Gotify app \(reader\) ID]:APP_ID:_numbers' \
+	'--pretty[Display in human format instead of JSON]'

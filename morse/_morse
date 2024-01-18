@@ -1,0 +1,12 @@
+#compdef morse
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'--show[Convert text to Morse]' \
+	'--parse[Convert Morse to text]' \
+	'--beep[Convert to Morse and play with computer beep]' \
+	'--wave=[Output to WAVE file]:WAVE:' \
+	'--morse[Input is Morse, for use with --beep or --wave]' \
+	'--freq=[Frequency in Hz, for use --beep or --wave]:FREQ:_numbers'

@@ -1,0 +1,11 @@
+#compdef crc
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'--hex[Display CRC value as hexadecimal]' \
+	'(-2 --crc16)-2[Perform CRC-CCITT algorithm with 16 bits output]' \
+	'(-2 --crc16)--crc16[Perform CRC-CCITT algorithm with 16 bits output]' \
+	'(-4 --crc32)-4[Perform CRC32 algorithm with 32 bits output \(default\)]' \
+	'(-4 --crc32)--crc32[Perform CRC32 algorithm with 32 bits output \(default\)]'

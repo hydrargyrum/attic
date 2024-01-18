@@ -1,0 +1,3 @@
+#compdef itertools
+
+_arguments -s -S -C '(-h --help)-h[show help message and exit]' '(-h --help)--help[show help message and exit]' '--out-plain[Output rows as space-separated entries]' '--out-csv[Output rows as CSV]' '--out-json[Output rows as JSON]' '--permutations[Compute permutations of ARGS]' '--combinations=[Compute combinations of N elements of ARGS]:N:_numbers' ':Entries on which to operate:' '*:Entries on which to operate:'

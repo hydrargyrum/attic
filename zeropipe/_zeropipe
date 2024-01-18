@@ -1,0 +1,3 @@
+#compdef zeropipe
+
+_arguments '1:wrapped commands:(find fzf grep head locate ls sed sort tail uniq xargs)' '*:: :{ _normal }'

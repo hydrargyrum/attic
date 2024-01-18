@@ -1,0 +1,12 @@
+#compdef wallpaper-curtain
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'(-o --opacity)-o+[Opacity of the image. Value between 0 \(fully transparent\) and 1 \(fully opaque\). Default\: 0.5.]:OPACITY:float' \
+	'(-o --opacity)--opacity=[Opacity of the image. Value between 0 \(fully transparent\) and 1 \(fully opaque\). Default\: 0.5.]:OPACITY:float' \
+	'(-m --mode)-m+[Mode to resize images that do not fit desktop dimensions]:MODE:(none fit cover)' \
+	'(-m --mode)--mode=[Mode to resize images that do not fit desktop dimensions]:MODE:(none fit cover)' \
+	'--no-tray-is-fine[No warning dialog if there'"'"'s no system tray]' \
+	':Image file to show:_files'

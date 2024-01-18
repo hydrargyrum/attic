@@ -1,0 +1,12 @@
+#compdef csv2json
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'--columns=[Comma-separated list of CSV fields, like forcing a CSV header. See --header. Does not skip the first line.]:COLUMNS:' \
+	'--header[The first CSV row is a header, take its cells as column names. The JSON output will use these keys in each row.]' \
+	'(-d --delimiter)-d+[Input CSV delimiter \(default\: '"'"','"'"'\)]:DELIMITER:' \
+	'(-d --delimiter)--delimiter=[Input CSV delimiter \(default\: '"'"','"'"'\)]:DELIMITER:' \
+	'--sniff[Try to guess the CSV format and header. May not work as expected.]' \
+	::FILE:_files

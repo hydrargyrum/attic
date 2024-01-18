@@ -1,0 +1,12 @@
+#compdef httpshare
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'(--bind -b)--bind=[Specify alternate bind address \[default\: all interfaces\]]:ADDRESS:' \
+	'(--bind -b)-b+[Specify alternate bind address \[default\: all interfaces\]]:ADDRESS:' \
+	'(--directory -d)--directory=[Specify alternative directory \[default\:current directory\]]:DIRECTORY:_files -/' \
+	'(--directory -d)-d+[Specify alternative directory \[default\:current directory\]]:DIRECTORY:_files -/' \
+	'--auth=[Require HTTP authentication]:USER\:PASSWORD:parse_auth' \
+	'::Specify alternate port \[default\: 8000\]:_numbers'

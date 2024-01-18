@@ -1,0 +1,7 @@
+#compdef group-lines
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	':Pattern on which to group lines:'

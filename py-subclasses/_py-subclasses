@@ -1,0 +1,8 @@
+#compdef py-subclasses
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'*:Modules to import, that may contain subclasses:' \
+	':Full path of the class of which to print subclasses \(e.g. collections.abc.Sequence\):'

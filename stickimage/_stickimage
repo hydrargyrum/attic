@@ -1,0 +1,10 @@
+#compdef stickimage
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'--borderless[Hide image window border]' \
+	'--hover-opacity=[When the mouse cursor hovers the image, set image opacity to NUMBER \(between 0 and 1\). Default\: use the same as --opacity]:NUMBER:float' \
+	'--opacity=[Set image opacity to NUMBER \(between 0 and 1\). Default\: 1]:OPACITY:float' \
+	':image to display:_files'

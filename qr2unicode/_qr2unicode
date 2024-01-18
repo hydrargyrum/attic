@@ -1,0 +1,14 @@
+#compdef qr2unicode
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'(-i --invert)-i[Invert colors \[default=False\]]' \
+	'(-i --invert)--invert[Invert colors \[default=False\]]' \
+	'(-z --zoom)-z+[Zoom by X and Y \[default=2\:1\]]:X\:Y:' \
+	'(-z --zoom)--zoom=[Zoom by X and Y \[default=2\:1\]]:X\:Y:' \
+	'--method=[Use METHOD for display output \[choices=ansi,unicode,unicode_small\]]:METHOD:(ansi unicode unicode_small)' \
+	'(-b --border)-b+[Set size of border \[default=0\]]:BORDER:_numbers' \
+	'(-b --border)--border=[Set size of border \[default=0\]]:BORDER:_numbers' \
+	:TEXT:

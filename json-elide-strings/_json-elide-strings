@@ -1,0 +1,11 @@
+#compdef json-elide-strings
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'--keys[also truncate dictionary keys \(this may lead to key collisions\)]' \
+	'(-l --length)-l+:LENGTH:_numbers' \
+	'(-l --length)--length=:LENGTH:_numbers' \
+	--suffix=:SUFFIX: \
+	::FILE:_files

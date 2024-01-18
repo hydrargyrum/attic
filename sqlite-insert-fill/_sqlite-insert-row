@@ -1,0 +1,10 @@
+#compdef sqlite-insert-row
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'*--set=:SET:' \
+	--search-existing=:SEARCH_EXISTING: \
+	:DATABASE:_files \
+	:TABLE:

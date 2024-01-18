@@ -1,0 +1,13 @@
+#compdef image2xterm
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'(-r --rows)-r+[Desired number of output rows, by default guess from terminal]:SIZE:_numbers' \
+	'(-r --rows)--rows=[Desired number of output rows, by default guess from terminal]:SIZE:_numbers' \
+	'(-c --columns)-c+[Desired number of output columns, by default guess from terminal]:SIZE:_numbers' \
+	'(-c --columns)--columns=[Desired number of output columns, by default guess from terminal]:SIZE:_numbers' \
+	'--spaces[Paint using ASCII space character, instead of Unicode block characters. Results in bigger '"'"'pixels'"'"'.]' \
+	'--truecolor[Use 24-bits RGB instead of default 256 colors palette]' \
+	':Input image file:_files'

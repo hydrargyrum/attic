@@ -1,0 +1,14 @@
+#compdef json2table
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'(-f --file)-f+[JSON file to read \(standard input by default\)]:FILE:_files' \
+	'(-f --file)--file=[JSON file to read \(standard input by default\)]:FILE:_files' \
+	'(-k --keep-only)-k[Keep only specified keys]' \
+	'(-k --keep-only)--keep-only[Keep only specified keys]' \
+	'(-b --box)-b[Use Unicode pretty characters instead of plain ASCII table]' \
+	'(-b --box)--box[Use Unicode pretty characters instead of plain ASCII table]' \
+	'--markdown[Output markdown table]' \
+	'*:display field in the leftmost columns:'

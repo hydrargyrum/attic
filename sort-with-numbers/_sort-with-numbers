@@ -1,0 +1,9 @@
+#compdef sort-with-numbers
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'-z[NUL separated lines]' \
+	'--trim-whitespace[trim whitespace]' \
+	'*:FILES:_files'

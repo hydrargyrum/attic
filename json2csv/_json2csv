@@ -1,0 +1,13 @@
+#compdef json2csv
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'(-s --separator)-s+[Output CSV separator \(default\: '"'"','"'"'\)]:SEPARATOR:' \
+	'(-s --separator)--separator=[Output CSV separator \(default\: '"'"','"'"'\)]:SEPARATOR:' \
+	'(-f --file)-f+[JSON file to read \(standard input by default\)]:FILE:_files' \
+	'(-f --file)--file=[JSON file to read \(standard input by default\)]:FILE:_files' \
+	'(-k --keep-only)-k[Keep only specified fields]' \
+	'(-k --keep-only)--keep-only[Keep only specified fields]' \
+	'*:display field in the leftmost columns:'

@@ -1,0 +1,18 @@
+#compdef json2sqlite
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'(-f --file)-f+[Input JSON file]:INPUT_JSON_FILE:_files' \
+	'(-f --file)--file=[Input JSON file]:INPUT_JSON_FILE:_files' \
+	'(-j --json)-j+[Input JSON data \(JSON passed as argument, not a filename!\)]:INPUT_JSON_DATA:' \
+	'(-j --json)--json=[Input JSON data \(JSON passed as argument, not a filename!\)]:INPUT_JSON_DATA:' \
+	'(-d --database)-d+:DATABASE_FILE:' \
+	'(-d --database)--database=:DATABASE_FILE:' \
+	'(-t --table)-t+:TABLE:' \
+	'(-t --table)--table=:TABLE:' \
+	'*-u+:COLUMN_MATCH_FOR_UPDATE:' \
+	'*--update=:COLUMN_MATCH_FOR_UPDATE:' \
+	--create \
+	--alter

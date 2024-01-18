@@ -1,0 +1,8 @@
+#compdef zlib-uncompress
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	--wbits=:WBITS:_numbers \
+	::FILE:_files

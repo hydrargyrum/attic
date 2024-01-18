@@ -1,0 +1,11 @@
+#compdef count-unsorted
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'(-S --no-sort)-S[Don'"'"'t sort lines by number of occurrences, use order of appearance]' \
+	'(-S --no-sort)--no-sort[Don'"'"'t sort lines by number of occurrences, use order of appearance]' \
+	'(-r --reverse)-r[Sort lines from least common occurrences to most common]' \
+	'(-r --reverse)--reverse[Sort lines from least common occurrences to most common]' \
+	'*:FILES:_files'

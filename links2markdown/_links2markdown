@@ -1,0 +1,7 @@
+#compdef links2markdown
+_arguments \
+	-s \
+	-S \
+	'(-h --help)-h[show this help message and exit]' \
+	'(-h --help)--help[show this help message and exit]' \
+	'::Input file to process \('"'"'-'"'"' for stdin\):_files'
