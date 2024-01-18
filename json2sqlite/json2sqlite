@@ -122,8 +122,14 @@ class Inserter(object):
 
 def main():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-f', '--file', dest='file', metavar='INPUT_JSON_FILE', description='Input JSON file')
-	parser.add_argument('-j', '--json', dest='json', metavar='INPUT_JSON_DATA', description='Input JSON data (JSON passed as argument, not a filename!)')
+	parser.add_argument(
+		"-f", "--file", dest="file", metavar="INPUT_JSON_FILE",
+		help="Input JSON filename (or '-' for stdin)",
+	)
+	parser.add_argument(
+		"-j", "--json", dest="json", metavar="INPUT_JSON_DATA",
+		help="Input JSON data (JSON passed as argument, not a filename!)",
+	)
 	parser.add_argument('-d', '--database', dest='database', metavar='DATABASE_FILE')
 	parser.add_argument('-t', '--table', dest='table', metavar='TABLE')
 	parser.add_argument('-u', '--update', dest='update_ids', action='append', metavar='COLUMN_MATCH_FOR_UPDATE')

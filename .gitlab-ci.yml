@@ -19,8 +19,8 @@ test-generic:
   script: |
     set -eu
     apt update
-    # required for sort-with-numbers
-    apt install -y --no-install-recommends locales-all
+    apt install -y --no-install-recommends locales-all # for sort-with-numbers
+    apt install -y --no-install-recommends sqlite3 # for *sqlite*
     pip install pytest || exit 1
 
     err=1
