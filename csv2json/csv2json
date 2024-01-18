@@ -36,7 +36,7 @@ def main():
 		+ " The JSON output will use these keys in each row.",
 	)
 	parser.add_argument(
-		"-d", "--delimiter", default=","
+		"-d", "--delimiter", default=",",
 		help="Input CSV delimiter (default: ',')",
 	)
 	parser.add_argument(
