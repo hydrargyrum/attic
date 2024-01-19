@@ -72,11 +72,11 @@ class Inserter(object):
 		if isinstance(data, dict):
 			self._update_dict(ids, data)
 		elif isinstance(data, list):
-			if not js:
+			if not ids:
 				return
 			elif isinstance(data[0], dict):
 				for line in data:
-					self._update_dict(line)
+					self._update_dict(ids, line)
 			else:
 				raise UnsupportedTypeError()
 		else:
