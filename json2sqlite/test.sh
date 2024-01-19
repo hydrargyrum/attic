@@ -53,6 +53,17 @@ check "select * from test" <<- EOF
 	1.1,1.2
 EOF
 
+# test input as dict[list]
+TRUNC=y run -f - -t test --create <<- EOF
+	{"col1": ["1.1", "2.1"], "col2": ["1.2", "2.2"]}
+EOF
+
+check "select * from test" <<- EOF
+	col1,col2
+	1.1,1.2
+	2.1,2.2
+EOF
+
 # test input as list[list]
 trunc
 sqlite3 "$got" "create table test(foo, bar)"

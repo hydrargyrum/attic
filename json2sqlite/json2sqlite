@@ -33,7 +33,12 @@ class Inserter(object):
 
 	def insert_data(self, data):
 		if isinstance(data, dict):
-			self._insert_dict(data)
+			if all(isinstance(val, list) for val in data.values()):
+				for line in zip(*data.values()):
+					line_dict = dict(zip(data.keys(), line))
+					self._insert_dict(line_dict)
+			else:
+				self._insert_dict(data)
 		elif isinstance(data, list):
 			if not len(data):
 				return
