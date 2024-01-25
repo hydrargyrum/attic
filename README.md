@@ -102,6 +102,7 @@ This repository hosts various small personal tools.
 - [`vtt-to-srt`](vtt-to-srt/vtt-to-srt): convert VTT file to SRT format
 - [`wakeonwan`](wakeonwan): wake remote machines with Wake-on-WAN
 - [`wallpaper-curtain`](wallpaper-curtain): show an image with low-opacity on top of other windows
+- [`with-same-shebang`](with-same-shebang): run a command with the same interpreter as another command
 - [`xattrs-csv`](xattrs-csv): print a CSV of selected xattrs of selected files
 - [`xattrs-filter`](xattrs-filter): filter a file list based on whether xattrs have desired values
 - [`xattrs-set`](xattrs-set): set/unset xattrs on files with a nice command-line syntax

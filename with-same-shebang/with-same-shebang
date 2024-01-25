@@ -1,0 +1,88 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+# shellcheck enable=
+
+# anatomy of a shebang:
+# #! command multiple words
+#    ^-----^ ^------------^
+# ^^ magic                |
+#   ^ optional space      |
+#                         |
+#            this is a single argument
+
+usage () {
+	cat <<-EOF
+		usage: $0 [-c] [-n] REF_COMMAND [COMMAND ARGS...]
+
+		Run COMMAND ARGS… through the same interpreter as specified in
+		REF_COMMAND's shebang.
+
+		For example if "foo" has this shebang: "#!/bin/bar -f", then running:
+
+			with-same-shebang foo qux
+
+		will run in the end:
+
+			/bin/bar -f qux
+
+		If -c is given, the argument given in REF_COMMAND's shebang is ignored.
+		If -n is given, print what would be run instead of running the command.
+	EOF
+}
+
+justcmd=
+prefix=
+while getopts hcn name
+do
+	case $name in
+		h)
+			usage
+			exit 0
+			;;
+		c)
+			justcmd=1
+			;;
+		n)
+			prefix="echo"
+			;;
+		*)
+			usage >&2
+			exit 64
+			;;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]
+then
+	usage >&2
+	exit 64
+fi
+
+src=$1
+shift
+
+if ! [ -x "$src" ]
+then
+	src=$(command -v "$src")
+fi
+
+cmd=$(sed -r -n -e 2q -e '/^#!/ { s/^#! ?([^ ]+).*$/\1/ ; p }' "$src")
+if [ -z "$cmd" ]
+then
+	echo "invalid shebang for $src"
+	exit 1
+fi
+
+arg=
+if [ -z "$justcmd" ]
+then
+	arg=$(sed -r -n -e 2q -e '/^#! ?[^ ]+ / { s/^#! ?[^ ]+ (.*)$/\1/ ; p }' "$src")
+fi
+
+if [ -n "$arg" ]
+then
+	exec $prefix "$cmd" "$arg" "$@"
+else
+	exec $prefix "$cmd" "$@"
+fi
