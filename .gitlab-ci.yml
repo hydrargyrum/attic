@@ -47,3 +47,11 @@ lint-shellcheck:
       shellcheck "$file"
     done | grep . || err=0
     exit $err
+
+lint-python:
+  stage: test
+  image: python:3-slim
+  script:
+    - "pip install flake8"
+    - "find -name '*.py' -exec flake8 --select E999 '{}' +"
+    - "flake8 --select E999 $(git grep -r '#!/usr/bin/env python3' -l)"
