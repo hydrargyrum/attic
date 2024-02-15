@@ -51,7 +51,13 @@ lint-shellcheck:
 lint-python:
   stage: test
   image: python:3-slim
-  script:
-    - "pip install flake8"
-    - "find -name '*.py' -exec flake8 --select E999 '{}' +"
-    - "flake8 --select E999 $(git grep -r '#!/usr/bin/env python3' -l)"
+  script: |
+    err=1
+    set -eu
+    pip install flake8
+    find -name '*.py' -exec flake8 --select E999 '{}' +
+    grep -r -l '^#!/usr/bin/env python3' "$CI_PROJECT_DIR"/* | while read file
+    do
+      flake8 --select E999 "$file"
+    done | grep . || err=0
+    exit $err
