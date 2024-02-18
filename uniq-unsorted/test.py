@@ -76,8 +76,9 @@ def test_file(tmp_path, encoding):
 def test_interrupt():
 	proc = subprocess.Popen([app_exe], stdin=subprocess.PIPE)
 	time.sleep(1)
-	proc.send_signal(signal.SIGINT)
-	assert proc.wait(1) == -2
+	with proc:
+		proc.send_signal(signal.SIGINT)
+		assert proc.wait(1) == -2
 
 
 def test_broken_pipe():
