@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: WTFPL
 
 import argparse
+import os
 import re
 import signal
 import sys
@@ -39,6 +40,11 @@ class TitleFetchParser(HTMLParser):
 
 
 def fetch_title(url):
+    if sys.stderr.isatty():
+        # fill info string with spaces till the end of line & rewind line to overwrite
+        term_width = os.get_terminal_size(sys.stderr.fileno()).columns
+        print(f"{f'Fetching {url}':{term_width}}", file=sys.stderr, end="\r")
+
     try:
         response = requests.get(
             url,
@@ -47,7 +53,8 @@ def fetch_title(url):
             },
             timeout=120,
         )
-    except requests.exceptions.RequestException:
+    except requests.exceptions.RequestException as exc:
+        print(f"error: failed to fetch {url}: {exc}", file=sys.stderr)
         return None
 
     parser = TitleFetchParser(convert_charrefs=True)
@@ -56,7 +63,7 @@ def fetch_title(url):
         parser.feed(response.text)
         parser.close()
     except AssertionError as exc:
-        print(f"failed on {url}: {exc}", file=sys.stderr)
+        print(f"error: failed extracting title from {url}: {exc}", file=sys.stderr)
         return None
     else:
         return parser.title
