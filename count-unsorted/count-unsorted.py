@@ -3,6 +3,7 @@
 
 # count-unsorted: like uniq(1)'s -c but does not require lines to be sorted
 
+import locale
 import signal
 import sys
 from argparse import ArgumentParser
@@ -10,6 +11,7 @@ from collections import Counter
 from fileinput import input
 
 
+locale.setlocale(locale.LC_ALL, "")
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 

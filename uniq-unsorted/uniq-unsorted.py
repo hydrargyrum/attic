@@ -3,6 +3,7 @@
 
 # uniq-unsorted: like uniq(1) but does not require lines to be sorted
 
+import locale
 import signal
 import sys
 from fileinput import input
@@ -11,6 +12,7 @@ from fileinput import input
 seen = set()
 
 
+locale.setlocale(locale.LC_ALL, "")
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 

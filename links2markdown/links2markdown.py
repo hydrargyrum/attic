@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: WTFPL
 
 import argparse
+import locale
 import os
 import re
 import signal
@@ -82,6 +83,7 @@ def link_to_markdown(m):
 
 
 def main():
+    locale.setlocale(locale.LC_ALL, "")
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
