@@ -64,6 +64,7 @@ This repository hosts various small personal tools.
 - [`pvrun`](pvrun): run a command and show its I/O progress with pv(1)
 - [`pyliteral-to-json`](pyliteral-to-json): read a python literal dict/list/string and convert to JSON
 - [`py-subclasses`](py-subclasses): show found subclasses of a class
+- [`pyprio`](pyprio): show operators priorities of a python expression
 - [`pyqt5-to-pyqt6`](pyqt5-to-pyqt6): dumb port a file from PyQt5 to PyQt6
 - [`qgifview`](qgifview): very basic GIF image viewer
 - [`qpeep`](qpeep): window covering with a hole following the cursor
