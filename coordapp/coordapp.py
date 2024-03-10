@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: WTFPL
 
+# /// script
+# dependencies = ["PyQt6"]
+# ///
+
 from PyQt6.QtCore import pyqtSignal as Signal, pyqtSlot as Slot, QPoint, QBasicTimer, Qt
 from PyQt6.QtGui import QCursor, QKeySequence, QAction
 from PyQt6.QtWidgets import QLineEdit, QWidget, QHBoxLayout, QMainWindow, QApplication, QPushButton, QMessageBox

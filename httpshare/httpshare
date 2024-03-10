@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: WTFPL
 
+# /// script
+# dependencies = ["bottle"]
+# ///
+
 """
 Shares a directory on HTTP like "python3 -m http.server" but is capable of
 handling "Range" header, making it suitable for seeking randomly in medias.

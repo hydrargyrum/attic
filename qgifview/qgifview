@@ -3,6 +3,10 @@
 # basic GIF viewer using Qt libs
 # usage: qgifview FILE.GIF
 
+# /// script
+# dependencies = ["PyQt6"]
+# ///
+
 import sys
 
 from PyQt6.QtCore import Qt

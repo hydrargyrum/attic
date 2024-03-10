@@ -3,6 +3,10 @@
 # SPDX-License-Identifier: WTFPL
 # A Qt app that just displays a ruler to measure pixel lengths
 
+# /// script
+# dependencies = ["PyQt6"]
+# ///
+
 from PyQt6.QtCore import Qt, QSize, QRect, pyqtSlot as Slot
 from PyQt6.QtGui import QPainter, QKeySequence, QAction
 from PyQt6.QtWidgets import QApplication, QWidget

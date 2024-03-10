@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: WTFPL
 
+# /// script
+# dependencies = ["requests"]
+# ///
+
 import argparse
 import json
 import os

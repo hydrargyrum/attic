@@ -2,6 +2,10 @@
 # SPDX-License-Identifier: WTFPL
 # parse log and replace timestamps with diff to previous timestamp
 
+# /// script
+# dependencies = ["python-dateutil"]
+# ///
+
 import argparse
 import datetime
 from fileinput import input

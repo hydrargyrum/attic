@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: WTFPL
 
+# /// script
+# dependencies = ["vignette", "Pillow"]
+# ///
+
 import argparse
 import os
 from pathlib import Path

@@ -2,6 +2,10 @@
 # SPDX-License-Identifier: WTFPL
 # a Qt app that displays an image always-on-top like a sticky note
 
+# /// script
+# dependencies = ["PyQt6"]
+# ///
+
 import signal
 import sys
 from argparse import ArgumentParser

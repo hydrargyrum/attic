@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: WTFPL
 
+# /// script
+# dependencies = ["prettytable"]
+# ///
+
 from argparse import ArgumentParser
 import csv
 import sys

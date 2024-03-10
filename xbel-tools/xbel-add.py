@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: WTFPL
 
+# /// script
+# dependencies = ["lxml"]
+# ///
+
 import argparse
 import datetime
 import locale

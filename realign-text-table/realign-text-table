@@ -17,6 +17,10 @@
 #    |      x      | longer cell ? |
 #    +-------------+---------------+
 
+# /// script
+# dependencies = ["prettytable"]
+# ///
+
 from fileinput import input
 import re
 import sys

@@ -2,6 +2,10 @@
 # SPDX-License-Identifier: WTFPL
 # no warranty
 
+# /// script
+# dependencies = ["requests"]
+# ///
+
 from __future__ import print_function # probably works in Python 2
 
 import argparse

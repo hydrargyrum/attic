@@ -2,6 +2,10 @@
 # SPDX-License-Identifier: WTFPL
 # inspired by https://css.land/lch/
 
+# /// script
+# dependencies = ["PyQt6", "colormath"]
+# ///
+
 from math import ceil
 
 # import colorspacious  # lib seems buggy
