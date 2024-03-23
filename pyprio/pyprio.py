@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: WTFPL
 
 import argparse
 import ast
@@ -59,7 +60,7 @@ def unparse(node):
         case ast.BinOp():
             return f"({unparse(node.left)} {op_to_str[type(node.op)]} {unparse(node.right)})"
         case ast.UnaryOp():
-            return f"({unparse(type(node.op))} {unparse(node.operand)})"
+            return f"({op_to_str[type(node.op)]} {unparse(node.operand)})"
         case ast.Compare():
             return f"({unparse(node.left)} " + " ".join(f"{op_to_str[type(op)]} {unparse(val)}" for op, val in zip(node.ops, node.comparators)) + ")"
         case ast.Attribute():
