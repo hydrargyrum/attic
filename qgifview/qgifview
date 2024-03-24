@@ -41,6 +41,13 @@ class MyLabel(QLabel):
     def keyPressEvent(self, ev):
         if ev.key() == Qt.Key.Key_Escape:
             self.close()
+        elif ev.key() == Qt.Key.Key_Space:
+            self.movie().setPaused(self.movie().state() == QMovie.MovieState.Running)
+        elif ev.key() == Qt.Key.Key_Left:
+            # may not always work
+            self.movie().jumpToFrame(self.movie().currentFrameNumber() - 1)
+        elif ev.key() == Qt.Key.Key_Right:
+            self.movie().jumpToFrame(self.movie().currentFrameNumber() + 1)
 
 
 label = MyLabel()
