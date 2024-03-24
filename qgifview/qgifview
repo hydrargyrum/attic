@@ -11,17 +11,27 @@ import sys
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QMovie
-from PyQt6.QtWidgets import QApplication, QLabel
+from PyQt6.QtWidgets import QApplication, QFileDialog, QLabel
 
 
 app = QApplication(sys.argv)
 
 args = app.arguments()
-if len(args) != 2 or sys.argv[1] in {'-h', '--help'}:
+if len(args) <= 1:
+    file, _ = QFileDialog.getOpenFileName(
+        None, "Select a image file", ".", "Image (*.gif *.mng *.png *.jpg *.webp)"
+    )
+    if file:
+        movie = QMovie(file)
+    else:
+        print('usage: %s FILE.GIF' % args[0], file=sys.stderr)
+        sys.exit(1)
+elif len(args) > 2 or sys.argv[1] in {'-h', '--help'}:
     print('usage: %s FILE.GIF' % args[0], file=sys.stderr)
     sys.exit(1)
+else:
+    movie = QMovie(args[1])
 
-movie = QMovie(args[1])
 if not movie.isValid():
     print('invalid GIF file: %s' % args[1], file=sys.stderr)
     sys.exit(2)
