@@ -21,6 +21,6 @@ fi
 commit="$1"
 shift
 
-git diff "$commit^" "$commit" -- "$@" | \
+git -c diff.noprefix=false diff "$commit^" "$commit" -- "$@" | \
 	git apply --reject --index -
 git commit --reuse-message="$commit"
