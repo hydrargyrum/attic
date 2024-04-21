@@ -14,7 +14,7 @@ usage () {
 }
 
 [ $# -gt 0 ] || usage 64 >&2  # EX_USAGE
-[ $1 != -h ] || usage 0
+[ "$1" != -h ] || usage 0
 
 error=0
 for i
