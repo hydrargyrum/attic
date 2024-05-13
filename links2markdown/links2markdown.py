@@ -91,7 +91,13 @@ def link_to_markdown(m):
         # approach will not find. So it will not skip them, though it should.
         return url
 
-    title = fetch_title(url) or url
+    title = fetch_title(url)
+    if not title:
+        # Create an autolink: the link title will be the URL. Setting a fixed
+        # title like "error fetching title" would confuse the viewer more than
+        # having the URL as title.
+        return f"<{url}>"
+
     title = re.sub(r"\s+", " ", title.strip())
 
     return f"[{title}]({url})"
