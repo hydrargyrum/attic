@@ -16,7 +16,14 @@ from html.parser import HTMLParser
 import requests
 
 
-LINK_RE = re.compile(r"""https?://[^])'">\s]+""")
+LINK_RE = re.compile(r"""(?<!\]\()(?<!<)https?://[^])'">\s]+""")
+# Search naked links, skip links that are already in markdown.
+# "...](https://..." looks like a markdown link: skip it
+# same for "<https://...", looks like an autolink
+# Link reference definitions are handled separately.
+# Note this is very crude, unlike a real markdown/commonmark parser, and will
+# fail some cases. For example "foo](https://foo" will be interpreted as
+# markdown though the link is incomplete (missing "[" and ")").
 
 
 class TitleFetchParser(HTMLParser):
@@ -78,7 +85,10 @@ def fetch_title(url):
 def link_to_markdown(m):
     url = m[0]
 
-    if m.start() > 2 and m.string[m.start() - 1] == "(" and m.string[m.start() - 2] == "]":
+    if m.start() > 3 and m.string[m.start() - 3:m.start()] == "]: ":
+        # Looks like a "link reference definition".
+        # Commonmark allows much more whitespace variations, that this crude
+        # approach will not find. So it will not skip them, though it should.
         return url
 
     title = fetch_title(url) or url
