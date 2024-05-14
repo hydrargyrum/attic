@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: WTFPL
+
+# /// script
+# dependencies = ["tomlkit"]
+# ///
+
+import argparse
+import json
+import locale
+import signal
+import sys
+
+import tomlkit
+
+
+def _parse_dict(d):
+    d = d.copy()
+    for k, v in list(d.items()):
+        if isinstance(v, str) and "\n" in v:
+            d[k] = tomlkit.string(v, multiline=True)
+    return d
+
+
+def main():
+    locale.setlocale(locale.LC_ALL, "")
+
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+
+    argparser = argparse.ArgumentParser(epilog="Outputs TOML to stdout")
+    argparser.add_argument(
+        "--multiline-strings", action="store_const", const=_parse_dict,
+        help="Use multiline syntax for strings with multiple lines",
+    )
+    argparser.add_argument(
+        "file", nargs="?", default="-",
+        help="Input file to read, or '-' for stdin (default)",
+    )
+    args = argparser.parse_args()
+
+    if args.file == "-":
+        fp = sys.stdin.buffer
+    else:
+        fp = open(args.file, "rb")
+
+    with fp:
+        d = json.load(fp, object_hook=args.multiline_strings)
+    tomlkit.dump(d, sys.stdout)
+
+
+if __name__ == "__main__":
+    main()
