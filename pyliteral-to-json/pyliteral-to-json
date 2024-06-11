@@ -36,6 +36,11 @@ class Evaluator(ast.NodeTransformer):
             raise ValueError(f"bad Decimal args: {node.args!r}")
         return node.args[0]
 
+    def eval_PosixPath(self, node):
+        if len(node.args) != 1 or not isinstance(node.args[0], ast.Constant):
+            raise ValueError(f"bad Decimal args: {node.args!r}")
+        return node.args[0]
+
     def eval_set(self, node):
         if len(node.args) != 0:
             raise ValueError(f"bad set args: {node.args!r}")
