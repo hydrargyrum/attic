@@ -41,11 +41,6 @@ class Evaluator(ast.NodeTransformer):
             raise ValueError(f"bad Path args: {node.args!r}")
         return node.args[0]
 
-    def eval_set(self, node):
-        if len(node.args) != 0:
-            raise ValueError(f"bad set args: {node.args!r}")
-        return ast.List([])
-
     def eval_frozenset(self, node):
         if len(node.args) == 0:
             return ast.List([])
@@ -62,6 +57,8 @@ class Evaluator(ast.NodeTransformer):
 
         if name is None:
             raise ValueError(f"cannot find function name of {node.func}")
+        elif name == "set":
+            return node  # ast.literal_eval will parse it fine
         try:
             func = getattr(self, f"eval_{name}")
         except AttributeError:
@@ -72,8 +69,11 @@ class Evaluator(ast.NodeTransformer):
 
         return func(node)
 
-    def visit_Set(self, node):
-        return ast.List(node.elts)
+
+def convert_to_jsonable(obj):
+    if isinstance(obj, set):
+        return list(obj)
+    raise TypeError(f"Object of type {obj.__class__.__name__} cannot be converted")
 
 
 if __name__ == "__main__":
@@ -93,4 +93,4 @@ if __name__ == "__main__":
     node = ast.parse(text, args.file or "-", "eval")
     node = Evaluator().visit(node)
     data = ast.literal_eval(node)
-    print(json.dumps(data, indent=4))
+    print(json.dumps(data, indent=4, default=convert_to_jsonable))

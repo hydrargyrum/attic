@@ -1,6 +1,8 @@
 #!/usr/bin/env pytest
 # SPDX-License-Identifier: WTFPL
 
+import datetime
+from decimal import Decimal
 import json
 import os
 import subprocess
@@ -47,6 +49,8 @@ def test_set():
 	assert run(repr(frozenset())) == []
 	assert run(repr(frozenset({1}))) == [1]
 	assert run(repr({1})) == [1]
+	assert run(repr({datetime.datetime(2013, 4, 5)})) == ["2013-04-05 00:00:00"]
+	assert run(repr({Decimal("1")})) == ["1"]
 
 
 def test_tuple():
