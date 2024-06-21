@@ -48,6 +48,12 @@ class Evaluator(ast.NodeTransformer):
             raise ValueError(f"bad set args: {node.args!r}")
         return ast.List(node.args[0].elts)
 
+    def eval_namespace(self, node):
+        return ast.Dict(
+            keys=[ast.Constant(value=kw.arg) for kw in node.keywords],
+            values=[kw.value for kw in node.keywords],
+        )
+
     def visit_Call(self, node):
         name = None
         if isinstance(node.func, ast.Name):

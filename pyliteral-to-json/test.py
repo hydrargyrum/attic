@@ -6,6 +6,7 @@ from decimal import Decimal
 import json
 import os
 import subprocess
+import types
 
 import pytest
 
@@ -58,3 +59,7 @@ def test_tuple():
 	assert run(repr((1,))) == [1]
 	assert run(repr((1, 2))) == [1, 2]
 	assert run(repr(((),))) == [[]]
+
+
+def test_namespace():
+	assert run(repr(types.SimpleNamespace(a=1, b=["2"]))) == {"a": 1, "b": ["2"]}
