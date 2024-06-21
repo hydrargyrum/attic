@@ -43,6 +43,14 @@ def test_decimal():
 
 
 def test_set():
-	assert run("""set()""") == []
-	assert run("""frozenset()""") == []
-	assert run("""frozenset({1})""") == [1]
+	assert run(repr(set())) == []
+	assert run(repr(frozenset())) == []
+	assert run(repr(frozenset({1}))) == [1]
+	assert run(repr({1})) == [1]
+
+
+def test_tuple():
+	assert run(repr(())) == []
+	assert run(repr((1,))) == [1]
+	assert run(repr((1, 2))) == [1, 2]
+	assert run(repr(((),))) == [[]]
