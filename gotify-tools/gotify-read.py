@@ -36,9 +36,10 @@ session.headers["X-Gotify-Key"] = os.environ["GOTIFY_TOKEN"]
 route = "message"
 if args.app_id:
 	route = f"application/{args.app_id}/message"
+full_url = urljoin(args.url, route)
 
 # request
-response = session.get(urljoin(args.url, route))
+response = session.get(full_url)
 response.raise_for_status()
 
 # paging loop
@@ -57,10 +58,10 @@ while True:
 		]
 		break
 
-	next_url = jdata["paging"].get("next")
-	if not next_url:
+	if not jdata["paging"].get("next"):
 		break
-	response = session.get(next_url)
+	response = session.get(full_url, params={"since": jdata["paging"]["since"]})
+	response.raise_for_status()
 
 if not args.pretty:
 	print(json.dumps(messages, indent=2))
