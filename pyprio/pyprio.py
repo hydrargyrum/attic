@@ -61,6 +61,8 @@ def unparse(node):
             return f"({unparse(node.left)} {op_to_str[type(node.op)]} {unparse(node.right)})"
         case ast.UnaryOp():
             return f"({op_to_str[type(node.op)]} {unparse(node.operand)})"
+        case ast.Starred():
+            return f"*{unparse(node.value)}"
         case ast.Compare():
             return f"({unparse(node.left)} " + " ".join(f"{op_to_str[type(op)]} {unparse(val)}" for op, val in zip(node.ops, node.comparators)) + ")"
         case ast.Attribute():
@@ -70,6 +72,30 @@ def unparse(node):
             return ast.unparse(node)
         case ast.IfExp():
             return f"({unparse(node.body)} if {unparse(node.test)} else {unparse(node.orelse)})"
+        case ast.NamedExpr():
+            return f"({unparse(node.target)} := {unparse(node.value)})"
+        case ast.Call():
+            args = [unparse(sub) for sub in node.args]
+            for sub in node.keywords:
+                if sub.arg:
+                    args.append(f"{sub.arg}={unparse(sub.value)}")
+                else:
+                    args.append(f"**{unparse(sub.value)}")
+            return f"({unparse(node.func)}({', '.join(args)}))"
+        case ast.List():
+            return f"([{', '.join(unparse(sub) for sub in node.elts)}])"
+        case ast.Tuple():
+            if not node.elts:
+                return "()"
+            return f"({', '.join(unparse(sub) for sub in node.elts)},)"
+        case ast.Dict():
+            args = [
+                f"{unparse(key)}: {unparse(value)}"
+                if key
+                else f"**{unparse(value)}"
+                for key, value in zip(node.keys, node.values)
+            ]
+            return "({" + ", ".join(args) + "})"
 
     raise NotImplementedError(type(node).__name__)
 
