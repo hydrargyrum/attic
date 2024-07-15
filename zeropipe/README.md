@@ -17,6 +17,8 @@ The same command with zeropipe:
 
 zeropipe accepts:
 
+- basename
+- dirname
 - find
 - fzf
 - grep

@@ -4,7 +4,7 @@
 
 usage () {
 	cat <<- EOF
-		usage: $0 [find|fzf|grep|head|locate|ls|sed|sort|tail|uniq|xargs] ARGS...
+		usage: $0 [basename|dirname|find|fzf|grep|head|locate|ls|sed|sort|tail|uniq|xargs] ARGS...
 
 		Executes the given utility and its ARGS along with the appropriate
 		argument for accepting NUL-separated lines instead of
@@ -36,7 +36,7 @@ case "$cmd" in
 	locate|xargs)
 		exec "$cmd" -0 "$@"
 		;;
-	grep|sort|uniq|sed|head|tail)
+	basename|dirname|grep|sort|uniq|sed|head|tail)
 		exec "$cmd" -z "$@"
 		;;
 	ls)
