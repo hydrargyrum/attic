@@ -79,18 +79,34 @@ def parse_args():
         "--hex", action="store_true",
         help="Always display hex values for all bytes (instead of fancy display ASCII bytes)",
     )
+    parser.add_argument(
+        "-0", "--zero", action="store_const", const=b"\0", default=b"\n", dest="delimiter",
+        help="Lines are separated by NULL characters",
+    )
     parser.add_argument('file', nargs='?', type=FileType('rb'), default=sys.stdin.buffer)
     return parser.parse_args()
+
+
+def iter_lines(fp, delimiter=b"\n"):
+    buf = b""
+    while True:
+        chunk = fp.read(1024)
+        if not chunk:
+            if buf:
+                yield buf
+            break
+
+        buf += chunk
+        parts = buf.split(delimiter)
+        buf = parts.pop(-1)
+        for part in parts:
+            yield part + delimiter
 
 
 def process_lines(args):
     total = 0
     lineno = 1
-    while True:
-        line = args.file.readline()
-        if not line:
-            break
-
+    for line in iter_lines(args.file, args.delimiter):
         if args.line_addresses:
             print(f'{total:08x} ', end='')
         elif args.line_numbers:

@@ -49,3 +49,11 @@ check <<- EOF
 	00000000 f  o  o  sp b  a  r  \n
 	00000008 b  a  z  sp C3 A9 \n
 EOF
+
+# null-char
+printf "foo\0bar" | init -0
+
+check <<- EOF
+	f  o  o  \0
+	b  a  r 
+EOF
