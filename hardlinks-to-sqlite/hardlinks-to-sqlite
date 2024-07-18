@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: WTFPL
+
+# usage: hardlinks-to-sqlite -d DATABASE.SQLITE [DIRECTORY...]
+# builds a database of file inodes having more than one hardlink
+# columns:
+# - inode (inode number)
+# - path (absolute path of the file)
+# - nlinks (number of hardlinks of the file)
+
+import argparse
+import os
+from pathlib import Path
+import sqlite3
+import stat
+
+
+def to_bytes_if_broken(s):
+	# some filenames won't be encoded properly
+	try:
+		s.encode("utf8")
+	except UnicodeError:
+		return s.encode("utf8", "surrogateescape")
+	else:
+		return s
+
+
+def main():
+	parser = argparse.ArgumentParser()
+	parser.add_argument("-d", "--database", required=True)
+	parser.add_argument("paths", nargs="*")
+	args = parser.parse_args()
+
+	paths = [Path(arg) for arg in (args.paths or Path.cwd())]
+	paths = [path.resolve() for path in paths]
+
+	db = sqlite3.connect(args.database)
+	db.execute(
+		"""
+		CREATE TABLE "hardlinks" (
+			"inode" INTEGER,
+			"path"  TEXT PRIMARY KEY,
+			"nlinks" INTEGER NOT NULL
+		)
+		"""
+	)
+	db.execute("CREATE INDEX hardlinks_inode ON hardlinks(inode)")
+
+	for root in paths:
+		rootdev = root.stat().st_dev
+
+		for curpath, dirs, files in os.walk(root):
+			curpath = Path(curpath)
+			# skip dirs on a different mountpoint
+			dirs[:] = [
+				dirname
+				for dirname in dirs
+				if curpath.joinpath(dirname).stat().st_dev == rootdev
+			]
+
+			for filename in files:
+				path = curpath.joinpath(filename)
+
+				pathstat = path.lstat()
+				if pathstat.st_mode & stat.S_IFREG and pathstat.st_nlink > 1:
+					db.execute(
+						"INSERT INTO hardlinks (inode, path, nlinks) VALUES (?, ?, ?)",
+						(
+							pathstat.st_ino,
+							to_bytes_if_broken(str(path)),
+							pathstat.st_nlink,
+						)
+					)
+
+	db.commit()
+
+
+if __name__ == "__main__":
+	main()

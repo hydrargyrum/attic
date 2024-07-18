@@ -33,7 +33,7 @@ This repository hosts various small personal tools.
 - [`gotify-tools/gotify-read`](gotify-tools/gotify-read.py): command-line tool for listing/reading gotify notifications
 - [`group-lines`](group-lines): group stdin lines by a regular expression pattern
 - [`group-files-by-mtime`](group-files-by-mtime): take files in a dir and move them to folders for each last modification time
-- [`hardlinks-to-csv`](hardlinks-to-csv): list files (and inodes) with more than 1 hardlink as CSV
+- [`hardlinks-to-sqlite`](hardlinks-to-sqlite): list files (and inodes) with more than 1 hardlink as sqlite
 - [`headset-bluez`](headset-bluez): enable a bluetooth headset and out or in/out mode
 - [`hexgen`](hexgen): generate data from an hex dump
 - [`hibp`](hibp): check if a password has been leaked on "Have I Been Pwned?" site (by checking hash prefix)
