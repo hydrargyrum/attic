@@ -27,14 +27,24 @@ test-generic:
     for f in "$CI_PROJECT_DIR"/*/test.py "$CI_PROJECT_DIR"/*/test.sh
     do
       echo "Testing $f" >&2
-      cd "$(dirname "$f")"
+      dir=$(dirname "$f")
+      cd "$dir"
       if [ -f requirements.txt ]
       then
         pip install -r requirements.txt
       fi >&2
-      "$f" >&2 || echo "FAILED for $f"
+      if grep -q "env pytest" "$f"
+      then
+        "$f" --junitxml="$CI_PROJECT_DIR/testreport-${dir##*/}".xml >&2 || echo "FAILED for $f"
+      else
+        "$f" >&2 || echo "FAILED for $f"
+      fi
     done | grep FAILED || err=0
     exit $err
+
+  artifacts:
+    reports:
+      junit: testreport-*.xml
 
 lint-shellcheck:
   stage: test
