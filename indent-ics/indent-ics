@@ -1,0 +1,23 @@
+#!/bin/awk -f
+# SPDX-License-Identifier: WTFPL
+
+# note: indented ics files are only for human display, not for processing
+
+BEGIN {
+	idt = 0
+}
+
+/^END:/ {
+	idt -= 1
+}
+
+{
+	for (i = 0; i < idt; i++) {
+		printf "  "
+	}
+	print
+}
+
+/^BEGIN:/ {
+	idt += 1
+}

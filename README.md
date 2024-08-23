@@ -39,6 +39,7 @@ This repository hosts various small personal tools.
 - [`hibp`](hibp): check if a password has been leaked on "Have I Been Pwned?" site (by checking hash prefix)
 - [`httpshare`](httpshare): share a directory via HTTP, like Python "http.server" but supports "Range" headers
 - [`image2xterm`](image2xterm): display an image on console using terminal RGB24 mode or 256 colors
+- [`indent-ics`](indent-ics): indent a `.ics` (iCal) file (for pretty-print only)
 - [`ini2json`](ini2json): convert INI to JSON
 - [`itertools`](itertools): CLI tool for computing permutations and combinations of text
 - [`json2csv`](json2csv): transform a JSON list of objects into a CSV file
