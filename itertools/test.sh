@@ -41,7 +41,7 @@ process () {
 init --out-csv --combinations 2 foo bar baz
 
 check <<- EOF
-	0,1
+	col_0,col_1
 	foo,bar
 	foo,baz
 	bar,baz
