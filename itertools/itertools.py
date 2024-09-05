@@ -15,7 +15,7 @@ def output_csv(iterable, args):
 
     it = iter(iterable)
     row = next(it)
-    writer.writerow(str(i) for i in range(len(row)))  # header
+    writer.writerow(f"{args.column_prefix}{i}" for i in range(len(row)))  # header
     writer.writerow(row)
     for row in it:
         writer.writerow(row)
@@ -70,6 +70,10 @@ def main():
         help="Compute combinations of N elements of ARGS",
     )
 
+    parser.add_argument(
+        "--column-prefix", default="col_",
+        help="Column name prefix for CSV",
+    )
     parser.add_argument(
         "args", nargs="+",
         help="Entries on which to operate",
