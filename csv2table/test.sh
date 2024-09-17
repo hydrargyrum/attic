@@ -37,3 +37,20 @@ check <<- EOF
 	+----------+--------+
 EOF
 
+# markdown
+init --header --markdown <<- EOF
+	name,color
+	zucchini,green
+	tomato,red
+	banana,yellow
+	orange,orange
+EOF
+
+check <<- EOF
+	| name     | color  |
+	| :--------| :------|
+	| zucchini | green  |
+	| tomato   | red    |
+	| banana   | yellow |
+	| orange   | orange |
+EOF
