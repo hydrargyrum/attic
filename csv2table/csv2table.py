@@ -39,6 +39,10 @@ def main():
 		'--markdown', action='store_true',
 		help='Output markdown table',
 	)
+	parser.add_argument(
+		"--html", action="store_true",
+		help="Output HTML table",
+	)
 	parser.add_argument('--sniff', action='store_true')
 	parser.add_argument('file', nargs='?', default='-')
 	args = parser.parse_args()
@@ -62,7 +66,11 @@ def main():
 
 	for row in data:
 		table.add_row([row.get(col) for col in table.field_names])
-	print(table)
+
+	if args.html:
+		print(table.get_html_string())
+	else:
+		print(table.get_string())
 
 
 if __name__ == "__main__":

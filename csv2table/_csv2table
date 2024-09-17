@@ -11,5 +11,6 @@ _arguments \
 	'(-b --box)-b[Use Unicode pretty characters instead of plain ASCII table]' \
 	'(-b --box)--box[Use Unicode pretty characters instead of plain ASCII table]' \
 	'--markdown[Output markdown table]' \
+	'--html[Output HTML table]' \
 	--sniff \
 	::FILE:_files
