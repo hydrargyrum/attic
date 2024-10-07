@@ -59,6 +59,7 @@ This repository hosts various small personal tools.
 - [`moversleep`](moversleep): move incoming files from a dir into another
 - [`multiman`](multiman): open your web browser to manual pages from various OSes
 - [`mv-with-thumb`](mv-with-thumb): like mv, but also moves XDG thumbnails
+- [`nicest`](nicest): run a command with the highest nice/ionice/oom-adj
 - [`no-utf8-bom`](no-utf8-bom): just remove pointless UTF-8 BOM from stdin or files
 - [`pass-ls-entries`](pass-ls-entries): list pass(1) entries in find(1) format, not tree(1) format
 - [`password-prompt`](password-prompt): simply prompt a password on tty and then print it

@@ -1,0 +1,46 @@
+#!/bin/sh -eu
+# SPDX-License-Identifier: WTFPL
+
+usage () {
+	cat <<- EOF
+		usage: $0 COMMAND [ARGS...]
+		       $0 -p PID
+
+		Run COMMAND ARGS... with lowest priority regarding CPU (nice(1)),
+		I/O (ionice(1)) and OOM-adj (choom(1)).
+		With -p, renice PID instead (and I/O nice and OOM-adj).
+	EOF
+}
+
+if [ "${1-}" = -h ] || [ "${1-}" = --help ]
+then
+	usage
+	exit 0
+elif [ $# -eq 0 ]
+then
+	usage >&2
+	exit 64
+fi
+
+has () {
+	command -v "$1" > /dev/null 2> /dev/null
+}
+
+if [ $1 = -p ]
+then
+	if [ $# -ne 2 ]
+	then
+		usage >&2
+		exit 64
+	fi
+	has renice && renice -n 19 -p $2
+	has choom && choom -n 1000 -p $2
+	has ionice && ionice -c 3 -p $2
+	exit 0
+fi
+
+has choom && set -- choom -n 1000 -- "$@"
+has ionice && set -- ionice -c 3 "$@"
+set -- nice -n 19 "$@"
+
+exec "$@"
