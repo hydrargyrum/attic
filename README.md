@@ -37,6 +37,7 @@ This repository hosts various small personal tools.
 - [`headset-bluez`](headset-bluez): enable a bluetooth headset and out or in/out mode
 - [`hexgen`](hexgen): generate data from an hex dump
 - [`hibp`](hibp): check if a password has been leaked on "Have I Been Pwned?" site (by checking hash prefix)
+- [`htmlesc`](htmlesc): escape HTML from stdin
 - [`httpshare`](httpshare): share a directory via HTTP, like Python "http.server" but supports "Range" headers
 - [`image2xterm`](image2xterm): display an image on console using terminal RGB24 mode or 256 colors
 - [`indent-ics`](indent-ics): indent a `.ics` (iCal) file (for pretty-print only)

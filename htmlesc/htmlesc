@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: WTFPL
+
+import argparse
+import html
+import locale
+import signal
+import sys
+
+
+__version__ = "0.1.0"
+
+
+def main():
+    locale.setlocale(locale.LC_ALL, "")
+
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "file", type=argparse.FileType(mode="r"), nargs="?", default=sys.stdin,
+    )
+    parser.add_argument("--version", action="version", version=__version__)
+    args = parser.parse_args()
+
+    with args.file:
+        print(html.escape(args.file.read()), end="")
+
+
+if __name__ == "__main__":
+    main()
