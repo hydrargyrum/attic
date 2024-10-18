@@ -129,7 +129,7 @@ def main():
 	parser.add_argument('-i', '--invert', dest='invert', action='store_true', help='Invert colors [default=False]')
 	parser.add_argument('-z', '--zoom', dest='zoom', action='store', help='Zoom by X and Y [default=2:1]', metavar='X:Y', default='2:1')
 	parser.add_argument('--method', dest='method', choices=('ansi', 'unicode', 'unicode_small'), help='Use METHOD for display output [choices=ansi,unicode,unicode_small]', metavar='METHOD', default='unicode')
-	parser.add_argument('-b', '--border', dest='border', type=int, help='Set size of border [default=0]', default=0)
+	parser.add_argument('-b', '--border', dest='border', type=int, help='Set size of border [default=2]', default=2)
 	parser.add_argument('text')
 	args = parser.parse_args()
 
