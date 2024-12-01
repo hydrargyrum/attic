@@ -23,6 +23,7 @@ _COMMAND_ can be one of::
 * *head*
 * *locate*
 * *ls*
+* *printenv*
 * *sed*
 * *sort*
 * *tail*

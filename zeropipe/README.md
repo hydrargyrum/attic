@@ -25,6 +25,7 @@ zeropipe accepts:
 - head
 - locate
 - ls
+- printenv
 - sed
 - sort
 - tail

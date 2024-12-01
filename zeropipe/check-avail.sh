@@ -35,5 +35,8 @@ do
 		fzf)
 			./zeropipe fzf -1 < "$tmpd/file" > /dev/null
 			;;
+		printenv)
+			./zeropipe printenv > /dev/null
+			;;
 	esac
 done
