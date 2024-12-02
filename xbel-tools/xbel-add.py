@@ -24,9 +24,12 @@ DEFAULT_PATH = xdg_share() / "recently-used.xbel"
 
 
 def add_bookmark(url, xbel):
+    when_add = datetime.datetime.now(datetime.timezone.utc)
     bookmark = lxml.etree.SubElement(xbel, "bookmark")
     bookmark.attrib["href"] = url
-    bookmark.attrib["added"] = str(datetime.datetime.now(datetime.timezone.utc))
+    bookmark.attrib["added"] = (
+        when_add.isoformat("T").replace("+00:00", "Z")
+    )
     bookmark.attrib["modified"] = bookmark.attrib["added"]
     bookmark.attrib["visited"] = bookmark.attrib["added"]
 
@@ -43,6 +46,21 @@ def add_bookmark(url, xbel):
         mime.attrib["type"] = mimetypes.guess_type(url)[0]
     except (TypeError, IndexError):
         mime.attrib["type"] = "application/octet-stream"
+
+    # not sure if all of this is required, but it seems apps tend to discard
+    # the whole XBEL if some of it is missing...
+    apps = lxml.etree.SubElement(
+        metadata,
+        "{http://www.freedesktop.org/standards/desktop-bookmarks}applications",
+    )
+    app = lxml.etree.SubElement(
+        apps,
+        "{http://www.freedesktop.org/standards/desktop-bookmarks}application",
+    )
+    app.attrib["name"] = "xbel-add"
+    app.attrib["exec"] = "false"
+    app.attrib["modified"] = bookmark.attrib["added"]
+    app.attrib["count"] = "1"
 
 
 def main():
