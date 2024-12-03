@@ -80,8 +80,6 @@ def main():
 	locale.setlocale(locale.LC_ALL, '')
 
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-f', dest='src_encoding', metavar='ENCODING', help='From encoding')
-	parser.add_argument('-t', dest='dst_encoding', metavar='ENCODING', help='To encoding')
 	parser.add_argument('-d', dest='compose', action='store_const', const='d', help='Use NFKD form (decomposed)')
 	parser.add_argument('-c', dest='compose', action='store_const', const='c', help='Use NFKC form (composed)')
 	parser.add_argument('-v', dest='visual', action='store_true', help='Print visually composing glyphs')
@@ -93,8 +91,8 @@ def main():
 	#	basefd = open(args[0], 'rb')
 
 	sysenc = locale.getpreferredencoding()
-	infd = codecs.getreader(opts.src_encoding or sysenc)(sys.stdin.buffer)
-	outfd = codecs.getwriter(opts.dst_encoding or sysenc)(sys.stdout.buffer)
+	infd = sys.stdin
+	outfd = sys.stdout
 
 	if opts.compose == 'd':
 		conv_func = convert_decompose
