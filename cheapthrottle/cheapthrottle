@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh -eu
 # SPDX-License-Identifier: WTFPL
 # shellcheck enable=
 
@@ -37,10 +37,16 @@ do
 		exit 0;;
 	?)
 		usage >&2
-		exit 2;;
+		exit 64;;
 	esac
 done
 shift $((OPTIND - 1))
+
+if [ $# -ne 1 ]
+then
+	usage >&2
+	exit 64
+fi
 
 target="$1"
 
