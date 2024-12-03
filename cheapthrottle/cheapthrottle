@@ -44,6 +44,8 @@ shift $((OPTIND - 1))
 
 target="$1"
 
+trap 'kill -CONT "$target"' EXIT
+
 [ -n "$target" ] || {
 	usage >&2
 	exit 2
