@@ -9,21 +9,29 @@
 
 sleeping=10
 alive=5
+verbose=
 
 usage () {
-	printf 'Usage: %s: [-s SLEEPING_SECS] [-a ALIVE_SECS] PID\n' "$0"
-	printf 'Cheap throttling by repeatedly sending SIGSTOP and SIGCONT to PID.\n'
-	printf 'Waits SLEEPING_SECS after SIGSTOP (default: 10)\n'
-	printf 'and ALIVE_SECS after SIGCONT (default: 5).\n'
+	cat <<- EOF
+		Usage: $0: [-s SLEEPING_SECS] [-a ALIVE_SECS] [-v] PID
+
+		Cheap throttling by repeatedly sending SIGSTOP and SIGCONT to PID.
+		Waits SLEEPING_SECS after SIGSTOP (default: $sleeping)
+		and ALIVE_SECS after SIGCONT (default: $alive).
+
+		With -v, print every signal sent (reusing the same line).
+	EOF
 }
 
-while getopts hs:a: name
+while getopts hvs:a: name
 do
 	case $name in
 	s)
 		sleeping="$OPTARG";;
 	a)
 		alive="$OPTARG";;
+	v)
+		verbose=y;;
 	h)
 		usage
 		exit 0;;
@@ -43,8 +51,11 @@ target="$1"
 
 while true
 do
+	[ -n "$verbose" ] && printf "%s: sending SIGSTOP\r" "$(date +"%F %T")"
 	kill -STOP "$target"
 	sleep "$sleeping"
+
+	[ -n "$verbose" ] && printf "%s: sending SIGCONT\r" "$(date +"%F %T")"
 	kill -CONT "$target"
 	sleep "$alive"
 done
