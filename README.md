@@ -54,6 +54,7 @@ This repository hosts various small personal tools.
 - [`links2markdown`](links2markdown): fetch title of links in a text file and replace to build Markdown links
 - [`log-snippet`](log-snippet): parse compilation-log and show snippets of files with context
 - [`log-ts-diff`](log-ts-diff): parse log and replace timestamps with diff to previous timestamp
+- [`lzep4`](lzep4): decompress an LZ4 file (block or frame) to stdout
 - [`mediadims`](mediadims): get audio/video duration or video width/height of a file with [mediainfo](https://mediaarea.net/)
 - [`morse`](morse): text from/to Morse code converter, and optional beep player
 - [`morsehtml`](morsehtml): HTML page with its background flashing a Morse code message
