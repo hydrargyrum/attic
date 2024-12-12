@@ -84,9 +84,9 @@ keys = list(keys)
 
 table = prettytable.PrettyTable(field_names=keys)
 if args.box:
-    table.set_style(prettytable.SINGLE_BORDER)
+    table.set_style(prettytable.TableStyle.SINGLE_BORDER)
 elif args.markdown:
-    table.set_style(prettytable.MARKDOWN)
+    table.set_style(prettytable.TableStyle.MARKDOWN)
 
 for d in data:
     table.add_row([d.get(k) for k in keys])

@@ -1,6 +1,7 @@
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDEVMODE: "1"
+  PIP_ROOT_USER_ACTION: "ignore"
 
 cache:
   paths:

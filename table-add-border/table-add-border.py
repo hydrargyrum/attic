@@ -4,7 +4,7 @@
 import re
 import sys
 
-from prettytable import PrettyTable, SINGLE_BORDER
+from prettytable import PrettyTable, TableStyle
 
 
 # TODO: accept ANSI-colored entries, where width != number of codepoints
@@ -33,7 +33,7 @@ def split_at(line, points):
 
 table = PrettyTable([cell.strip() for cell in split_at(lines[0], intersect)])
 table.align = "l"
-table.set_style(SINGLE_BORDER)
+table.set_style(TableStyle.SINGLE_BORDER)
 for line in lines[1:]:
 	table.add_row([cell.strip() for cell in split_at(line, intersect)])
 print(table)

@@ -102,8 +102,8 @@ class Inserter(object):
 
 		self.cursor.execute('UPDATE %s SET %s WHERE %s' % (self.table, req_set, req_match), ordered_values)
 
-	def commit(self):
-		self.db.commit()
+	def close(self):
+		self.db.close()
 
 	def _create_table(self, d):
 		columns = ','.join('%s %s' % (k, self._column_type(d[k])) for k in d)
@@ -151,21 +151,23 @@ def main():
 
 	inserter = Inserter(args.database, args.table, create=args.create, alter=args.alter)
 
-	if args.json and args.file:
-		parser.error('-f and -j are mutually exclusive')
-	elif args.json:
-		js = json.loads(args.json)
-	elif args.file == '-':
-		js = json.load(sys.stdin)
-	else:
-		js = json.load(open(args.file, 'rb'))
+	try:
+		if args.json and args.file:
+			parser.error('-f and -j are mutually exclusive')
+		elif args.json:
+			js = json.loads(args.json)
+		elif args.file == '-':
+			js = json.load(sys.stdin)
+		else:
+			js = json.load(open(args.file, 'rb'))
 
-	if args.update_ids:
-		inserter.update_data(args.update_ids, js)
-	else:
-		inserter.insert_data(js)
-
-	inserter.commit()
+		with inserter.db:
+			if args.update_ids:
+				inserter.update_data(args.update_ids, js)
+			else:
+				inserter.insert_data(js)
+	finally:
+		inserter.close()
 
 
 if __name__ == '__main__':

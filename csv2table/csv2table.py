@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 import csv
 import sys
 
-from prettytable import PrettyTable, SINGLE_BORDER, MARKDOWN
+from prettytable import PrettyTable, TableStyle
 
 
 def sniff(fn):
@@ -57,9 +57,9 @@ def main():
 
 	table = PrettyTable()
 	if args.box:
-		table.set_style(SINGLE_BORDER)
+		table.set_style(TableStyle.SINGLE_BORDER)
 	elif args.markdown:
-		table.set_style(MARKDOWN)
+		table.set_style(TableStyle.MARKDOWN)
 	table.field_names = data[0].keys()
 	table.header = args.header
 	table.align = "l"
