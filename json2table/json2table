@@ -90,4 +90,5 @@ elif args.markdown:
 
 for d in data:
     table.add_row([d.get(k) for k in keys])
+table.align = "l"
 print(table)
