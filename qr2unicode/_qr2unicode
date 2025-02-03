@@ -9,6 +9,6 @@ _arguments \
 	'(-z --zoom)-z+[Zoom by X and Y \[default=2\:1\]]:X\:Y:' \
 	'(-z --zoom)--zoom=[Zoom by X and Y \[default=2\:1\]]:X\:Y:' \
 	'--method=[Use METHOD for display output \[choices=ansi,unicode,unicode_small\]]:METHOD:(ansi unicode unicode_small)' \
-	'(-b --border)-b+[Set size of border \[default=0\]]:BORDER:_numbers' \
-	'(-b --border)--border=[Set size of border \[default=0\]]:BORDER:_numbers' \
+	'(-b --border)-b+[Set size of border \[default=2\]]:BORDER:_numbers' \
+	'(-b --border)--border=[Set size of border \[default=2\]]:BORDER:_numbers' \
 	:TEXT:
