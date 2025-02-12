@@ -80,6 +80,7 @@ This repository hosts various small personal tools.
 - [`r2w_plugins`](r2w_plugins): 2 rest2web plugins
 - [`radiodump`](radiodump): circular buffer and dump to file
 - [`random-line`](random-line): take a random line from stdin
+- [`realign-spaces`](realign-spaces): align lines composed of fields separated by blankspaces
 - [`realign-text-table`](realign-text-table): takes a malformed ASCII-drawn table and redraw borders properly
 - [`gitlab-delete-your-comments.py`](redacting/gitlab-delete-your-comments.py): delete your own gitlab comments on issues/MRs/etc.
 - [`matrix-redact-room.py`](redacting/matrix-redact-room.py): redact messages in a Matrix room of all users or a specific user (resumable)
