@@ -1,12 +1,12 @@
 #!/bin/sed -f
 # SPDX-License-Identifier: WTFPL
 #
-# remove trailing whitespace on each line
+# remove trailing blankspace on each line
 #
 # warning: \r\n will likely be converted to \n
 # add -i to edit file in-place (if sed supports it)
 # sample usage:
-#     remove-trailing-whitespace < bad.txt > good.txt
-#     remove-trailing-whitespace -i file.txt
+#     remove-trailing-blankspace < bad.txt > good.txt
+#     remove-trailing-blankspace -i file.txt
 
 s/[[:space:]][[:space:]]*$//

@@ -3,11 +3,11 @@
 
 cd "$(dirname "$0")"
 
-got=$(mktemp sorted.XXXXXX)
+got=$(mktemp trim.XXXXXX)
 trap 'rm "$got"' EXIT
 
 init () {
-	./trim-trailing-whitespace "$@" > "$got"
+	./trim-trailing-blankspace "$@" > "$got"
 }
 
 check () {

@@ -100,7 +100,7 @@ This repository hosts various small personal tools.
 - [`table-add-border`](table-add-border): add a border to borderless Go tables
 - [`tailsleep`](tailsleep): like tail -f but quits when I/O activity stops
 - [`toml2json`](toml2json): convert TOML to JSON
-- [`trim-trailing-whitespace`](trim-trailing-whitespace): remove spaces, tabs and alike at end of each line
+- [`trim-trailing-blankspace`](trim-trailing-blankspace): remove spaces, tabs and alike at end of each line
 - [`uniq-unsorted`](uniq-unsorted): like uniq(1) but does not require lines to be sorted
 - [`univisible`](univisible): tweak Unicode combinations and visualize them
 - [`urlunquote`](url-tools): unquote text using URL quoting rules
