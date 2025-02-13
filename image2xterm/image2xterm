@@ -23,10 +23,6 @@ Other terminals do support these 256 colors escape codes, e.g. roxterm, xfce-ter
 __all__ = ('make256xterm', 'imageRGB_to_256', 'image2xterm', 'image256_to_ansi')
 
 
-if sys.version_info.major == 2:
-	range = xrange
-
-
 def make256xterm():
 	"""Return a [r, g, b, r, g, b, ...] table with the colors of the 256 xterm colors.
 
@@ -111,7 +107,7 @@ def image2xterm(imagepath, newsize=(80, 24), halfblocks=True, truecolor=False):
 		targetsize = targetsize[0], targetsize[1] * 2
 
 	image = image.convert('RGB')
-	image = image.resize(targetsize, Image.ANTIALIAS)
+	image = image.resize(targetsize, Image.LANCZOS)
 	if not truecolor:
 		image = imageRGB_to_256(image)
 	return image_to_ansi(image, halfblocks=halfblocks, truecolor=truecolor)
