@@ -8,6 +8,7 @@
 """A QRCode to ANSI/Unicode representation module/program"""
 
 import locale
+import sys
 from argparse import ArgumentParser
 
 
@@ -130,8 +131,16 @@ def main():
 	parser.add_argument('-z', '--zoom', dest='zoom', action='store', help='Zoom by X and Y [default=2:1]', metavar='X:Y', default='2:1')
 	parser.add_argument('--method', dest='method', choices=('ansi', 'unicode', 'unicode_small'), help='Use METHOD for display output [choices=ansi,unicode,unicode_small]', metavar='METHOD', default='unicode')
 	parser.add_argument('-b', '--border', dest='border', type=int, help='Set size of border [default=2]', default=2)
-	parser.add_argument('text')
+	parser.add_argument("--stdin", action="store_true", help="read text from stdin")
+	parser.add_argument('text', nargs="?")
 	args = parser.parse_args()
+
+	if args.stdin and args.text is not None:
+		parser.error("--stdin and 'text' arguments are mutually exclusive")
+	elif not args.stdin and args.text is None:
+		parser.error("if 'text' argument is not given, pass --stdin to read text from standard input")
+	if args.stdin:
+		args.text = sys.stdin.read().strip()
 
 	try:
 		x_zoom, y_zoom = map(int, args.zoom.split(':'))
