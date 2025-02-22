@@ -59,6 +59,7 @@ def dump_table(rows, table_conf=None):
     table = PrettyTable()
     if table_conf:
         table_conf(table)
+    table.align = args.align
 
     header, rows = rows[0], rows[1:]
 
@@ -77,6 +78,9 @@ conf = None
 arger = ArgumentParser()
 arger.add_argument(
     "--markdown", action="store_true",
+)
+arger.add_argument(
+    "--align", default="c",
 )
 arger.add_argument("file", nargs="*")
 args = arger.parse_args()

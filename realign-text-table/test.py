@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env pytest
 # SPDX-License-Identifier: WTFPL
 
 from pathlib import Path
@@ -65,9 +65,9 @@ expecteds = """
 """.strip().split('\n\n')
 
 
-def run_one(test, expected):
+def run_one(test, expected, args=()):
     output = subprocess.check_output(
-        [Path(__file__).resolve().with_name('realign-text-table')],
+        [Path(__file__).resolve().with_name('realign-text-table'), *args],
         input=test, encoding='utf-8'
     ).rstrip('\n')
     expected = expected.rstrip('\n')
@@ -115,3 +115,26 @@ end
 
 def test_embedded():
     run_one(doc_test, doc_expected)
+
+
+align_test = """
++-----+-----+
+| foo | bar |
++-----+-----+
+|  a  |  b  |
+|  c  |  d  |
++-----+-----+
+"""
+
+align_expected = """
++-----+-----+
+| foo | bar |
++-----+-----+
+| a   | b   |
+| c   | d   |
++-----+-----+
+"""
+
+
+def test_align():
+    run_one(align_test, align_expected, ["--align=l"])
