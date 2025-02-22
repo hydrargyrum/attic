@@ -21,6 +21,7 @@
 # dependencies = ["prettytable"]
 # ///
 
+from argparse import ArgumentParser
 from fileinput import input
 import re
 import sys
@@ -72,16 +73,22 @@ def dump_table(rows, table_conf=None):
 
 
 conf = None
-if len(sys.argv) > 1 and sys.argv[1] == "--markdown":
-    del sys.argv[1]
 
+arger = ArgumentParser()
+arger.add_argument(
+    "--markdown", action="store_true",
+)
+arger.add_argument("file", nargs="*")
+args = arger.parse_args()
+
+if args.markdown:
     def conf(table):
         table.hrules = HEADER
         table.junction_char = "|"
 
 
 rows = []
-for line in input():
+for line in input(args.file):
     if not table_regex.fullmatch(line):
         dump_table(rows, conf)
         rows = []
