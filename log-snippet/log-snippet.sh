@@ -54,12 +54,12 @@ do
 		printf "%s\n" "--"
 	fi
 
-	awk "NR >= $((lineno - context)) && NR <= $((lineno + context)) {
-		if (NR == $lineno) { sep=\":\" }
-		else { sep=\"-\" }
-		printf(\"%s%s%s%s%s\n\", FILENAME, sep, NR, sep, \$0)
+	awk -v "lineno=$lineno" -v "context=$context" 'NR >= (lineno - context) && NR <= (lineno + context) {
+		if (NR == lineno) { sep=":" }
+		else { sep="-" }
+		printf("%s%s%s%s%s\n", FILENAME, sep, NR, sep, $0)
 		#print
-	}" "$file"
+	}' "$file"
 
 	index=$((index + 1))
 done
