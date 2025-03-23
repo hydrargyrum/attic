@@ -85,9 +85,9 @@ message=$(printf %s "$*" | jsonstr)
 TITLE=$(printf %s "$TITLE" | jsonstr)
 
 curl \
-	-s -S -f \
-	-m "$TIMEOUT" \
-	-H 'Content-Type: application/json' \
-	-H "X-Gotify-Key: $GOTIFY_TOKEN" \
-	-d "{\"message\": \"$message\", \"title\": \"${TITLE}\", \"priority\": ${PRIORITY}}" \
+	--silent --show-error --fail \
+	--max-time "$TIMEOUT" \
+	--header 'Content-Type: application/json' \
+	--header "X-Gotify-Key: $GOTIFY_TOKEN" \
+	--data "{\"message\": \"$message\", \"title\": \"${TITLE}\", \"priority\": ${PRIORITY}}" \
 	"${GOTIFY_URL%/}/message"

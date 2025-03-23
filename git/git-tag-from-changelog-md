@@ -27,4 +27,4 @@ awk " \
 	< CHANGELOG.md \
 	> "$changefile"
 
-git tag -a "$tag" -F "$changefile"
+git tag --annotate "$tag" --file="$changefile"

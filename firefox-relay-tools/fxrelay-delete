@@ -25,8 +25,9 @@ then
 	usage $EX_USAGE >&2
 fi
 
-curl -f -S -s https://relay.firefox.com/api/v1/relayaddresses/"$1"/ \
-	-X DELETE \
-	-m 60 \
-	-H "Authorization: Token $FXRELAY_TOKEN" \
-	-H "content-type: application/json"
+curl --fail --show-error --silent \
+	--request DELETE \
+	--max-time 60 \
+	--header "Authorization: Token $FXRELAY_TOKEN" \
+	--header "content-type: application/json" \
+	https://relay.firefox.com/api/v1/relayaddresses/"$1"/

@@ -28,4 +28,4 @@ shift
 fdate=$(date -r "$file")
 
 git add "$file"
-git commit --date "$fdate" "$@"
+git commit --date="$fdate" "$@"

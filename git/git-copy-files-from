@@ -31,4 +31,4 @@ then
 fi
 
 git checkout "$commit" -- "$@"
-git commit --reuse-message "$commit"
+git commit --reuse-message="$commit"

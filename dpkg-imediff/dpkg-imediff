@@ -23,4 +23,4 @@ then
 	error "$0 must be called within a dpkg conflict shell"
 fi
 
-imediff -o "$DPKG_CONFFILE_OLD" "$DPKG_CONFFILE_OLD" "$DPKG_CONFFILE_NEW"
+imediff --output="$DPKG_CONFFILE_OLD" "$DPKG_CONFFILE_OLD" "$DPKG_CONFFILE_NEW"

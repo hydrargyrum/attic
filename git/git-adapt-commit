@@ -35,16 +35,16 @@ shift
 WORKDIR=$(mktemp -t -d gitadapt.XXXXXX)
 trap 'rmdir "$WORKDIR"' EXIT
 
-git worktree add -q "$WORKDIR" "${COMMIT}~"
+git worktree add --quiet "$WORKDIR" "${COMMIT}~"
 # cleanup (git-worktree remove also destroys the dir)
 trap 'git worktree remove "$WORKDIR"' EXIT
 
 cd "$WORKDIR"
 "$@" >&2
-git commit -qam "XXX: prepare $COMMIT for $*"
-git checkout -q "$COMMIT" -- :/
+git commit --quiet --all --message="XXX: prepare $COMMIT for $*"
+git checkout --quiet "$COMMIT" -- :/
 "$@" >&2
-git commit -qaC "$COMMIT"
+git commit --quiet --all --reuse-message="$COMMIT"
 
 # finally print the commit id
 git rev-parse HEAD

@@ -33,7 +33,7 @@ then
 
 	# Instead, let pv follow this shell, exec will replace it with the
 	# user-command.
-	pv -d "$$" &
+	pv --watchfd "$$" &
 else
 	echo "pv command is not installed, no progress info can be shown" >&2
 fi

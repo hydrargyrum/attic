@@ -7,8 +7,9 @@ then
 	exit 1
 fi
 
-curl -f -S -s https://relay.firefox.com/api/v1/relayaddresses/ \
-	-m 60 \
-	-H "Authorization: Token $FXRELAY_TOKEN" \
-	-H "content-type: application/json" \
-	-d "{\"enabled\": true, \"block_list_emails\": false, \"description\": \"${1-}\"}"
+curl --fail --show-error --silent \
+	--max-time 60 \
+	--header "Authorization: Token $FXRELAY_TOKEN" \
+	--header "content-type: application/json" \
+	--data "{\"enabled\": true, \"block_list_emails\": false, \"description\": \"${1-}\"}" \
+	https://relay.firefox.com/api/v1/relayaddresses/
