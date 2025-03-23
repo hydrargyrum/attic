@@ -32,7 +32,7 @@ then
 fi
 
 #
-vncconfig -list | sort -f | while read name
+vncconfig -list | sort -f | while read -r name
 do
 	printf "%s: " "$name"
 	value=$(vncconfig "$option" "$name")

@@ -15,7 +15,7 @@ tailsleep file-being-downloaded.tar.gz.part | tar -xzf -
 As an extension, download Flash videos loading/loaded in your web browser (doesn't need to be playing them, they can be paused):
 
 ```
-find /proc/*/fd -lname "*FlashXX*" | while read vid
+find /proc/*/fd -lname "*FlashXX*" | while read -r vid
 do
 	tailsleep $vid > "video-`basename $vid`.flv"
 done
