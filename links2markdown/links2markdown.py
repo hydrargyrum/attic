@@ -12,6 +12,7 @@ import re
 import signal
 import sys
 from html.parser import HTMLParser
+from urllib.parse import urlparse
 
 import requests
 
@@ -51,6 +52,14 @@ class TitleFetchParser(HTMLParser):
             self.title = data
 
 
+def user_agent_for_site(url):
+    parsed = urlparse(url)
+    if parsed.hostname.endswith("youtube.com") or parsed.hostname.endswith("instagram.com"):
+        return "curl"
+    # curl gets the right page with the firefox UA, but not requests with firefox UA
+    return "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0"
+
+
 def fetch_title(url):
     if sys.stderr.isatty():
         # fill info string with spaces till the end of line & rewind line to overwrite
@@ -61,7 +70,7 @@ def fetch_title(url):
         response = requests.get(
             url,
             headers={
-                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0",
+                "User-Agent": user_agent_for_site(url),
                 "Accept": "text/html",
             },
             timeout=120,
