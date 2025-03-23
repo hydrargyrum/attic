@@ -47,6 +47,8 @@ def transform(b):
         return f'{REPLACES[char]}'
     elif 0x20 < b < 0x7f:
         return f'{char} '
+    elif b < 0x20:
+        return styled(f"{b:02X}", "red")
     else:
         return styled(f'{b:02X}', attrs=['reverse'])
 
