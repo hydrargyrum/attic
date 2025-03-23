@@ -48,7 +48,7 @@ def transform(b):
     elif 0x20 < b < 0x7f:
         return f'{char} '
     else:
-        return f"{styled(f'{b:02X}', attrs=['reverse'])}"
+        return styled(f'{b:02X}', attrs=['reverse'])
 
 
 def print_line(line):
