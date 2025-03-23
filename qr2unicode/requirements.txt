@@ -1,0 +1,4 @@
+qrcode
+# or also: qrencode
+# todo: qrcodegen
+# todo: PyQRCode
