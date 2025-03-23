@@ -78,11 +78,18 @@ conf = None
 arger = ArgumentParser()
 arger.add_argument(
     "--markdown", action="store_true",
+    help="Output table in markdown format",
 )
 arger.add_argument(
     "--align", default="c",
+    metavar="CHARACTER",
+    help="Where to align text in cells. CHARACTER can be 'l' for left, 'c' for\n"
+    + "center or 'r' for right",
 )
-arger.add_argument("file", nargs="*")
+arger.add_argument(
+    "file", nargs="*",
+    help="File on which to read misaligned tables (or stdin if not given)",
+)
 args = arger.parse_args()
 
 if args.markdown:
