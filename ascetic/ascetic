@@ -3,6 +3,7 @@
 
 import argparse
 import os
+import re
 import resource
 import sys
 
@@ -16,6 +17,16 @@ LIMITS = {
 CURRENT = {
     name: resource.getrlimit(LIMITS[name])
     for name in LIMITS
+}
+
+VALUE_RE = re.compile(r"(\d+)([kmgt]?)")
+
+SUFFIXES = {
+    "": 1,
+    "k": 1 << 10,
+    "m": 1 << 20,
+    "g": 1 << 30,
+    "t": 1 << 40,
 }
 
 
@@ -33,8 +44,12 @@ class LimitSetAction(argparse.Action):
         self.softness = softness
         self.name = name
 
+    def parse_value(self, value):
+        match = VALUE_RE.fullmatch(value)
+        return int(match[1]) * SUFFIXES[match[2]]
+
     def __call__(self, parser, namespace, values, option_string=None):
-        values = int(values)
+        values = self.parse_value(values)
         try:
             d = namespace.limits
         except AttributeError:
