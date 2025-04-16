@@ -18,6 +18,7 @@ This repository hosts various small personal tools.
 - [`dpkg-imediff`](dpkg-imediff): when dpkg interactively prompts for resolving a config file conflict, run this to start a merge editor
 - [`elidelong`](elidelong): command-line filter to elide long lines
 - [`exiforientergui`](exiforientergui): GUI to losslessly modify EXIF orientation of an image
+- [`extract-json-archive`](extract-json-archive): extract JSON archives
 - [`ffmcut`](ffmcut): ffmpeg wrapper to cut a video between 2 timestamps
 - [`firefox-relay-tools/fxrelay-add`](firefox-relay-tools/fxrelay-add): add a Firefox Relay address
 - [`firefox-relay-tools/fxrelay-delete`](firefox-relay-tools/fxrelay-delete): delete a Firefox Relay address
