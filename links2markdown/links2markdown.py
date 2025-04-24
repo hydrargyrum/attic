@@ -11,10 +11,18 @@ import os
 import re
 import signal
 import sys
+from dataclasses import dataclass
+from functools import partial
 from html.parser import HTMLParser
 from urllib.parse import urlparse
 
 import requests
+
+
+@dataclass
+class Metadata:
+    title: str | None
+    image: str | None = None
 
 
 LINK_RE = re.compile(r"""(?<!\]\()(?<!<)https?://[^])'">\s]+""")
@@ -27,18 +35,21 @@ LINK_RE = re.compile(r"""(?<!\]\()(?<!<)https?://[^])'">\s]+""")
 # markdown though the link is incomplete (missing "[" and ")").
 
 
-class TitleFetchParser(HTMLParser):
+class MetadataParser(HTMLParser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.path = []
         self._title = None
         self._ogtitle = None
+        self._ogpic = None
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if tag == "meta" and "head" in self.path[0]:
             if attrs.get("property") == "og:title":
                 self._ogtitle = attrs.get("content")
+            if attrs.get("property") == "og:image":
+                self._ogpic = attrs.get("content")
 
         self.path.insert(0, tag)
 
@@ -57,9 +68,8 @@ class TitleFetchParser(HTMLParser):
         if self.path and self.path[0] == "title" and "head" in self.path:
             self._title = data
 
-    @property
-    def title(self):
-        return self._ogtitle or self._title
+    def get_metadata(self):
+        return Metadata(self._ogtitle or self._title, self._ogpic)
 
 
 def user_agent_for_site(url):
@@ -70,7 +80,7 @@ def user_agent_for_site(url):
     return "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0"
 
 
-def fetch_title(url):
+def fetch_metadata(url):
     if sys.stderr.isatty():
         # fill info string with spaces till the end of line & rewind line to overwrite
         term_width = os.get_terminal_size(sys.stderr.fileno()).columns
@@ -89,7 +99,7 @@ def fetch_title(url):
         print(f"error: failed to fetch {url}: {exc}", file=sys.stderr)
         return None
 
-    parser = TitleFetchParser(convert_charrefs=True)
+    parser = MetadataParser(convert_charrefs=True)
 
     try:
         parser.feed(response.text)
@@ -98,10 +108,10 @@ def fetch_title(url):
         print(f"error: failed extracting title from {url}: {exc}", file=sys.stderr)
         return None
     else:
-        return parser.title
+        return parser.get_metadata()
 
 
-def link_to_markdown(m):
+def link_to_markdown(m, with_image=False):
     url = m[0]
 
     if m.start() > 3 and m.string[m.start() - 3:m.start()] == "]: ":
@@ -110,14 +120,17 @@ def link_to_markdown(m):
         # approach will not find. So it will not skip them, though it should.
         return url
 
-    title = fetch_title(url)
-    if not title:
+    metadata = fetch_metadata(url)
+    if not metadata or not metadata.title:
         # Create an autolink: the link title will be the URL. Setting a fixed
         # title like "error fetching title" would confuse the viewer more than
         # having the URL as title.
         return f"<{url}>"
 
-    title = re.sub(r"\s+", " ", title.strip())
+    title = re.sub(r"\s+", " ", metadata.title.strip())
+
+    if with_image and metadata.image:
+        return f"[![{title}]({metadata.image}) {title}]({url})"
 
     return f"[{title}]({url})"
 
@@ -130,6 +143,7 @@ def main():
     parser = argparse.ArgumentParser(
         epilog="Outputs processed text on stdout",
     )
+    parser.add_argument("--with-image", action="store_true")
     parser.add_argument(
         "file", default="-", nargs="?",
         help="Input file to process ('-' for stdin)",
@@ -141,9 +155,11 @@ def main():
     else:
         fp = open(args.file)
 
+    cb = partial(link_to_markdown, with_image=args.with_image)
+
     with fp:
         for line in fp:
-            line = LINK_RE.sub(link_to_markdown, line)
+            line = LINK_RE.sub(cb, line)
             print(line, end="")
 
 
