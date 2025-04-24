@@ -31,9 +31,15 @@ class TitleFetchParser(HTMLParser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.path = []
-        self.title = None
+        self._title = None
+        self._ogtitle = None
 
     def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "meta" and "head" in self.path[0]:
+            if attrs.get("property") == "og:title":
+                self._ogtitle = attrs.get("content")
+
         self.path.insert(0, tag)
 
     def handle_endtag(self, tag):
@@ -45,11 +51,15 @@ class TitleFetchParser(HTMLParser):
         del self.path[:idx + 1]
 
     def handle_data(self, data):
-        if self.title:
+        if self._title:
             return
 
         if self.path and self.path[0] == "title" and "head" in self.path:
-            self.title = data
+            self._title = data
+
+    @property
+    def title(self):
+        return self._ogtitle or self._title
 
 
 def user_agent_for_site(url):
